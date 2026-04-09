@@ -1,0 +1,153 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #0f172a;
+  --accent: #3b82f6;
+  --success: #10b981;
+  --bg: #f8fafc;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── RESPONSIVE TYPOGRAPHY ─── */
+h1 { @apply text-2xl sm:text-3xl md:text-4xl; }
+h2 { @apply text-lg sm:text-xl md:text-2xl; }
+
+/* ─── QUIZ OPTIONS ─── */
+.quiz-option {
+  @apply border-2 border-slate-200 rounded-xl py-3 px-3 sm:py-3.5 sm:px-4 cursor-pointer transition-all duration-200 text-left w-full text-sm sm:text-base;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.quiz-option:not(:disabled):hover {
+  @apply border-blue-400 bg-blue-50 shadow-sm;
+  transform: translateX(4px);
+}
+.quiz-option:disabled {
+  cursor: default;
+}
+.quiz-option.correct {
+  @apply border-emerald-500 bg-emerald-50 shadow-sm;
+  transform: translateX(4px);
+}
+.quiz-option.wrong {
+  @apply border-red-500 bg-red-50;
+  animation: shake 0.4s ease-in-out;
+}
+.quiz-option.selected {
+  @apply border-blue-500 bg-blue-50;
+}
+
+/* Mobile: larger tap targets */
+@media (max-width: 640px) {
+  .quiz-option {
+    @apply py-3.5 px-3 text-[15px] gap-2 min-h-[48px];
+  }
+}
+
+/* Wrong answer shake */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+/* ─── GRADIENT TEXT ─── */
+.text-gradient {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── CARD HOVER (desktop only) ─── */
+.card-hover {
+  @apply transition-all duration-200;
+}
+@media (hover: hover) {
+  .card-hover:hover {
+    @apply shadow-lg;
+    transform: translateY(-2px);
+  }
+}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ─── FOCUS VISIBLE ─── */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-blue-500;
+}
+
+/* ─── RESPONSIVE UTILITIES ─── */
+
+/* Prevent horizontal overflow on mobile */
+img, video, iframe, table {
+  max-width: 100%;
+}
+
+/* Tables scroll horizontally on mobile */
+table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe area for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .pb-16 {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
+}
+
+/* Smooth transitions for all interactive elements */
+a, button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Hide ad containers on very small screens if they're empty */
+.ad-container:empty {
+  display: none;
+}
+
+/* Breadcrumbs horizontal scroll on mobile */
+nav[aria-label="Breadcrumb"] {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  white-space: nowrap;
+  scrollbar-width: none;
+}
+nav[aria-label="Breadcrumb"]::-webkit-scrollbar {
+  display: none;
+}
