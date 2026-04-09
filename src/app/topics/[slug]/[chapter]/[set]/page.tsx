@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ch || isNaN(setNum)) return {};
   return {
     title: `${ch.en} Set ${setNum} - ${topic.en.name} GK Questions`,
-    description: `Practice ${ch.en} Set ${setNum} (Questions ${(setNum - 1) * SET_SIZE + 1}-${setNum * SET_SIZE}) from ${topic.en.name}. MCQs with explanations for competitive exams.`,
+    description: `Practice ${SET_SIZE} ${ch.en} MCQ questions (Set ${setNum}) from ${topic.en.name}. With answers and explanations in Hindi & English for RRB NTPC, SSC CGL, UPSC, Police & all competitive exams.`,
     alternates: { canonical: `https://studyvirus.com/topics/${slug}/${chapterParam}/set-${setNum}` },
   };
 }

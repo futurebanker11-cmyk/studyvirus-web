@@ -116,7 +116,7 @@ export default function QuizClient({ questions, questionsHi }: QuizClientProps) 
                   }`}>
                     {qIdx + 1}
                   </span>
-                  <p className="font-semibold text-base md:text-lg leading-snug pt-0.5">{q.q}</p>
+                  <h3 className="font-semibold text-base md:text-lg leading-snug pt-0.5">{q.q}</h3>
                 </div>
 
                 {/* Options */}

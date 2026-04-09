@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ch) return {};
   return {
     title: `${ch.en} - ${topic.en.name} GK Questions with Answers`,
-    description: `Practice ${ch.en} questions from ${topic.en.name}. Multiple sets of 10 MCQs each with detailed explanations for competitive exams.`,
+    description: `Practice ${ch.en} MCQ questions from ${topic.en.name}. Multiple sets of 10 questions each with answers and explanations in Hindi & English for SSC, Railway, UPSC, Police exams.`,
     alternates: { canonical: `https://studyvirus.com/topics/${slug}/${chapterParam}` },
   };
 }
