@@ -35,8 +35,45 @@ export default async function ExamPage({ params }: Props) {
   const pyqExam = exam.pyqSlug ? PYQ_EXAMS.find(p => p.slug === exam.pyqSlug) : null;
   const totalChapters = primaryTopics.reduce((s, t) => s + t.chapters.length, 0);
 
+  const examFaqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: `How many GK topics are important for ${exam.en}?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `There are ${primaryTopics.length} important GK topics for ${exam.en} (${exam.fullName}), covering ${totalChapters} chapters with questions and detailed explanations.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Where can I practice ${exam.en} previous year papers?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: pyqExam
+            ? `You can practice ${pyqExam.sets} sets of ${exam.en} previous year GK questions on StudyVirus, with 40 questions per set and detailed answers.`
+            : `Previous year papers for ${exam.en} are coming soon on StudyVirus. Meanwhile, practice topic-wise questions.`,
+        },
+      },
+      {
+        "@type": "Question",
+        name: `Is ${exam.en} GK practice free on StudyVirus?`,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: `Yes, all ${exam.en} GK questions, notes, one-liners, and previous year papers on StudyVirus are completely free with detailed explanations in English and Hindi.`,
+        },
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(examFaqJsonLd) }}
+      />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

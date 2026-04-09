@@ -254,6 +254,17 @@ export default function QuizClient({ questions, questionsHi }: QuizClientProps) 
           </div>
         </div>
       )}
+
+      {/* SEO: Hidden answers for Google crawling */}
+      <div className="sr-only" aria-hidden="true">
+        {qs.map((q, i) => (
+          <div key={`seo-${i}`}>
+            <p>Q: {q.q}</p>
+            <p>Answer: {q.options[q.answer.charCodeAt(0) - 65]}</p>
+            {q.explain && <p>Explanation: {q.explain}</p>}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

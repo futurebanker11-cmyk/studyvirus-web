@@ -10,7 +10,7 @@ import SidebarAd from "@/components/SidebarAd";
 import Script from "next/script";
 import { LangProvider } from "@/lib/LangContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -67,10 +67,9 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <Script
-          async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3496395300151813"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
       </head>
       <body className={`${inter.className} pb-16`}>

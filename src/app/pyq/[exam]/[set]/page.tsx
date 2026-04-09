@@ -54,9 +54,23 @@ export default async function PYQSetPage({ params }: Props) {
     })),
   };
 
+  const quizJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Quiz",
+    name: `${exam.en} PYQ Set ${setNum}`,
+    about: {
+      "@type": "Thing",
+      name: exam.en,
+    },
+    educationalLevel: "Competitive Exam",
+    assesses: "General Knowledge",
+    numberOfQuestions: questions.length,
+  };
+
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(quizJsonLd) }} />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

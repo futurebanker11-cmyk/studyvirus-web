@@ -68,11 +68,11 @@ export default async function SetPage({ params }: Props) {
     };
   }
 
-  // FAQ schema for first set only (SEO)
-  const faqJsonLd = setNum === 1 ? {
+  // QAPage schema for all sets (SEO)
+  const qaJsonLd = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: questions.slice(0, 5).map((q) => ({
+    "@type": "QAPage",
+    mainEntity: questions.slice(0, 10).map((q) => ({
       "@type": "Question",
       name: q.q,
       acceptedAnswer: {
@@ -80,16 +80,14 @@ export default async function SetPage({ params }: Props) {
         text: `${q.options[q.answer.charCodeAt(0) - 65] || q.answer}. ${q.explain || ""}`,
       },
     })),
-  } : null;
+  };
 
   return (
     <>
-      {faqJsonLd && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-        />
-      )}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(qaJsonLd) }}
+      />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },
