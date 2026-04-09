@@ -167,18 +167,22 @@ export default function QuizClient({ questions, questionsHi }: QuizClientProps) 
                   })}
                 </div>
 
-                {/* Explanation */}
-                {isRevealed && q.explain && (
-                  <div className="mt-4 ml-0 md:ml-11 p-4 bg-blue-50 rounded-xl text-sm border border-blue-100">
+                {/* Answer + Explanation — always in HTML for SEO, visibility controlled by CSS */}
+                <div className={`mt-4 ml-0 md:ml-11 transition-all duration-300 ${
+                  isRevealed ? 'opacity-100 max-h-[500px]' : 'opacity-0 max-h-0 overflow-hidden'
+                }`}>
+                  <div className="p-4 bg-blue-50 rounded-xl text-sm border border-blue-100">
                     <div className="flex items-start gap-2">
                       <span className="text-blue-500 mt-0.5 shrink-0">💡</span>
                       <div>
-                        <p className="font-semibold text-blue-700 mb-1">Explanation</p>
-                        <p className="text-slate-700 leading-relaxed">{q.explain}</p>
+                        <p className="font-semibold text-emerald-700 mb-1">
+                          Correct Answer: {q.answer}. {q.options[q.answer.charCodeAt(0) - 65]}
+                        </p>
+                        {q.explain && <p className="text-slate-700 leading-relaxed">{q.explain}</p>}
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
 
               {/* In-article ad after Q5 */}
@@ -255,16 +259,6 @@ export default function QuizClient({ questions, questionsHi }: QuizClientProps) 
         </div>
       )}
 
-      {/* SEO: Hidden answers for Google crawling */}
-      <div className="sr-only" aria-hidden="true">
-        {qs.map((q, i) => (
-          <div key={`seo-${i}`}>
-            <p>Q: {q.q}</p>
-            <p>Answer: {q.options[q.answer.charCodeAt(0) - 65]}</p>
-            {q.explain && <p>Explanation: {q.explain}</p>}
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
