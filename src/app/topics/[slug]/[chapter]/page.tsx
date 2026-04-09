@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTopicBySlug, topicSlug, chapterSlug, getVisibleTopics, getSetCount, SET_SIZE, getAdjacentChapters } from "@/lib/topics";
+import { getTopicBySlug, chapterSlug, getSetCount, SET_SIZE, getAdjacentChapters } from "@/lib/topics";
 import { fetchQuestionsBilingual } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import NavButtons from "@/components/NavButtons";
@@ -12,15 +12,8 @@ interface Props {
   params: Promise<{ slug: string; chapter: string }>;
 }
 
-export async function generateStaticParams() {
-  const params: { slug: string; chapter: string }[] = [];
-  for (const t of getVisibleTopics()) {
-    for (const ch of t.chapters) {
-      params.push({ slug: topicSlug(t.key), chapter: chapterSlug(ch.en) });
-    }
-  }
-  return params;
-}
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, chapter: chapterParam } = await params;
