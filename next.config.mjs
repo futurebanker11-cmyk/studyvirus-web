@@ -216,6 +216,8 @@ const nextConfig = {
 
       // ── Old SSC pages → /pyq/ssc-cgl ──
       { source: "/ssc-chsl-previous-year-:slug*", destination: "/pyq/ssc-chsl", permanent: true },
+      { source: "/ssc-chsl-previous-year-:slug*/:path*", destination: "/pyq/ssc-chsl", permanent: true },
+      { source: "/ssc-cpo-previous-year-:slug*/:path*", destination: "/pyq/ssc-cpo", permanent: true },
       { source: "/ssc-cpo-previous-year-:slug*", destination: "/pyq/ssc-cpo", permanent: true },
       { source: "/classification-questions-for-ssc-:slug*", destination: "/pyq/ssc-cgl", permanent: true },
 
