@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { PYQ_EXAMS, getPYQBySlug } from "@/lib/pyq";
+import { getPYQBySlug } from "@/lib/pyq";
 import { fetchPYQBilingual } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import QuizClient from "@/components/QuizClient";
@@ -9,15 +9,8 @@ interface Props {
   params: Promise<{ exam: string; set: string }>;
 }
 
-export function generateStaticParams() {
-  const params: { exam: string; set: string }[] = [];
-  for (const e of PYQ_EXAMS) {
-    for (let i = 1; i <= e.sets; i++) {
-      params.push({ exam: e.slug, set: `set-${i}` });
-    }
-  }
-  return params;
-}
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { exam: slug, set: setParam } = await params;
