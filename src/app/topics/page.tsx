@@ -22,8 +22,20 @@ export default function TopicsPage() {
     { label: "State GK", keys: ["bihar_gk", "up_gk", "rajasthan_gk", "mp_gk", "maharashtra_gk", "gujarat_gk", "haryana_gk", "jharkhand_gk"] },
   ];
 
+  // CollectionPage schema
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "All GK Topics",
+    description: `Browse ${topics.length} GK topics for competitive exam preparation.`,
+    url: "https://studyvirus.com/topics",
+    numberOfItems: topics.length,
+    provider: { "@type": "Organization", name: "StudyVirus" },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Topics" }]} />
       <h1 className="text-3xl font-black text-primary mb-2">All GK Topics</h1>
       <p className="text-slate-500 mb-8">

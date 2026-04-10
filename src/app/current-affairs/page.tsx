@@ -3,8 +3,10 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import AdSlot from "@/components/AdSlot";
 import type { Metadata } from "next";
 
+const CURRENT_YEAR = new Date().getFullYear();
+
 export const metadata: Metadata = {
-  title: "Current Affairs 2026 - Daily, Weekly & Monthly GK Updates",
+  title: `Current Affairs ${CURRENT_YEAR} - Daily, Weekly & Monthly GK Updates`,
   description:
     "Stay updated with daily current affairs for competitive exams. GK questions from the latest news, government schemes & events.",
   alternates: { canonical: "https://studyvirus.com/current-affairs" },
@@ -18,7 +20,7 @@ export default function CurrentAffairsPage() {
 
   const now = new Date();
   const currentMonth = now.getMonth(); // 0-indexed
-  const currentYear = 2026;
+  const currentYear = now.getFullYear();
 
   // Daily CA available from April 2026 onwards
   const dailyStartMonth = 3; // April (0-indexed)
@@ -44,7 +46,7 @@ export default function CurrentAffairsPage() {
   return (
     <>
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Current Affairs" }]} />
-      <h1 className="text-3xl font-black text-primary mb-2">Current Affairs 2026</h1>
+      <h1 className="text-3xl font-black text-primary mb-2">Current Affairs {currentYear}</h1>
       <p className="text-slate-500 mb-8">Daily, weekly & monthly GK updates for exam preparation</p>
 
       {/* Daily CA (April onwards) */}
@@ -87,7 +89,7 @@ export default function CurrentAffairsPage() {
                 href={`/current-affairs/monthly/${currentYear}_${mm}`}
                 className="bg-white rounded-xl p-4 border border-slate-100 hover:border-blue-200 hover:shadow-md transition card-hover"
               >
-                <p className="font-bold text-primary">{month} 2026</p>
+                <p className="font-bold text-primary">{month} {currentYear}</p>
                 <p className="text-xs text-slate-400 mt-1">Monthly capsule with MCQs</p>
               </Link>
             );

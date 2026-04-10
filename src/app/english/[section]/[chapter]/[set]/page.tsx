@@ -62,8 +62,23 @@ export default async function EnglishSetPage({ params }: Props) {
     nextNav = { href: `/english/${sKey}/${chapterSlugEn(nextCh.en)}`, label: nextCh.en };
   }
 
+  // QAPage schema for rich results
+  const qaJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    mainEntity: questions.slice(0, 10).map((q) => ({
+      "@type": "Question",
+      name: q.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `${q.options[q.answer.charCodeAt(0) - 65] || q.answer}. ${q.explain || ""}`,
+      },
+    })),
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(qaJsonLd) }} />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

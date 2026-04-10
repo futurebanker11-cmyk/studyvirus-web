@@ -39,8 +39,39 @@ export default async function TopicPage({ params }: Props) {
     ? { href: `/topics/${topicSlug(nextTopic.key)}`, label: `${nextTopic.emoji} ${nextTopic.en.name}` }
     : null;
 
+  // FAQ schema for topic hub pages
+  const faqItems = [
+    {
+      q: `How many chapters are there in ${topic.en.name}?`,
+      a: `${topic.en.name} has ${topic.chapters.length} chapters covering ${topic.chapters.slice(0, 4).map(c => c.en).join(", ")} and more.`,
+    },
+    {
+      q: `Is ${topic.en.name} important for competitive exams?`,
+      a: `Yes, ${topic.en.name} is an important subject for SSC, Railway, UPSC, Police and State exams. Questions from this topic regularly appear in GK sections.`,
+    },
+    {
+      q: `How can I practice ${topic.en.name} questions on StudyVirus?`,
+      a: `You can practice ${topic.en.name} questions chapter-wise. Each chapter has multiple sets of 10 MCQ questions with detailed explanations in Hindi and English.`,
+    },
+  ];
+
   return (
     <>
+      {/* FAQ structured data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqItems.map((f) => ({
+              "@type": "Question",
+              name: f.q,
+              acceptedAnswer: { "@type": "Answer", text: f.a },
+            })),
+          }),
+        }}
+      />
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

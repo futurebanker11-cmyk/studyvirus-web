@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const exam = getExamBySlug(slug);
   if (!exam) return {};
   return {
-    title: `${exam.en} GK Questions 2026 - Topics, PYQ & Mock Tests`,
+    title: `${exam.en} GK Questions ${new Date().getFullYear()} - Topics, PYQ & Mock Tests`,
     description: `Free ${exam.fullName} (${exam.en}) GK preparation. Practice topic-wise questions, previous year papers & mock tests with answers.`,
     alternates: { canonical: `https://studyvirus.com/exam/${slug}` },
   };
@@ -87,7 +87,7 @@ export default async function ExamPage({ params }: Props) {
         <div className="flex items-center gap-3 mb-3">
           <span className="text-4xl">{exam.icon}</span>
           <div>
-            <h1 className="text-2xl md:text-3xl font-black">{exam.en} GK 2026</h1>
+            <h1 className="text-2xl md:text-3xl font-black">{exam.en} GK {new Date().getFullYear()}</h1>
             <p className="text-white/80 text-sm">{exam.fullName}</p>
           </div>
         </div>

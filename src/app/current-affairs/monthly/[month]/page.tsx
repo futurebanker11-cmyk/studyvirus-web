@@ -38,8 +38,25 @@ export default async function MonthlyCAPage({ params }: Props) {
     `${month}.json`
   );
 
+  // QAPage schema for monthly capsule questions
+  const qaJsonLd = questions.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "QAPage",
+    mainEntity: questions.slice(0, 10).map((q) => ({
+      "@type": "Question",
+      name: q.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `${q.options[q.answer.charCodeAt(0) - 65] || q.answer}. ${q.explain || ""}`,
+      },
+    })),
+  } : null;
+
   return (
     <>
+      {qaJsonLd && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(qaJsonLd) }} />
+      )}
       <Breadcrumbs
         items={[
           { label: "Home", href: "/" },

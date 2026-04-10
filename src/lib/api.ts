@@ -64,7 +64,16 @@ export async function fetchArticleIndex(): Promise<Article[]> {
     });
     if (!res.ok) return [];
     const data = await res.json();
-    return data.articles || [];
+    const raw = data.articles || [];
+    // API returns title_en/title_hi/tag/readTime; normalize to Article shape
+    return raw.map((a: Record<string, unknown>) => ({
+      id: a.id as string,
+      file: a.file as string,
+      category: (a.category || '') as string,
+      tags: Array.isArray(a.tags) ? a.tags : (a.tag ? [a.tag as string] : []),
+      en: (a.en || a.title_en || '') as string,
+      hi: (a.hi || a.title_hi || '') as string,
+    }));
   } catch {
     return [];
   }

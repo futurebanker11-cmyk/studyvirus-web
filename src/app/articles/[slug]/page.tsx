@@ -40,6 +40,26 @@ export default async function ArticlePage({ params }: Props) {
       <h1 className="text-3xl font-black text-primary mb-2">{article.en}</h1>
       <p className="text-slate-500 mb-6">{article.hi}</p>
 
+      {/* Article structured data for rich results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            headline: article.en,
+            description: `Read: ${article.en}. Free study material for SSC, Railway, UPSC & competitive exams.`,
+            url: `https://studyvirus.com/articles/${slug}`,
+            publisher: {
+              "@type": "Organization",
+              name: "StudyVirus",
+              logo: { "@type": "ImageObject", url: "https://studyvirus.com/og-image.png" },
+            },
+            mainEntityOfPage: `https://studyvirus.com/articles/${slug}`,
+          }),
+        }}
+      />
+
       <AdSlot slot="inArticle1" />
 
       {content && content.paragraphs ? (

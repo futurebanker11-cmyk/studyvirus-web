@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!exam || isNaN(setNum)) return {};
   return {
     title: `${exam.en} PYQ Set ${setNum} - 40 Questions with Answers`,
-    description: `Practice ${exam.en} previous year GK questions Set ${setNum}. 40 MCQs with answers and detailed explanations in Hindi & English. Free ${exam.en} PYQ practice for 2026 exam.`,
+    description: `Practice ${exam.en} previous year GK questions Set ${setNum}. 40 MCQs with answers and detailed explanations in Hindi & English. Free ${exam.en} PYQ practice for ${new Date().getFullYear()} exam.`,
     alternates: { canonical: `https://studyvirus.com/pyq/${slug}/${setParam}` },
   };
 }

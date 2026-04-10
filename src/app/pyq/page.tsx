@@ -24,8 +24,20 @@ export default function PYQPage() {
     return acc;
   }, {} as Record<string, typeof PYQ_EXAMS>);
 
+  // CollectionPage schema
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Previous Year Question Papers",
+    description: `Practice previous year GK questions from ${PYQ_EXAMS.length} competitive exams.`,
+    url: "https://studyvirus.com/pyq",
+    numberOfItems: PYQ_EXAMS.length,
+    provider: { "@type": "Organization", name: "StudyVirus" },
+  };
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionJsonLd) }} />
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "PYQ Papers" }]} />
       <h1 className="text-3xl font-black text-primary mb-2">Previous Year Papers</h1>
       <p className="text-slate-500 mb-8">Practice GK questions from actual exam papers</p>
