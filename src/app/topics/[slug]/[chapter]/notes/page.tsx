@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getTopicBySlug, topicSlug, chapterSlug, getVisibleTopics } from "@/lib/topics";
+import { getTopicBySlug, chapterSlug } from "@/lib/topics";
 import { fetchNotes } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import StudyTabs from "@/components/StudyTabs";
@@ -10,15 +10,8 @@ interface Props {
   params: Promise<{ slug: string; chapter: string }>;
 }
 
-export async function generateStaticParams() {
-  const params: { slug: string; chapter: string }[] = [];
-  for (const t of getVisibleTopics()) {
-    for (const ch of t.chapters) {
-      params.push({ slug: topicSlug(t.key), chapter: chapterSlug(ch.en) });
-    }
-  }
-  return params;
-}
+export const dynamicParams = true;
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug, chapter: chSlug } = await params;
