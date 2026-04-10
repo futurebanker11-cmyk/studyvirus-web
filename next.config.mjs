@@ -351,6 +351,26 @@ const nextConfig = {
       { source: "/32352-2", destination: "/", permanent: true },
       { source: "/32311-2", destination: "/", permanent: true },
       { source: "/25th-february-:slug*", destination: "/", permanent: true },
+
+      // ── Catch-all: any old paginated URL with /number at end ──
+      { source: "/profit-and-loss-:slug*", destination: "/", permanent: true },
+      { source: "/syllogism-questions/:path*", destination: "/", permanent: true },
+      { source: "/indian-polity-in-hindi/:path*", destination: "/topics/polity", permanent: true },
+      { source: "/indian-railway-in-hindi/:path*", destination: "/topics/railways", permanent: true },
+      { source: "/ssc-chsl-previous-year-gk-questions/:path*", destination: "/pyq/ssc-chsl", permanent: true },
+      { source: "/ssc-cpo-previous-year-gk-questions/:path*", destination: "/pyq/ssc-cpo", permanent: true },
+      { source: "/spot-the-error/:path*", destination: "/english", permanent: true },
+      { source: "/one-word-substitution/:path*", destination: "/english", permanent: true },
+      { source: "/para-jumbles-for-all-competitive-exams/:path*", destination: "/english", permanent: true },
+      { source: "/cloze-test-questions/:path*", destination: "/english", permanent: true },
+      { source: "/reading-comprehension-for-bank-exams/:path*", destination: "/english", permanent: true },
+      { source: "/direct-and-indirect-speech-exercises/:path*", destination: "/english", permanent: true },
+      { source: "/preposition-exercises-with-answers/:path*", destination: "/english", permanent: true },
+      { source: "/data-interpretation-questions/:path*", destination: "/", permanent: true },
+      { source: "/quadratic-equation-for-bank-exam/:path*", destination: "/", permanent: true },
+      { source: "/arithmetic-questions-and-answers/:path*", destination: "/", permanent: true },
+      { source: "/boat-and-stream-questions/:path*", destination: "/", permanent: true },
+      { source: "/simplification-questions/:path*", destination: "/", permanent: true },
     ];
   },
 };
