@@ -7,9 +7,11 @@ import LangToggle from "./LangToggle";
 const NAV_LINKS = [
   { href: "/exam", label: "Exams" },
   { href: "/topics", label: "Topics" },
-  { href: "/english", label: "English" },
   { href: "/pyq", label: "PYQ Papers" },
+  { href: "/mock-tests", label: "Mock Tests" },
+  { href: "/english", label: "English" },
   { href: "/current-affairs", label: "Current Affairs" },
+  { href: "/articles", label: "Articles" },
 ];
 
 export default function Header() {

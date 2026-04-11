@@ -5,7 +5,7 @@ import AdSlot from "@/components/AdSlot";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "StudyVirus - 200,000+ Free GK Questions for Competitive Exams",
+  title: "200,000+ Free GK Questions & Mock Tests | StudyVirus",
   description:
     "Practice 200,000+ GK questions with answers for SSC, Railway, UPSC, Police & State exams. Free quizzes, mock tests, PYQ papers & daily current affairs.",
   alternates: { canonical: "https://studyvirus.com" },
@@ -48,10 +48,14 @@ export default function HomePage() {
             "@type": "WebSite",
             name: "StudyVirus",
             url: "https://studyvirus.com",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: "https://studyvirus.com/topics?q={search_term_string}",
-              "query-input": "required name=search_term_string",
+            description:
+              "India's largest free GK question bank with 200,000+ questions, mock tests, PYQ papers and current affairs for SSC, Railway, UPSC, Police and State exams.",
+            inLanguage: ["en", "hi"],
+            publisher: {
+              "@type": "Organization",
+              name: "StudyVirus",
+              url: "https://studyvirus.com",
+              logo: "https://studyvirus.com/og-image.png",
             },
           }),
         }}

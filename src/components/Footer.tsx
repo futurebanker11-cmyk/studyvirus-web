@@ -77,6 +77,12 @@ export default function Footer() {
 
         {/* Bottom */}
         <div className="text-center text-xs text-slate-500">
+          <nav className="flex flex-wrap justify-center gap-4 mb-3">
+            <Link href="/about" className="hover:text-white transition">About</Link>
+            <Link href="/contact" className="hover:text-white transition">Contact</Link>
+            <Link href="/privacy-policy" className="hover:text-white transition">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition">Terms of Service</Link>
+          </nav>
           <p>© {new Date().getFullYear()} StudyVirus. All rights reserved.</p>
         </div>
       </div>

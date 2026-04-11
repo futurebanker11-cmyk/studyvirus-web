@@ -15,7 +15,7 @@ const inter = Inter({ subsets: ["latin"], display: "swap" });
 export const metadata: Metadata = {
   title: {
     default: "StudyVirus - Free GK Questions for Competitive Exams",
-    template: "%s | StudyVirus",
+    template: "%s",
   },
   description:
     "200,000+ GK questions with answers for SSC, Railway, UPSC, Police & State exams. Free quizzes, mock tests, previous year papers & current affairs.",

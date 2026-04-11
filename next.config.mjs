@@ -45,10 +45,8 @@ const nextConfig = {
       { source: "/category/:slug*", destination: "/topics", permanent: true },
 
       // ── Old WordPress static pages ──
-      { source: "/about", destination: "/", permanent: true },
-      { source: "/contact", destination: "/", permanent: true },
-      { source: "/privacy-policy", destination: "/", permanent: true },
-      { source: "/privacy-policy-:slug*", destination: "/", permanent: true },
+      // NOTE: /about, /contact, /privacy-policy are now real pages — do NOT redirect them.
+      { source: "/privacy-policy-:slug*", destination: "/privacy-policy", permanent: true },
       { source: "/elementor-:slug*", destination: "/", permanent: true },
       { source: "/quizzes-with-time-limit", destination: "/topics", permanent: true },
       { source: "/download-:slug*", destination: "/", permanent: true },
