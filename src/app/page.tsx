@@ -129,7 +129,7 @@ export default function HomePage() {
             <span className="text-gradient-blue">200,000+ Questions</span>
           </h1>
 
-          <p className="text-slate-500 text-base md:text-lg mb-8 max-w-lg mx-auto animate-fade-up-delay-2">
+          <p className="text-slate-400 text-base md:text-lg mb-8 max-w-lg mx-auto animate-fade-up-delay-2">
             Free GK for SSC, Railway, UPSC, Police &amp; 50+ exams — answers &amp; explanations in English and हिंदी.
           </p>
 
@@ -349,7 +349,7 @@ export default function HomePage() {
             <h2 className="font-display text-xl md:text-2xl lg:text-3xl font-black text-white mb-2">
               Study Smarter with the App
             </h2>
-            <p className="text-slate-500 text-sm">Flash Cards, 1v1 Battles, Offline Mode, Leaderboard &amp; more.</p>
+            <p className="text-slate-400 text-sm">Flash Cards, 1v1 Battles, Offline Mode, Leaderboard &amp; more.</p>
           </div>
           <a
             href="https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs"
