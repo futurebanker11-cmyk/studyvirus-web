@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Syne, DM_Sans } from "next/font/google";
 import "./globals.css";
+
+const syne = Syne({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-display", display: "swap" });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body", display: "swap" });
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppBanner from "@/components/AppBanner";
@@ -10,7 +13,6 @@ import SidebarAd from "@/components/SidebarAd";
 import Script from "next/script";
 import { LangProvider } from "@/lib/LangContext";
 
-const inter = Inter({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -63,16 +65,17 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <meta name="theme-color" content="#0f172a" />
+        <meta name="theme-color" content="#060d1e" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <Script
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3496395300151813"
           crossOrigin="anonymous"
           strategy="lazyOnload"
         />
       </head>
-      <body className={`${inter.className} pb-16`}>
+      <body className={`${syne.variable} ${dmSans.variable} font-body pb-16`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
