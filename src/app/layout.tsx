@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Syne, DM_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
-const syne = Syne({ subsets: ["latin"], weight: ["600", "700", "800"], variable: "--font-display", display: "swap" });
-const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-body", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AppBanner from "@/components/AppBanner";
@@ -75,7 +74,7 @@ export default function RootLayout({
           strategy="lazyOnload"
         />
       </head>
-      <body className={`${syne.variable} ${dmSans.variable} font-body pb-16`}>
+      <body className={`${inter.variable} ${inter.className} pb-16`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

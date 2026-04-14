@@ -12,6 +12,11 @@ const config: Config = {
         primary: '#0f172a',
         accent: '#3b82f6',
         success: '#10b981',
+        gold: '#f59e0b',
+      },
+      fontFamily: {
+        display: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        body: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
       },
     },
   },
