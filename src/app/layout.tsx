@@ -85,7 +85,7 @@ export default function RootLayout({
               url: "https://studyvirus.com",
               logo: "https://studyvirus.com/og-image.png",
               sameAs: [
-                "https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs"
+                "https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus"
               ],
               description: "India's largest free GK question bank for competitive exam preparation.",
             }),

@@ -11,7 +11,7 @@ export default function AppBanner() {
         <span className="hidden sm:inline">Get the app for Flash Cards, Battles, Mocks & more!</span>
         <span className="sm:hidden">Get our free app!</span>
         <a
-          href="https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs"
+          href="https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-1.5 bg-white text-indigo-700 rounded-full px-4 py-1 font-bold text-xs hover:bg-indigo-50 transition shadow-sm"

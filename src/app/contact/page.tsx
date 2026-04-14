@@ -112,7 +112,7 @@ export default function ContactPage() {
           flashcards, battles, and more features than the web version.
         </p>
         <a
-          href="https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs"
+          href="https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus"
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 bg-primary text-white px-5 py-3 rounded-full font-bold hover:opacity-90 transition"

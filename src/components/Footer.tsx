@@ -22,7 +22,7 @@ export default function Footer() {
             </div>
             <p className="text-sm leading-relaxed mb-4">India&apos;s largest free GK question bank. 200,000+ questions for all competitive exams.</p>
             <a
-              href="https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs"
+              href="https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-lg text-sm font-semibold text-white transition"

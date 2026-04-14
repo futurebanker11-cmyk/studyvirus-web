@@ -24,7 +24,7 @@ export default function AboutPage() {
         "India's largest free GK question bank for competitive exam preparation, covering 200,000+ questions across 35+ topics in English and Hindi.",
       foundingDate: "2023",
       sameAs: [
-        "https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs",
+        "https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus",
       ],
       knowsLanguage: ["en", "hi"],
       areaServed: { "@type": "Country", name: "India" },

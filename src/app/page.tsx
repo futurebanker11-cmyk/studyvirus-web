@@ -352,7 +352,7 @@ export default function HomePage() {
             <p className="text-slate-400 text-sm">Flash Cards, 1v1 Battles, Offline Mode, Leaderboard &amp; more.</p>
           </div>
           <a
-            href="https://play.google.com/store/apps/details?id=gk.gkinhindi.currentaffairs"
+            href="https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus"
             target="_blank"
             rel="noopener noreferrer"
             className="shrink-0 bg-white text-primary px-6 py-3.5 rounded-xl font-bold hover:bg-blue-50 transition-all shadow-xl flex items-center gap-2.5"
