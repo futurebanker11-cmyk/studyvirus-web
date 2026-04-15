@@ -54,8 +54,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly",
         priority: 0.7,
       });
-      // Set pages (estimate 5 sets per chapter)
-      for (let s = 1; s <= 5; s++) {
+      // Set pages (include first 2 sets; Google discovers the rest via chapter page links)
+      for (let s = 1; s <= 2; s++) {
         topicPages.push({
           url: `${base}/topics/${tSlug}/${cSlug}/set-${s}`,
           lastModified: buildDate,
@@ -121,8 +121,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly",
         priority: 0.7,
       });
-      // English set pages (estimate 5 sets per chapter)
-      for (let i = 1; i <= 5; i++) {
+      // English set pages (include first 2 sets only)
+      for (let i = 1; i <= 2; i++) {
         englishPages.push({
           url: `${base}/english/${s.key}/${cSlug}/set-${i}`,
           lastModified: buildDate,

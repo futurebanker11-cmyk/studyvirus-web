@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTopicBySlug, chapterSlug } from "@/lib/topics";
 import { fetchNotes } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -54,16 +54,7 @@ export default async function NotesPage({ params }: Props) {
   const notes: any = await fetchNotes(topic.folder, ch.file);
 
   if (!notes || !notes.sections) {
-    return (
-      <>
-        <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Topics", href: "/topics" }, { label: topic.en.name, href: `/topics/${slug}` }, { label: ch.en, href: `/topics/${slug}/${chSlug}` }, { label: "Notes" }]} />
-        <h1 className="text-2xl md:text-3xl font-black text-primary mb-1">{ch.en} — Notes</h1>
-        <div className="text-center py-12 text-slate-400">
-          <p className="text-4xl mb-3">📝</p>
-          <p className="font-semibold">Notes coming soon for this chapter</p>
-        </div>
-      </>
-    );
+    redirect(`/topics/${slug}/${chSlug}`);
   }
 
   return (

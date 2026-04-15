@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getTopicBySlug, chapterSlug } from "@/lib/topics";
 import { fetchOneLiners } from "@/lib/api";
 import Breadcrumbs from "@/components/Breadcrumbs";
@@ -34,6 +34,10 @@ export default async function OneLinersPage({ params }: Props) {
   if (!ch) notFound();
 
   const oneliners = await fetchOneLiners(topic.folder, ch.file);
+
+  if (!oneliners || oneliners.length === 0) {
+    redirect(`/topics/${slug}/${chSlug}`);
+  }
 
   return (
     <>
@@ -73,13 +77,7 @@ export default async function OneLinersPage({ params }: Props) {
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-12 text-slate-400">
-          <p className="text-4xl mb-3">💡</p>
-          <p className="font-semibold">One-liners coming soon for this chapter</p>
-          <p className="text-sm mt-1">Try the quiz sets in the meantime!</p>
-        </div>
-      )}
+      ) : null}
     </>
   );
 }
