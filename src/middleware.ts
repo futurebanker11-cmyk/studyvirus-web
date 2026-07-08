@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 
 // Known Next.js app routes — first segment of valid paths
 const KNOWN_ROUTES = new Set([
+  "b", // GK Battle app invite links: /b/CODE → public/b-landing.html rewrite
   "topics",
   "exam",
   "pyq",
