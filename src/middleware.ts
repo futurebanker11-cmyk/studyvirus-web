@@ -15,6 +15,7 @@ const KNOWN_ROUTES = new Set([
   "contact",
   "privacy-policy",
   "terms",
+  "apps", // Third-party app pages (e.g., /apps/stylescan/privacy-policy)
 ]);
 
 export function middleware(request: NextRequest) {
