@@ -31,7 +31,7 @@ export default function StyleScanPrivacyPolicyPage() {
 
         <h2 className="text-xl font-bold text-primary mt-8 mb-3">1. Introduction</h2>
         <p>
-          StyleScan: Furniture Identifier ("App", "we", "us", "our") is committed to protecting your privacy. This Privacy Policy explains how our App collects, uses, discloses, and safeguards your information when you use our mobile application available on Google Play.
+          StyleScan: Furniture Identifier (&quot;App&quot;, &quot;we&quot;, &quot;us&quot;, &quot;our&quot;) is committed to protecting your privacy. This Privacy Policy explains how our App collects, uses, discloses, and safeguards your information when you use our mobile application available on Google Play.
         </p>
         <p>
           Please read this Privacy Policy carefully. If you do not agree with our policies and practices, please do not use our App.
@@ -204,7 +204,7 @@ export default function StyleScanPrivacyPolicyPage() {
 
         <h2 className="text-xl font-bold text-primary mt-8 mb-3">15. Changes to This Privacy Policy</h2>
         <p>
-          We may update this Privacy Policy from time to time to reflect changes in our practices, technology advancements, new legal requirements, or user feedback. We will notify you of material changes by posting the updated Privacy Policy in the App and updating the "Last Updated" date. Continued use of the App following notice of changes constitutes your acceptance of the updated Privacy Policy.
+          We may update this Privacy Policy from time to time to reflect changes in our practices, technology advancements, new legal requirements, or user feedback. We will notify you of material changes by posting the updated Privacy Policy in the App and updating the &quot;Last Updated&quot; date. Continued use of the App following notice of changes constitutes your acceptance of the updated Privacy Policy.
         </p>
 
         <h2 className="text-xl font-bold text-primary mt-8 mb-3">16. Contact Us</h2>
