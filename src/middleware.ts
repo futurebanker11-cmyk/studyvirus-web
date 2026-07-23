@@ -16,6 +16,13 @@ const KNOWN_ROUTES = new Set([
   "privacy-policy",
   "terms",
   "apps", // Third-party app pages (e.g., /apps/stylescan/privacy-policy)
+  "mock-content", // Mock CBT papers served as static assets from public/mock-content/
+                  // — without this the middleware 301s /mock-content/* to /topics
+                  // and the app/website fetch gets HTML instead of JSON.
+  "bank", // Bank mock app (RN app exported for web, served at /bank via the
+          // src/app/bank/[[...slug]] SPA-fallback route + public/bank/** assets).
+          // Without this the middleware 301s /bank and every /bank/_expo asset
+          // to /topics, so the app never loads.
 ]);
 
 export function middleware(request: NextRequest) {
