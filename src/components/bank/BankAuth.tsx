@@ -81,7 +81,12 @@ export function BankAuthProvider({ children }: { children: React.ReactNode }) {
     (async () => {
       try {
         const auth = await getFirebaseAuth();
-        const { onAuthStateChanged } = await import("firebase/auth");
+        const { onAuthStateChanged, getRedirectResult } = await import("firebase/auth");
+        // Complete a redirect sign-in if we're returning from Google. This must run
+        // before/alongside the auth listener so the returned credential is consumed;
+        // onAuthStateChanged then fires with the signed-in user. Ignore "no redirect
+        // pending" (the normal case on a fresh visit).
+        getRedirectResult(auth).catch(() => { /* no pending redirect */ });
         unsub = onAuthStateChanged(auth, (u) => {
           setEmail(u?.email || null);
           setLoading(false);
@@ -92,18 +97,25 @@ export function BankAuthProvider({ children }: { children: React.ReactNode }) {
     return () => { if (unsub) unsub(); };
   }, [pullGrants]);
 
+  // REDIRECT sign-in, not popup. The popup opens a separate Chrome window titled
+  // with the Firebase project id ("study-virus-wordpress-app.firebaseapp.com"),
+  // which reads as an unbranded/suspicious app to students. Redirect keeps
+  // studyvirus.com in the address bar the whole time — the tab goes to Google and
+  // returns to studyvirus.com — so the firebaseapp.com title never surfaces.
+  // The result is picked up by getRedirectResult on the next load; onAuthStateChanged
+  // then fires and updates email + grants.
   const signIn = useCallback(async () => {
     try {
       const auth = await getFirebaseAuth();
-      const { GoogleAuthProvider, signInWithPopup } = await import("firebase/auth");
-      await signInWithPopup(auth, new GoogleAuthProvider());
-      // onAuthStateChanged updates email + grants
+      const { GoogleAuthProvider, signInWithRedirect } = await import("firebase/auth");
+      await signInWithRedirect(auth, new GoogleAuthProvider());
+      // Navigates away; control resumes on return via getRedirectResult (below).
     } catch (e) {
       const code = (e as { code?: string } | null)?.code;
       if (code === "auth/unauthorized-domain") {
         alert("Sign-in is being set up for this site. Please try again later.");
       }
-      /* popup closed / cancelled — no-op */
+      /* cancelled — no-op */
     }
   }, []);
 
