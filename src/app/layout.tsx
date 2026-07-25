@@ -3,13 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import AppBanner from "@/components/AppBanner";
-import HeaderAd from "@/components/HeaderAd";
-import StickyBottomAd from "@/components/StickyBottomAd";
-import SidebarAd from "@/components/SidebarAd";
-import Script from "next/script";
+import SiteShell from "@/components/SiteShell";
 import { LangProvider } from "@/lib/LangContext";
 
 
@@ -68,13 +62,8 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <Script
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3496395300151813"
-          crossOrigin="anonymous"
-          strategy="lazyOnload"
-        />
       </head>
-      <body className={`${inter.variable} ${inter.className} pb-16`}>
+      <body className={`${inter.variable} ${inter.className}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -92,23 +81,7 @@ export default function RootLayout({
           }}
         />
         <LangProvider>
-          <Header />
-          <AppBanner />
-          {/* Global header banner ad — every page */}
-          <HeaderAd />
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6 flex gap-6">
-            {/* Main content */}
-            <main className="min-h-screen flex-1 min-w-0">
-              {children}
-            </main>
-            {/* Sidebar ad — desktop only, sticky */}
-            <aside className="hidden lg:block w-[300px] shrink-0">
-              <SidebarAd />
-            </aside>
-          </div>
-          <Footer />
-          {/* Global sticky bottom ad — every page */}
-          <StickyBottomAd />
+          <SiteShell>{children}</SiteShell>
         </LangProvider>
       </body>
     </html>

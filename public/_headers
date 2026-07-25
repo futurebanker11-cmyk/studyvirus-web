@@ -1,0 +1,11 @@
+# CORS for the mock CBT papers.
+#
+# The native bank/SSC apps fetch these from a DIFFERENT origin than the app
+# itself (the app talks to gkquestionsguru.com; mocks are served from
+# studyvirus.com). Cross-origin fetch needs this header or the request fails
+# silently — and a browser same-origin test won't reveal it, only a real device.
+#
+# The website's own mock player is same-origin, so it doesn't need this, but the
+# wildcard covers both and is safe for public, read-only static JSON.
+/mock-content/*
+  Access-Control-Allow-Origin: *
