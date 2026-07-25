@@ -15,7 +15,10 @@ const API = "https://studyvirus-api.futurebanker11.workers.dev";
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyDFC2tCgQ_jaWIuWEBACsgnyJVYjDYGd6w",
-  authDomain: "study-virus-wordpress-app.firebaseapp.com",
+  // Custom auth domain: our own domain, so the Google sign-in page reads
+  // "studyvirus.com" instead of "...firebaseapp.com". Works because middleware.ts
+  // proxies /__/auth/* and /__/firebase/* to the Firebase-hosted origin.
+  authDomain: "studyvirus.com",
   projectId: "study-virus-wordpress-app",
   storageBucket: "study-virus-wordpress-app.firebasestorage.app",
   messagingSenderId: "205062136316",
