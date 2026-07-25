@@ -22,9 +22,14 @@ let cachedHtml: string | null = null;
 
 async function loadIndex(): Promise<string | null> {
   if (cachedHtml) return cachedHtml;
+  // The RN player's HTML is stored as player.html, NOT index.html. A file at
+  // public/bank/index.html would be served statically for /bank and /bank/ and
+  // SHADOW the App Router catalog page (src/app/bank/page.tsx) — that bug served
+  // the old RN MockHub at /bank instead of the 3×2 grid. player.html doesn't map
+  // to any /bank/* url, so the catalog wins; this handler reads it off disk.
   const candidates = [
-    path.join(process.cwd(), "public", "bank", "index.html"),
-    path.join(process.cwd(), ".open-next", "assets", "bank", "index.html"),
+    path.join(process.cwd(), "public", "bank", "player.html"),
+    path.join(process.cwd(), ".open-next", "assets", "bank", "player.html"),
   ];
   for (const p of candidates) {
     try {
@@ -47,5 +52,5 @@ export async function GET() {
       },
     });
   }
-  return NextResponse.redirect(new URL("/bank/index.html", "https://studyvirus.com"), 307);
+  return NextResponse.redirect(new URL("/bank/player.html", "https://studyvirus.com"), 307);
 }
