@@ -57,6 +57,35 @@ app-ads.txt / sitemap / old-WP redirect / `/b/CODE` invite — all pass.
 workflow as Vercel). Manual deploy from this machine: `npm run deploy`
 (needs `npx wrangler login` once).
 
+## ⛔ Re-exporting the bank RN app into `public/bank/` — MUST-DO steps
+`expo export` writes the app's entry point as **`index.html`**. A file at
+`public/bank/index.html` is served as a STATIC ASSET for `/bank` and `/bank/`,
+and static assets WIN over the App Router — so it silently replaces the 6-exam
+catalog + sign-in page (`src/app/bank/page.tsx`) with the RN MockHub. Symptom:
+`/bank/` loads the dark RN hub and the url flips to `/bank/mocks` (client-side
+`pushState`, so there is NO redirect header to find). It returns HTTP 200 the
+whole time — check the `<title>`, not the status code.
+
+Regressed twice already (fixed in `09f3f9f`, reintroduced by the Jul 29
+re-export). After EVERY RN web export into `public/bank/`:
+
+1. **Rename** the export's `index.html` → `player.html`. That name maps to no
+   `/bank/*` url, so the catalog page keeps winning. `.gitignore` blocks
+   `index.html` from being committed, but an untracked copy still shadows the
+   route in a local build — delete it.
+2. **Regenerate** `src/app/bank/mock/playerHtml.ts` from `player.html`. The
+   route handler serves that bundled STRING, not the file — there is no fs in
+   the Cloudflare Worker at runtime. If the hashed bundle filename inside it
+   goes stale, the player loads a 404'd script.
+3. **Verify** the hashes agree, then confirm live after deploy:
+   ```sh
+   grep -o "index-[a-f0-9]*\.js" public/bank/player.html src/app/bank/mock/playerHtml.ts
+   ls public/bank/_expo/static/js/web/
+   curl -sS https://studyvirus.com/bank/ | grep -o "<title>[^<]*</title>"
+   ```
+   The title must be the catalog's ("Bank Mock Tests 2026 — …"). If it reads
+   "BankPrep Mock Tests", `index.html` is shadowing the page again.
+
 ## Limits & the ISR note
 - Free tier: **unlimited static requests/bandwidth** (all prerendered pages +
   assets), **100k dynamic Worker requests/day** (pages not prerendered at

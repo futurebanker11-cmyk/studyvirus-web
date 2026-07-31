@@ -39,3 +39,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 public/mock-content/
+
+# ⛔ NEVER commit public/bank/index.html. `expo export` writes the RN app's entry
+# point as index.html; a file there is served STATICALLY for /bank and /bank/ and
+# WINS over the App Router page (src/app/bank/page.tsx) — silently replacing the
+# 6-exam catalog + sign-in with the RN MockHub. Regressed twice already (fixed in
+# 09f3f9f, reintroduced by the Jul 29 re-export). The player's copy is
+# player.html, which maps to no /bank/* url. See CLOUDFLARE_DEPLOY.md.
+public/bank/index.html
