@@ -60,8 +60,15 @@ export default function MockCards({ data }: { data: ExamData }) {
           </div>
         </div>
         {open ? (
+          // New tab: a mock is a long timed session, and the CBT player
+          // replace()s down its own stack (instructions → test → analysis), so
+          // Back never returns here. Opening a tab keeps this catalog alive to
+          // come back to. rel="noopener" is required with target="_blank" —
+          // without it the player gets window.opener and can navigate this tab.
           <a
             href={`/bank/mock/${p.id}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="shrink-0 flex flex-col items-center gap-1 text-blue-600"
           >
             <span className="bg-blue-600 text-white rounded-lg w-9 h-9 flex items-center justify-center font-black">➜</span>
