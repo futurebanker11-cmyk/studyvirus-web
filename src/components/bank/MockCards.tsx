@@ -8,7 +8,8 @@
 // "Purchase Bank Pro or Bank Pass — only in the app".
 import React, { useMemo, useState } from "react";
 import { useBankAuth } from "./BankAuth";
-import type { BankPaper, BankTrack, BankExamMeta } from "@/lib/bankCatalog";
+import { paperSoon } from "@/lib/bankCatalog";
+import type { BankPaper, BankTrack, BankCollection, BankExamMeta } from "@/lib/bankCatalog";
 
 type ExamData = {
   meta: BankExamMeta;
@@ -18,15 +19,33 @@ type ExamData = {
   mains: BankPaper[];
   sectionals: BankTrack[];
   topics: BankTrack[];
+  collections: BankCollection[];
 };
 
-const TABS = ["Prelims Mocks", "Topic Tests", "Sectional Tests", "Mains"] as const;
-type Tab = (typeof TABS)[number];
+type Tab = string;
 
 const minsOf = (p: BankPaper) =>
   p.totalTimeMin || (p.sections ? p.sections.reduce((n, s) => n + (s.timeMin || 0), 0) : p.timeMin || 0);
 
 export default function MockCards({ data }: { data: ExamData }) {
+  // NOTHING here is hardcoded (operator ruling 2026-08-06: "nothing should be
+  // hardcoded on website, it should be exactly changed according to the cms").
+  // The tab list mirrors the manifest: Sectionals exist only while the
+  // manifest carries sectional tracks (they were retired), and every CMS
+  // category gets its own tab, in the operator's order.
+  const TABS: Tab[] = [
+    "Prelims Mocks",
+    "Topic Tests",
+    ...(data.sectionals.length > 0 ? ["Sectional Tests"] : []),
+    "Mains",
+    ...data.collections.map((c) => "coll:" + c.slug),
+  ];
+  const tabLabel = (t: Tab) => {
+    if (!t.startsWith("coll:")) return t;
+    const c = data.collections.find((x) => "coll:" + x.slug === t);
+    if (!c) return t;
+    return (c.emoji ? c.emoji + " " : "") + c.title;
+  };
   const [tab, setTab] = useState<Tab>("Prelims Mocks");
   const [upsellOpen, setUpsellOpen] = useState(false);
   const { grants, email, signIn } = useBankAuth();
@@ -39,8 +58,22 @@ export default function MockCards({ data }: { data: ExamData }) {
   const unlockedFor = (p: BankPaper, kind: "mock" | "sectional" | "topic") =>
     !!p.free || (kind === "topic" ? proTier : proHere);
 
-  const Card = ({ p, title, kind }: { p: BankPaper; title: string; kind: "mock" | "sectional" | "topic" }) => {
-    const open = unlockedFor(p, kind);
+  const Card = ({ p, title, kind, forceUnlocked }: { p: BankPaper; title: string; kind: "mock" | "sectional" | "topic"; forceUnlocked?: boolean }) => {
+    // Announced Coming-soon slots render as teasers — visible, never
+    // attemptable — the same rule as the apps (paperSoon mirrors
+    // contentStatus).
+    if (paperSoon(p)) {
+      return (
+        <div className="bg-white/60 rounded-2xl border border-dashed border-slate-200 p-4">
+          <div className="flex flex-wrap items-center gap-1.5 mb-1">
+            <span className="text-[10px] font-extrabold bg-slate-100 text-slate-400 rounded px-1.5 py-0.5">COMING SOON</span>
+          </div>
+          <div className="font-bold text-[15px] text-slate-400 truncate">{title}</div>
+          <div className="text-xs text-slate-300 mt-1">Being prepared</div>
+        </div>
+      );
+    }
+    const open = forceUnlocked !== undefined ? (forceUnlocked || !!p.free) : unlockedFor(p, kind);
     return (
       <div className="bg-white rounded-2xl border border-slate-100 p-4 flex items-center gap-3 hover:shadow-md hover:border-blue-200 transition">
         <div className="flex-1 min-w-0">
@@ -116,11 +149,14 @@ export default function MockCards({ data }: { data: ExamData }) {
           onChange={(e) => setTopicKey(e.target.value)}
           className="mb-4 w-full md:w-96 bg-white border border-slate-200 rounded-xl px-4 py-3 font-semibold text-slate-700"
         >
-          {data.topics.map((t) => (
-            <option key={t.key || t.name} value={t.key || t.name}>
-              {t.name} ({t.papers.length} tests)
-            </option>
-          ))}
+          {data.topics.map((t) => {
+            const real = t.papers.filter((p) => !paperSoon(p)).length;
+            return (
+              <option key={t.key || t.name} value={t.key || t.name}>
+                {t.name} ({real > 0 ? real + " tests" : "coming soon"})
+              </option>
+            );
+          })}
         </select>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {(topic?.papers || []).map((p, i) => (
@@ -160,6 +196,51 @@ export default function MockCards({ data }: { data: ExamData }) {
       </div>
     );
 
+  // One CMS category — groups (sub-types) with their tests, gated by the
+  // category's own access list from the manifest: 'free' opens it to
+  // everyone; otherwise Pass always qualifies, and Pro qualifies when the
+  // category belongs to this exam or to no exam in particular — the same
+  // rule the apps apply.
+  const Collection = ({ slug }: { slug: string }) => {
+    const c = data.collections.find((x) => x.slug === slug);
+    if (!c) return null;
+    const access = Array.isArray(c.access) ? c.access : c.access ? [c.access] : ["pro", "pass"];
+    const catUnlocked = access.includes("free")
+      || (!!grants && (grants.pass || (!!grants.pro && (!c.exam || grants.exams?.includes(c.exam)))));
+    const groups = (c.groups || []).length > 0
+      ? c.groups
+      : (c.items || []).length > 0
+        ? [{ key: "__flat__", name: c.title, nameHi: null, emoji: c.emoji, items: c.items }]
+        : [];
+    if (groups.length === 0) return <Empty text="Sets are coming soon." />;
+    return (
+      <div className="space-y-6">
+        {groups.map((g) => (
+          <div key={g.key}>
+            <h3 className="font-extrabold text-slate-700 mb-3">
+              {(g.emoji ? g.emoji + " " : "") + g.name}
+            </h3>
+            {(g.items || []).length === 0 ? (
+              <div className="text-sm text-slate-400">Coming soon</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {g.items.map((p, i) => (
+                  <Card
+                    key={p.id}
+                    p={p}
+                    kind="topic"
+                    forceUnlocked={catUnlocked}
+                    title={p.title || g.name + " — Set " + String(p.n ?? i + 1).padStart(2, "0")}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
   const Mains = () =>
     data.mains.length > 0 ? (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -192,7 +273,7 @@ export default function MockCards({ data }: { data: ExamData }) {
               tab === t ? "bg-blue-600 text-white" : "bg-blue-50 text-blue-700 hover:bg-blue-100"
             }`}
           >
-            {t}
+            {tabLabel(t)}
           </button>
         ))}
       </div>
@@ -201,6 +282,7 @@ export default function MockCards({ data }: { data: ExamData }) {
       {tab === "Topic Tests" && <Topics />}
       {tab === "Sectional Tests" && <Sectionals />}
       {tab === "Mains" && <Mains />}
+      {tab.startsWith("coll:") && <Collection slug={tab.slice(5)} />}
 
       {/* ── Unlock sheet: purchases happen ONLY in the app ── */}
       {upsellOpen && (

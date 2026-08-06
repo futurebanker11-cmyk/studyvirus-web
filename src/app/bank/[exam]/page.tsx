@@ -18,7 +18,7 @@ import {
 import { BankAuthProvider, BankBar } from "@/components/bank/BankAuth";
 import MockCards from "@/components/bank/MockCards";
 
-export const revalidate = 300;
+export const revalidate = 60;
 
 export function generateStaticParams() {
   return BANK_EXAMS.map((e) => ({ exam: e.dir }));
@@ -44,6 +44,10 @@ export default async function BankExamPage({ params }: { params: { exam: string 
   const sectionals = m?.sectionals.find((s) => s.dir === meta.dir)?.tracks || [];
   const tier = tierForDir(meta.dir);
   const topics = m?.topics.find((t) => t.tier === tier)?.tracks || [];
+  // Every CMS category, ordered as the operator ordered them. Nothing here is
+  // hardcoded: a category created in the admin appears on the site on the
+  // next revalidation, exactly as it appears in the app.
+  const collections = [...(m?.collections || [])].sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
 
   const data = {
     meta,
@@ -53,6 +57,7 @@ export default async function BankExamPage({ params }: { params: { exam: string 
     mainsTarget: mainsExam?.target || 15,
     sectionals,
     topics,
+    collections,
   };
 
   return (
@@ -64,7 +69,9 @@ export default async function BankExamPage({ params }: { params: { exam: string 
           {data.examTitle}
         </h1>
         <p className="text-sm text-slate-500 mt-1">
-          {data.prelims.length} full mocks · {data.prelims.filter((p) => p.free).length} free ·
+          {/* Real papers only — announced Coming-soon slots tease in the list
+              but must not inflate the headline count. */}
+          {data.prelims.filter((p) => !p.placeholder).length} full mocks · {data.prelims.filter((p) => p.free).length} free ·
           real exam pattern · bilingual
         </p>
       </div>
