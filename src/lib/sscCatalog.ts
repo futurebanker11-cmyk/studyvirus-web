@@ -14,6 +14,8 @@
 // ⛔ A SEPARATE endpoint from /api/mock-manifest, not a ?query on it: that route
 // ignores query params entirely (verified — ?app=gk returns the BANK manifest),
 // so a query-based split would silently list SBI/IBPS papers on an SSC page.
+import { PORTAL_APPS } from "./gkApps";
+
 const MANIFEST_URL =
   "https://studyvirus-api.futurebanker11.workers.dev/api/gk-mock-manifest";
 
@@ -72,12 +74,20 @@ export async function loadSscManifest(): Promise<SscManifest | null> {
   }
 }
 
-// ── the nine portals ────────────────────────────────────────────────────────
+// ── the portals ─────────────────────────────────────────────────────────────
+// `slug` MUST match the RN app's config/webAppRegistry.js (webLinking.WEB_SLUGS
+// derives from it) — the app builds its urls from that map, and a mismatch means
+// the site serves /ssccgl while the app routes to /sscchsl.
+// `dir` MUST match the manifest's exams[].dir / sectionals[].dir.
+//
+// 2026-08-18: every app with CBT mocks gets a portal (63). The nine original
+// portals keep their hand-written meta below (labels, emoji, RRB NTPC's two
+// stages); the rest are generated from src/lib/gkApps.ts (name + manifest dir).
 // `slug` MUST match webLinking.WEB_SLUGS in the RN app — the app builds its urls
 // from that map, and a mismatch means the site serves /ssccgl while the app
 // routes to /sscchsl.
 // `dir` MUST match the manifest's exams[].dir / sectionals[].dir.
-export const SSC_EXAMS = [
+const LEGACY_EXAMS = [
   { slug: "ssccgl", dir: "ssc-cgl-t1", label: "SSC CGL", full: "SSC CGL Tier-1", emoji: "📘", family: "ssc" },
   { slug: "sscchsl", dir: "ssc-chsl-t1", label: "SSC CHSL", full: "SSC CHSL Tier-1", emoji: "📗", family: "ssc" },
   { slug: "ssccpo", dir: "ssc-cpo-p1", label: "SSC CPO", full: "SSC CPO Paper-1", emoji: "🚔", family: "ssc" },
@@ -103,7 +113,44 @@ export const SSC_EXAMS = [
   { slug: "rpf", dir: "rpf-constable-cbt", label: "RPF Constable", full: "RPF Constable CBT", emoji: "👮", family: "rrb" },
 ] as const;
 
-export type SscExamMeta = (typeof SSC_EXAMS)[number];
+export type SscExamMeta = {
+  slug: string; dir: string; label: string; full: string; emoji: string; family: string;
+  examId?: string; packageName?: string | null; primaryColor?: string | null;
+  stages?: readonly SscStage[];
+};
+
+const LEGACY_IDS: Record<string, string> = {
+  ssccgl: "ssc_cgl", sscchsl: "ssc_chsl", ssccpo: "ssc_cpo", sscmts: "ssc_mts", sscgd: "ssc_gd",
+  rrbntpc: "rrb_ntpc", rrbgroupd: "rrb_group_d", rrbalp: "rrb_alp", rpf: "rpf_constable",
+};
+const LEGACY_SLUGS = new Set<string>(LEGACY_EXAMS.map((e) => e.slug as string));
+const stripGk = (n: string) => n.replace(/\s*GK\s*\d{4}$/i, "").replace(/\s*\d{4}$/, "").trim();
+const GENERATED_EXAMS: SscExamMeta[] = PORTAL_APPS
+  .filter((a) => !LEGACY_SLUGS.has(a.slug) && a.mockDir)
+  .map((a) => ({
+    slug: a.slug,
+    dir: a.mockDir as string,
+    label: stripGk(a.name),
+    full: stripGk(a.name),
+    emoji: "📝",
+    // family scopes shared topic tests (`exams: ['rrb']`); non-RRB apps use their id.
+    family: a.id,
+    examId: a.id,
+    packageName: a.packageName,
+    primaryColor: a.primaryColor,
+  }));
+
+export const SSC_EXAMS: SscExamMeta[] = [
+  ...LEGACY_EXAMS.map((e) => ({
+    ...(e as unknown as SscExamMeta),
+    examId: LEGACY_IDS[e.slug],
+    packageName: PORTAL_APPS.find((a) => a.slug === e.slug)?.packageName ?? null,
+    primaryColor: PORTAL_APPS.find((a) => a.slug === e.slug)?.primaryColor ?? null,
+  })),
+  ...GENERATED_EXAMS,
+];
+
+
 
 /** One full-mock stage of an exam. */
 export type SscStage = { dir: string; label: string };

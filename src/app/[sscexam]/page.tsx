@@ -17,6 +17,16 @@ import {
   loadSscManifest, examBySlug, countsFor, patternFor, SSC_EXAMS, stagesOf,
 } from "@/lib/sscCatalog";
 import { BankAuthProvider, BankBar } from "@/components/bank/BankAuth";
+import { gkAppBySlug } from "@/lib/gkApps";
+// p1 keeps the custom authDomain (studyvirus.com, proxied by middleware); p2/p3
+// use their own firebaseapp.com handler — cosmetic difference in the popup only.
+const firebaseConfigFor = (slug: string) => {
+  const a = gkAppBySlug(slug);
+  if (!a) return null;
+  return a.firebaseConfig.projectId === "study-virus-wordpress-app"
+    ? null
+    : { ...a.firebaseConfig, authDomain: a.firebaseConfig.authDomain };
+};
 import SscMockCards from "@/components/ssc/SscMockCards";
 
 export const revalidate = 300;
@@ -29,6 +39,12 @@ export function generateStaticParams() {
 
 const DEV_STORE_URL =
   "https://play.google.com/store/apps/developer?id=Manmeet+Kumar";
+// Per-app Play listing when we know the package (every portal does now);
+// the developer page stays as the fallback.
+const storeUrlFor = (meta: { packageName?: string | null }) =>
+  meta.packageName
+    ? `https://play.google.com/store/apps/details?id=${meta.packageName}`
+    : DEV_STORE_URL;
 
 export async function generateMetadata(
   { params }: { params: Promise<{ sscexam: string }> },
@@ -110,7 +126,7 @@ export default async function SscPortalPage(
     {
       q: "How can I purchase the mock tests?",
       a: `Purchases are made in our Android app: open our Play Store page, install the ${meta.label} app, and buy the yearly plan inside it. Then sign in on this website with the same Google account — all your mocks unlock here and you can start writing them on a bigger screen.`,
-      link: { href: DEV_STORE_URL, label: "Open our Play Store page →" },
+      link: { href: storeUrlFor(meta), label: `Get the ${meta.label} app on Play Store →` },
     },
     {
       q: "I bought the plan in the app. How do I use it on my laptop?",
@@ -135,7 +151,7 @@ export default async function SscPortalPage(
   ];
 
   return (
-    <BankAuthProvider>
+    <BankAuthProvider firebaseConfig={firebaseConfigFor(meta.slug)}>
       {/* The shared account bar, branded for THIS exam — it read "BankPrep Mock
           Tests" on every SSC portal until the brand became a prop. */}
       <BankBar
@@ -203,7 +219,7 @@ export default async function SscPortalPage(
       <div className="mb-12">
         <h2 className="text-lg font-black text-slate-800 mb-3">Other exams</h2>
         <div className="flex flex-wrap gap-2">
-          {SSC_EXAMS.filter((e) => e.slug !== meta.slug).map((e) => (
+          {SSC_EXAMS.filter((e) => e.slug !== meta.slug).slice(0, 14).map((e) => (
             <a
               key={e.slug}
               href={`/${e.slug}`}
