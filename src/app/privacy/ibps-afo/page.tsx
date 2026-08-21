@@ -24,6 +24,7 @@ export default function PrivacyPolicyPage() {
 
       <article className="prose prose-slate max-w-none text-slate-700">
         <p>
+          <strong>Developer:</strong> Manmeet Kumar<br />
           <strong>Package:</strong> com.gkpk.ibpsafo<br />
           <strong>Support Email:</strong> support@gkquestionsguru.com
         </p>
