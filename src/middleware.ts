@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { PORTAL_SLUGS } from "@/lib/gkApps";
 
 // Known Next.js app routes — first segment of valid paths
 const KNOWN_ROUTES = new Set([
@@ -14,6 +15,7 @@ const KNOWN_ROUTES = new Set([
   "about",
   "contact",
   "privacy-policy",
+  "privacy", // Per-app privacy policy pages: /privacy/<app-slug> (26 P3 batch GK apps, 2026-08-21)
   "terms",
   "apps", // Third-party app pages (e.g., /apps/stylescan/privacy-policy)
   "mock-content", // Mock CBT papers served as static assets from public/mock-content/
@@ -23,6 +25,13 @@ const KNOWN_ROUTES = new Set([
           // src/app/bank/[[...slug]] SPA-fallback route + public/bank/** assets).
           // Without this the middleware 301s /bank and every /bank/_expo asset
           // to /topics, so the app never loads.
+
+  // ── CBT portals — one per app that has mocks (63), plus the shared bundle
+  // path. Generated from src/lib/gkApps.ts (mirror of the RN app's
+  // config/webAppRegistry.js) so a new app's portal can never 301 to /topics
+  // the way /ssccgl once did (2026-08-11).
+  "cbt",
+  ...PORTAL_SLUGS,
 ]);
 
 // Firebase Auth custom-domain proxy. When authDomain = "studyvirus.com", the
