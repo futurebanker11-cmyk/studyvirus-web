@@ -2,9 +2,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | UP Lekhpal GK 2026",
+  title: "Privacy Policy | UP Lekhpal 2026 GK Mock Test",
   description:
-    "Privacy policy for UP Lekhpal GK 2026 explaining how we collect, use, and protect your information.",
+    "Privacy policy for UP Lekhpal 2026 GK Mock Test explaining how we collect, use, and protect your information.",
   alternates: { canonical: "https://studyvirus.com/privacy/up-lekhpal" },
 };
 
@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
           { label: "Privacy Policy" },
         ]}
       />
-      <h1 className="text-3xl font-black text-primary mb-2">UP Lekhpal GK 2026 - Privacy Policy</h1>
+      <h1 className="text-3xl font-black text-primary mb-2">UP Lekhpal 2026 GK Mock Test - Privacy Policy</h1>
       <p className="text-sm text-slate-400 mb-8">Last updated: {lastUpdated}</p>
 
       <article className="prose prose-slate max-w-none text-slate-700">
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
         <hr className="my-8" />
 
         <p className="text-sm text-slate-500">
-          <strong>UP Lekhpal GK 2026</strong><br />
+          <strong>UP Lekhpal 2026 GK Mock Test</strong><br />
           This Privacy Policy is effective as of {lastUpdated} and applies to all users of the App regardless of location.
         </p>
       </article>

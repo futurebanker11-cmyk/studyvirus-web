@@ -2,9 +2,9 @@ import Breadcrumbs from "@/components/Breadcrumbs";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy | IBPS AFO GK 2026",
+  title: "Privacy Policy | IBPS AFO Agriculture Exam 2026",
   description:
-    "Privacy policy for IBPS AFO GK 2026 explaining how we collect, use, and protect your information.",
+    "Privacy policy for IBPS AFO Agriculture Exam 2026 explaining how we collect, use, and protect your information.",
   alternates: { canonical: "https://studyvirus.com/privacy/ibps-afo" },
 };
 
@@ -19,7 +19,7 @@ export default function PrivacyPolicyPage() {
           { label: "Privacy Policy" },
         ]}
       />
-      <h1 className="text-3xl font-black text-primary mb-2">IBPS AFO GK 2026 - Privacy Policy</h1>
+      <h1 className="text-3xl font-black text-primary mb-2">IBPS AFO Agriculture Exam 2026 - Privacy Policy</h1>
       <p className="text-sm text-slate-400 mb-8">Last updated: {lastUpdated}</p>
 
       <article className="prose prose-slate max-w-none text-slate-700">
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
         <hr className="my-8" />
 
         <p className="text-sm text-slate-500">
-          <strong>IBPS AFO GK 2026</strong><br />
+          <strong>IBPS AFO Agriculture Exam 2026</strong><br />
           This Privacy Policy is effective as of {lastUpdated} and applies to all users of the App regardless of location.
         </p>
       </article>
