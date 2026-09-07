@@ -284,6 +284,67 @@ table {
   height: var(--ad-h, 100px);
 }
 
+/* ═══ Quiz options ═══
+   The quiz layer (src/components/QuizClient.tsx) renders on five live set
+   routes and depends on these three class names. Rewritten onto tokens so it
+   themes with the rest of the site.
+
+   min-height is load-bearing, not cosmetic: 52px is the tap target on the
+   cheap Android phones this site is built for. Do not remove it. */
+.quiz-option {
+  display: flex;
+  width: 100%;
+  min-height: 52px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  text-align: left;
+  font-size: 0.95rem;
+  line-height: 1.45;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+@media (min-width: 640px) {
+  .quiz-option {
+    padding: 0.875rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+/* Hover only where there is a real pointer — on touch it sticks after a tap. */
+@media (hover: hover) {
+  .quiz-option:not(:disabled):hover {
+    border-color: var(--accent);
+    background: var(--accent-wash);
+  }
+}
+
+.quiz-option:disabled {
+  cursor: default;
+}
+
+/* Answered states. Colour is never the only signal — QuizClient also renders
+   a tick/cross glyph — so this stays legible to a colour-blind reader. */
+.quiz-option.correct {
+  border-color: var(--ok);
+  background: var(--ok-wash);
+}
+
+.quiz-option.wrong {
+  border-color: var(--err);
+  background: var(--err-wash);
+}
+
+.quiz-option.selected {
+  border-color: var(--accent);
+  background: var(--accent-wash);
+}
+
 /* ═══ KaTeX — rendered to HTML on the server ═══ */
 .katex {
   font-size: 1.03em;

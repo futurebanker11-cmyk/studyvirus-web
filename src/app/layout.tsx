@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Noto_Serif_Devanagari, Source_Serif_4 } from "next/font/google";
-import "katex/dist/katex.min.css";
 import "./globals.css";
 import SiteShell from "@/components/SiteShell";
 import { themeScript } from "@/components/site/ThemeToggle";

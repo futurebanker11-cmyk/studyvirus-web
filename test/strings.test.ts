@@ -27,7 +27,6 @@ const DEVANAGARI = /[ऀ-ॿ]/;
  */
 const LATIN_BY_DESIGN = new Set<string>([
   "common.readInHindi", // the toggle always names the language you'd switch TO
-  "common.pdf",
   "app.onPlayStore", // "Google Play" is the brand name, kept verbatim
 ]);
 

@@ -47,8 +47,8 @@ export const STRINGS = {
 
   // ── Theme toggle ──
   "theme.toggle": { en: "Switch theme", hi: "थीम बदलें" },
-  "theme.light": { en: "Light", hi: "उजला" },
-  "theme.dark": { en: "Dark", hi: "गहरा" },
+  "theme.light": { en: "Light", hi: "लाइट" },
+  "theme.dark": { en: "Dark", hi: "डार्क" },
 
   // … later tasks append their keys here
 } as const;

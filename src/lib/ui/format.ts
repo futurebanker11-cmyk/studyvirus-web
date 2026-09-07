@@ -47,28 +47,34 @@ export function explanationBlocks(text: string): Block[] {
     });
 }
 
-// $$block$$ and $inline$. A lone $ followed by a digit and later another $ with
-// a space before it is currency, not math — require no space just inside the
-// delimiters and at least one operator/letter to treat it as math.
+// $$block$$ and $inline$.
+//
+// Two guards keep rupee amounts out of KaTeX. First, INLINE requires a
+// non-space immediately inside both delimiters, so ordinary prose between two
+// prices never spans at all — "cost is $5 and $6" and "SP is $120 - CP is $100"
+// are both left alone by this rule, not by any later check. Second, a span that
+// does match must look mathematical and must not be numeric-only.
 const BLOCK = /\$\$([^$]+)\$\$/g;
 const INLINE = /\$(\S(?:[^$\n]*\S)?)\$/g;
 const LOOKS_MATHY = /[=+\-*/^_\\{}]|\\[a-zA-Z]+/;
 
 /**
- * A body that is only digits, currency words and a separator is a pair of
- * prices, not an expression — "5 and $6" style spans reach here because the
- * inline delimiters are greedy across the intervening text. Requiring a run of
- * plain prose to disqualify the span keeps "12-5=7" (math) apart from
- * "5 and 6" and "120 and CP is 100" (rupees).
+ * A body made only of digits and separators is a price range, not an
+ * expression: "$250-$300" spans as "250-", which satisfies LOOKS_MATHY on the
+ * strength of the trailing hyphen alone and would render as "250−300".
+ *
+ * Real math always carries a variable, a function, a LaTeX command or a second
+ * operand, so requiring something beyond digits/commas/dots/space/hyphen costs
+ * no genuine formula.
  */
-const PROSE_INSIDE = /\s(?:and|or|to|for|is|at|by|per|each|then|than|of|the)\s/i;
+const NUMERIC_ONLY = /^[\d,.\s-]+$/;
 
 export function renderInlineMath(text: string): string {
   let out = text.replace(BLOCK, (_m, body: string) =>
     katex.renderToString(body.trim(), { displayMode: true, throwOnError: false }),
   );
   out = out.replace(INLINE, (m, body: string) =>
-    LOOKS_MATHY.test(body) && !PROSE_INSIDE.test(body)
+    LOOKS_MATHY.test(body) && !NUMERIC_ONLY.test(body)
       ? katex.renderToString(body.trim(), { displayMode: false, throwOnError: false })
       : m,
   );
