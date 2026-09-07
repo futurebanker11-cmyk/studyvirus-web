@@ -39,6 +39,45 @@ test("falls back to the CDN over HTTPS with an encoded key", async () => {
   assert.deepEqual(res?.en, [1]);
 });
 
+// Regression test for the bug found in Plan B Task 4 review (2026-09-08):
+// @opennextjs/cloudflare's own getCloudflareContextAsync synthesizes a real
+// but locally-EMPTY miniflare R2 binding during `next build`/`next dev`
+// (Node.js runtime), independent of whether initOpenNextCloudflareForDev()
+// ran. A bucket-present-but-object-missing result there must fall through to
+// the CDN, or every [lang] page prerenders with empty sections and no error.
+// In the REAL deployed Worker (edge runtime, NEXT_RUNTIME !== "nodejs") the
+// same bucket-miss is authoritative and must NOT fall through, or the loader
+// reintroduces the same-zone Worker-to-Worker fetch failure it exists to
+// avoid (spec §2).
+test("a bucket miss falls through to the CDN under the Node.js runtime (build/dev), not under the edge runtime (the real Worker)", async () => {
+  const realRuntime = process.env.NEXT_RUNTIME;
+  let fetched = false;
+  globalThis.fetch = (async () => {
+    fetched = true;
+    return new Response('{"topics":["from-cdn"]}', { status: 200 });
+  }) as typeof fetch;
+  __setBucketResolver(async () => ({ async get() { return null; } })); // present binding, empty store
+
+  try {
+    process.env.NEXT_RUNTIME = "nodejs";
+    __clearMemo();
+    fetched = false;
+    const nodeResult = await getJson<{ topics: string[] }>("gk/topics.json");
+    assert.deepEqual(nodeResult, { topics: ["from-cdn"] }, "Node.js runtime: bucket miss falls through to the CDN");
+    assert.equal(fetched, true);
+
+    process.env.NEXT_RUNTIME = "edge";
+    __clearMemo();
+    fetched = false;
+    const edgeResult = await getJson<{ topics: string[] }>("gk/topics.json");
+    assert.equal(edgeResult, null, "edge runtime (the real Worker): bucket miss is authoritative, never falls through");
+    assert.equal(fetched, false, "must never attempt the same-zone CDN fetch from inside the real Worker");
+  } finally {
+    if (realRuntime === undefined) delete process.env.NEXT_RUNTIME;
+    else process.env.NEXT_RUNTIME = realRuntime;
+  }
+});
+
 test("returns null on 404 and on malformed JSON", async () => {
   globalThis.fetch = (async () => new Response("nope", { status: 404 })) as typeof fetch;
   assert.equal(await getJson("gk/missing.json"), null);
