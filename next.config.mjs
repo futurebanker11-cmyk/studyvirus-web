@@ -8,6 +8,10 @@ const nextConfig = {
   images: {
     domains: ["gkquestionsguru.com"],
   },
+  webpack(config) {
+    config.module.rules.push({ test: /\.csv$/, type: "asset/source" });
+    return config;
+  },
   async headers() {
     return [
       {

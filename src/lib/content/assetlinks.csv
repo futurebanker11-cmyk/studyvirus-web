@@ -1,0 +1,4 @@
+# Android App Links. One row per app: package,SHA-256 of the APP SIGNING key
+# (Play Console → Setup → App integrity → App signing key certificate).
+# Not the upload key. Rows with an invalid fingerprint are ignored.
+package,sha256
