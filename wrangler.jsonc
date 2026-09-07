@@ -7,5 +7,11 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  // Content bucket, read-only from the site's point of view. Same bucket the
+  // apps and the cdn-gate Worker use. The site reads it through this binding
+  // because a same-zone fetch to cdn.studyvirus.com fails (spec §2).
+  "r2_buckets": [
+    { "binding": "CONTENT", "bucket_name": "studyvirus-content" }
+  ]
 }

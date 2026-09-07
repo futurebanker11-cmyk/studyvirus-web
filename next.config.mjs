@@ -1,3 +1,8 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+// Makes wrangler.jsonc bindings (CONTENT) available via getCloudflareContext()
+// during `next dev`. No effect on `next build` or production.
+initOpenNextCloudflareForDev();
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
