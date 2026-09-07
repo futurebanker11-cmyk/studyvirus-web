@@ -122,6 +122,33 @@ export const aptitudeChapterSlug = (id) => chapterSlug(id.replace(/^\d+[_-]/, ""
 // nothing (the "." bank DI types), then the id.
 export const typeSlug = (t) => chapterSlug(t.folder ?? "") || chapterSlug(t.name?.en ?? "") || chapterSlug(t.id);
 
+// Mirror PAID_PREFIXES / PRO_PREFIXES in src/lib/content/keys.ts (the same
+// test file fails the build if the pair drifts). Targets are built straight
+// from manifest folder/file fields: if a manifest ever pointed a chapter at
+// gk/notes/..., the index would carry it, the sitemap would declare it, and the
+// page would 500 when the loader refused. That is declared-above-real, the
+// worst direction, so a non-free target is a hard failure, not a warning.
+export const PAID_PREFIXES = [
+  "mock-content/",
+  "gk/mocks-v2/mock-content/",
+  "gk/mocks-v2/sectional-content/",
+  "gk/mocks-v2/topic-content/",
+];
+export const PRO_PREFIXES = [
+  "gk/notes/",
+  "gk/master-notes/",
+  "gk/master-notes-oneliners/",
+  "gk/oneliners/",
+  "gk/aptitude/content/notes/",
+  "gk/0-Current Affairs/capsule/",
+  "gk/0-Current Affairs/magazine/",
+];
+export function assertFreeTarget(key) {
+  for (const p of [...PAID_PREFIXES, ...PRO_PREFIXES]) {
+    if (key.startsWith(p)) throw new Error(`manifest points a free page at non-free content (${p}): ${key}`);
+  }
+}
+
 async function collect() {
   const targets = []; // { key, kind, section, meta }
 
@@ -180,6 +207,7 @@ async function collect() {
   for (const a of articles) targets.push({ key: `gk/articles/${a.file}`, kind: "article", section: "articles", meta: {} });
 
   for (const tg of targets) tg.key = normKey(tg.key);
+  for (const tg of targets) assertFreeTarget(tg.key);
   assertUnique("target key (after normalising \".\" segments)", targets.map((t) => t.key));
 
   return { targets, pyqExams: pyq.length };

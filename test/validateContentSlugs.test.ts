@@ -2,7 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { chapterSlug, resolveChapterSlug, aptitudeChapterSlug } from "../src/lib/content/slugs";
 import { typeSlug, type AptType } from "../src/lib/content/aptitude";
-import { chapterSlug as scriptChapterSlug, resolveChapterSlug as scriptResolveChapterSlug, typeSlug as scriptTypeSlug, aptitudeChapterSlug as scriptAptitudeChapterSlug } from "../scripts/validate-content.mjs";
+import { PAID_PREFIXES, PRO_PREFIXES } from "../src/lib/content/keys";
+import { chapterSlug as scriptChapterSlug, resolveChapterSlug as scriptResolveChapterSlug, typeSlug as scriptTypeSlug, aptitudeChapterSlug as scriptAptitudeChapterSlug, PAID_PREFIXES as scriptPaidPrefixes, PRO_PREFIXES as scriptProPrefixes, assertFreeTarget } from "../scripts/validate-content.mjs";
 
 // scripts/validate-content.mjs must not import the TypeScript build (that
 // boundary is deliberate), so it carries its own copies of chapterSlug and
@@ -102,4 +103,26 @@ test("the shared fixture exercises every branch of typeSlug", () => {
     "1-missing-term", "6-in-law-relations",
     "table", "wrong-term", "type09",
   ]);
+});
+
+// Same contract for the non-free prefixes. The validator builds its targets
+// straight from manifest folder/file fields; if a manifest ever pointed a
+// chapter at gk/notes/... the validator would index it, the sitemap would
+// declare it, and the page would 500 when the loader refused — declared
+// count above the real one, the worst direction. The script hard-fails on
+// such a target using its own copy of the prefix lists, so the copies must
+// match keys.ts exactly.
+test("the validator's PAID_PREFIXES and PRO_PREFIXES mirrors agree with src/lib/content/keys", () => {
+  assert.deepEqual([...scriptPaidPrefixes], [...PAID_PREFIXES]);
+  assert.deepEqual([...scriptProPrefixes], [...PRO_PREFIXES]);
+});
+
+test("the validator refuses to index a target under a paid or Pro prefix", () => {
+  for (const p of [...PAID_PREFIXES, ...PRO_PREFIXES]) {
+    assert.throws(() => assertFreeTarget(`${p}x.json`), /non-free/, p);
+  }
+  assert.throws(() => assertFreeTarget("gk/notes/1-Indian History/1-Indus Valley.json"), /non-free/);
+  assert.doesNotThrow(() => assertFreeTarget("gk/1-Indian History/1-Indus Valley.json"));
+  assert.doesNotThrow(() => assertFreeTarget("bank/2-Data Interpretation/table/prelims/set_084.json"));
+  assert.doesNotThrow(() => assertFreeTarget("gk/0-Current Affairs/daily/2026_09_01.json"));
 });
