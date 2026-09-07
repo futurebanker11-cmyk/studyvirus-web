@@ -51,14 +51,23 @@ test("decide: a portal whose app has no exam registry entry falls back to /exam"
   assert.deepEqual(decide("/upbiharpolice/mock/abc"), { action: "redirect", to: "/exam" });
 });
 
-test("decide: every portal slug lands on an exam hub, never a broken link", () => {
+test("decide: every portal slug lands on its own exam hub; only upbiharpolice falls back", () => {
   const hubs = new Set(EXAMS.map((e) => `/exam/${e.slug}`));
+  const fallbacks: string[] = [];
   for (const slug of PORTAL_SLUGS) {
     const d = decide(`/${slug}`);
     assert.equal(d.action, "redirect", `/${slug} should redirect`);
     const to = (d as { to: string }).to;
-    assert.ok(to === "/exam" || hubs.has(to), `/${slug} -> ${to} is not an exam hub`);
+    if (to === "/exam") fallbacks.push(slug);
+    else assert.ok(hubs.has(to), `/${slug} -> ${to} is not an exam hub`);
   }
+  // Exactly one portal has no exam registry entry. If this count grows, a
+  // portal has silently degraded from its hub to the generic /exam page —
+  // GK_APPS carries duplicate slugs (rrbntpc, ssccgl) on sharedPortal apps
+  // whose ids are not exams, so an order-dependent join would do just that.
+  assert.deepEqual(fallbacks, ["upbiharpolice"]);
+  assert.deepEqual(decide("/ssccgl"), { action: "redirect", to: "/exam/ssc-cgl" });
+  assert.deepEqual(decide("/rrbntpc"), { action: "redirect", to: "/exam/rrb-ntpc" });
 });
 
 test("alternates", () => {
