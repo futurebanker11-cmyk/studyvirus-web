@@ -98,6 +98,24 @@ test("no exam intro is ungrammatical, in either language", () => {
     if (full === norm(e.en)) {
       assert.ok(!enOut.includes(`(${e.fullName})`), `en intro for ${e.id} repeats its own name: ${enOut}`);
     }
+    // A body identical to the exam's own name says nothing: "Rajasthan Police is
+    // conducted by Rajasthan Police". Checked per language against that language's
+    // name, so the Hindi sentence is held to the same standard as the English one.
+    // Compared raw rather than via norm(): norm() drops a trailing parenthetical to
+    // ignore acronyms, but a substantive one such as "Maharashtra Police (unit-wise
+    // recruitment)" is exactly what makes such a body informative, not circular.
+    const flat = (s: string) => s.trim().toLowerCase();
+    assert.notEqual(
+      flat(f.body),
+      flat(e.en),
+      `circular en intro for ${e.id}: body is just the exam name "${f.body}": ${enOut}`,
+    );
+    assert.notEqual(
+      flat(f.bodyHi),
+      flat(e.hi),
+      `circular hi intro for ${e.id}: bodyHi is just the exam name "${f.bodyHi}": ${hiOut}`,
+    );
+
     // The Hindi body must never end in a postposition the template will double.
     assert.ok(
       !/(द्वारा|के लिए|से|को)\)?$/.test(f.bodyHi.trim()),
