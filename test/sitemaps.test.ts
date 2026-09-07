@@ -2,11 +2,10 @@ import { test, beforeEach } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { __setIndexForTests, type ContentIndex } from "../src/lib/content/index";
-import { entriesFor, chunk, sitemapIds, pyqDriftReport, MAX_PER_SITEMAP, SECTIONS } from "../src/lib/seo/sitemaps";
+import { entriesFor, chunk, sitemapIds, MAX_PER_SITEMAP, SECTIONS } from "../src/lib/seo/sitemaps";
 import type { SitemapData } from "../src/lib/seo/sitemaps";
 import type { ManifestTopic } from "../src/lib/content/topics";
 import type { AptFamilyInfo } from "../src/lib/content/aptitude";
-import type { PyqExam } from "../src/lib/content/pyq";
 import { EXAMS } from "../src/lib/exams";
 
 const topics = (JSON.parse(readFileSync(new URL("./fixtures/topics.json", import.meta.url), "utf8")) as { topics: ManifestTopic[] }).topics;
@@ -186,27 +185,6 @@ test("no URL is emitted for content absent from the index", () => {
   for (const section of SECTIONS) for (const lang of ["en", "hi"] as const) {
     assert.ok(!urls(section, lang, d).some((u) => /\/set-\d+$|\/daily\/|\/articles\/./.test(u)), `${lang}-${section} emitted a unit with an empty index`);
   }
-});
-
-test("pyqDriftReport is empty without drift and names every paper above sets", () => {
-  const exams: PyqExam[] = [
-    { id: "rrb_ntpc", en: "RRB NTPC", hi: "RRB NTPC", category: "railway", prefix: "pyq_rrb_ntpc_set", sets: 2 },
-    { id: "ssc_cgl", en: "SSC CGL", hi: "SSC CGL", category: "ssc", prefix: "pyq_ssc_cgl_set", sets: 99 },
-  ];
-  assert.deepEqual(pyqDriftReport(exams), []);
-  __setIndexForTests({ generatedAt: "x", files: { "gk/24-Previous Year Papers": {
-    "pyq_rrb_ntpc_set01.json": [40, 40], "pyq_rrb_ntpc_set02.json": [40, 40], "pyq_rrb_ntpc_set03.json": [40, 40], "pyq_rrb_ntpc_set10.json": [40, 40],
-    // three-digit numbering (pad2 does not truncate) must still be parsed
-    "pyq_ssc_cgl_set099.json": [40, 40], "pyq_ssc_cgl_set100.json": [40, 40],
-    // a different exam's prefix that merely starts with another must not be attributed to it
-    "pyq_rrb_ntpc_set_extra01.json": [40, 40],
-  } }, totals });
-  const report = pyqDriftReport(exams);
-  assert.equal(report.length, 3, report.join("\n"));
-  assert.ok(report.some((l) => l.includes("rrb_ntpc") && l.includes("pyq_rrb_ntpc_set03.json") && l.includes("2")));
-  assert.ok(report.some((l) => l.includes("rrb_ntpc") && l.includes("pyq_rrb_ntpc_set10.json")));
-  assert.ok(report.some((l) => l.includes("ssc_cgl") && l.includes("pyq_ssc_cgl_set100.json") && l.includes("99")));
-  assert.ok(!report.some((l) => l.includes("set_extra")));
 });
 
 test("chunking and ids", () => {

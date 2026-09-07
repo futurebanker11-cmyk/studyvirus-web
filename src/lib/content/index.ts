@@ -8,9 +8,10 @@ export interface ContentTotals {
   caQuestions: number; caDays: number;
   articles: number;
   /**
-   * Optional: scripts/validate-content.mjs does not populate this yet, so the
-   * committed index stays valid without regeneration. siteStats() treats a
-   * missing value as 0 until the next regeneration fills it in.
+   * Distinct present aptitude chapters (family/subject/chapter). Populated by
+   * scripts/validate-content.mjs since the 2026-09-08 regeneration; it stays
+   * optional so hand-built fixture totals need not carry it, and siteStats()
+   * reads a missing value as 0.
    */
   aptitudeChapters?: number;
 }

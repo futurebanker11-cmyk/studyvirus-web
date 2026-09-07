@@ -149,6 +149,33 @@ export function assertFreeTarget(key) {
   }
 }
 
+// Papers 1..sets per exam, plus ONE probe at sets+1 flagged `probe`. The site
+// (papersOf) iterates 1..sets, so a paper the CDN holds above sets exists but
+// can never be published until pyq-config is raised; the probe is how the
+// validator notices. A probe is never written to the index (see indexable) and
+// never counted; main() only warns when it exists.
+export function pyqTargets(exams) {
+  const out = [];
+  for (const e of exams) {
+    for (let n = 1; n <= e.sets + 1; n++) {
+      const meta = n > e.sets ? { exam: e.id, probe: true } : { exam: e.id };
+      out.push({ key: `gk/24-Previous Year Papers/${e.prefix}${pad2(n)}.json`, kind: "bilingual", section: "pyq", meta });
+    }
+  }
+  return out;
+}
+
+// Decides whether a PRESENT target enters the index. Probes never do. A [0,0]
+// count on a non-article kind means the file parsed but holds no questions in
+// any shape countFor knows; every consumer treats counts()[0] > 0 as present,
+// so writing it would make hasKey disagree with them. Articles are counted by
+// paragraphs and a paragraph-less article is still a page, so they stay.
+export function indexable(tg, c) {
+  if (tg.meta.probe) return false;
+  if (tg.kind !== "article" && c[0] === 0 && c[1] === 0) return false;
+  return true;
+}
+
 async function collect() {
   const targets = []; // { key, kind, section, meta }
 
@@ -167,7 +194,7 @@ async function collect() {
   // PYQ
   const pyq = (await mustJson("gk/pyq-config.json")).exams.filter((e) => e.sets > 0);
   assertUnique("pyq id", pyq.map((e) => e.id));
-  for (const e of pyq) for (let n = 1; n <= e.sets; n++) targets.push({ key: `gk/24-Previous Year Papers/${e.prefix}${pad2(n)}.json`, kind: "bilingual", section: "pyq", meta: { exam: e.id } });
+  targets.push(...pyqTargets(pyq));
 
   // Aptitude, two families, tier-1 only
   const fams = [
@@ -187,7 +214,7 @@ async function collect() {
         for (const t of types) {
           for (const st of t.sets || []) {
             if (st.tier !== 1) continue;
-            targets.push({ key: fam.base(s.folder, c.folder, t.folder, st.file), kind: "aptitude", section: "aptitude", meta: {} });
+            targets.push({ key: fam.base(s.folder, c.folder, t.folder, st.file), kind: "aptitude", section: "aptitude", meta: { chapter: `${fam.family}/${s.id}/${c.id}` } });
           }
         }
       }
@@ -213,16 +240,17 @@ async function collect() {
   return { targets, pyqExams: pyq.length };
 }
 
-// TODO: populate `aptitudeChapters` here on the next regeneration — count the
-// distinct chapter directories among the aptitude targets (the parent of each
-// set's type folder), the way topicChapters/englishChapters are counted. It is
-// declared optional in ContentTotals (src/lib/content/index.ts) so the committed
-// index stays valid until then; siteStats() reads it as 0 meanwhile, which
-// understates the homepage chapter count by ~119.
-function totalsFrom(files, targets) {
-  const t = { topicQuestions: 0, topicChapters: 0, topicSets: 0, pyqQuestions: 0, pyqPapers: 0, pyqExams: 0, aptitudeQuestions: 0, aptitudeSets: 0, englishQuestions: 0, englishChapters: 0, caQuestions: 0, caDays: 0, articles: 0 };
+// Totals are derived from the files map, so only PRESENT targets count (a
+// probe is never in the map). aptitudeChapters is the distinct
+// family/subject/chapter ids among present aptitude sets, the way
+// topicChapters/englishChapters count present chapter files: a chapter whose
+// every set is missing is not a chapter anyone can browse.
+export function totalsFrom(files, targets) {
+  const t = { topicQuestions: 0, topicChapters: 0, topicSets: 0, pyqQuestions: 0, pyqPapers: 0, pyqExams: 0, aptitudeQuestions: 0, aptitudeSets: 0, aptitudeChapters: 0, englishQuestions: 0, englishChapters: 0, caQuestions: 0, caDays: 0, articles: 0 };
   const pyqExamIds = new Set();
+  const aptChapters = new Set();
   for (const tg of targets) {
+    if (tg.meta.probe) continue;
     const [dir, file] = [tg.key.slice(0, tg.key.lastIndexOf("/")), tg.key.slice(tg.key.lastIndexOf("/") + 1)];
     const c = files[dir]?.[file];
     if (!c) continue;
@@ -231,12 +259,13 @@ function totalsFrom(files, targets) {
       case "topic": t.topicQuestions += en; t.topicChapters++; t.topicSets += setCount(en); break;
       case "english": t.englishQuestions += en; t.englishChapters++; break;
       case "pyq": t.pyqQuestions += en; t.pyqPapers++; pyqExamIds.add(tg.meta.exam); break;
-      case "aptitude": t.aptitudeQuestions += en; t.aptitudeSets++; break;
+      case "aptitude": t.aptitudeQuestions += en; t.aptitudeSets++; aptChapters.add(tg.meta.chapter); break;
       case "ca": t.caQuestions += en; t.caDays++; break;
       case "articles": t.articles++; break;
     }
   }
   t.pyqExams = pyqExamIds.size;
+  t.aptitudeChapters = aptChapters.size;
   return t;
 }
 
@@ -257,7 +286,7 @@ async function main() {
   console.log(`checking ${targets.length} files on ${CDN} …`);
 
   const files = {};
-  const missing = [], malformed = [];
+  const missing = [], malformed = [], drift = [], empty = [];
   let done = 0;
   await mapLimit(targets, CONCURRENCY, async (tg) => {
     let r;
@@ -266,11 +295,16 @@ async function main() {
     }
     // `r` is always defined here: the loop either breaks after a successful
     // fetchJson or rethrows on the third failure.
-    if (r.status === 404) { if (!tg.meta.neverFail) missing.push(tg); }
+    if (r.status === 404) { if (!tg.meta.neverFail && !tg.meta.probe) missing.push(tg); }
     else if (r.malformed) malformed.push(tg.key);
+    else if (tg.meta.probe) drift.push(tg);
     else {
-      const [dir, file] = [tg.key.slice(0, tg.key.lastIndexOf("/")), tg.key.slice(tg.key.lastIndexOf("/") + 1)];
-      (files[dir] ??= {})[file] = countFor(tg.kind, r.json);
+      const c = countFor(tg.kind, r.json);
+      if (!indexable(tg, c)) empty.push(tg.key);
+      else {
+        const [dir, file] = [tg.key.slice(0, tg.key.lastIndexOf("/")), tg.key.slice(tg.key.lastIndexOf("/") + 1)];
+        (files[dir] ??= {})[file] = c;
+      }
     }
     if (++done % 500 === 0) console.log(`  ${done}/${targets.length}`);
   });
@@ -278,6 +312,15 @@ async function main() {
   if (malformed.length) {
     console.error(`MALFORMED (${malformed.length}):`); malformed.forEach((k) => console.error("  " + k));
     process.exit(1);
+  }
+  if (drift.length) {
+    console.warn(`WARN pyq drift (${drift.length}): a paper above pyq-config sets exists on the CDN but can never be published until sets is raised:`);
+    drift.forEach((tg) => console.warn(`  ${tg.meta.exam}: ${tg.key}`));
+  }
+  if (empty.length) {
+    console.warn(`WARN empty (${empty.length}), present but [0,0] in every known shape, treated as missing:`);
+    empty.slice(0, 40).forEach((k) => console.warn("  " + k));
+    if (empty.length > 40) console.warn(`  … +${empty.length - 40} more`);
   }
 
   // Regression guard: keys present before, missing now.

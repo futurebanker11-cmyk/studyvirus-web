@@ -19,7 +19,7 @@ import type { Exam } from "@/lib/exams";
 import { pyqSlugOverrides } from "@/lib/content/examFacts";
 import { hasHindiCounts } from "@/lib/content/hindi";
 import { keys } from "@/lib/content/keys";
-import { hasKey, listDir, splitKey } from "@/lib/content/index";
+import { hasKey } from "@/lib/content/index";
 import { href, LANGS, type Lang } from "@/lib/i18n/lang";
 import { abs } from "@/lib/i18n/alternates";
 
@@ -136,29 +136,4 @@ export function sitemapIds(d: SitemapData): { id: string; section: SitemapSectio
     parts.forEach((_, part) => ids.push({ id: `${lang}-${section}-${part}`, section, lang, part }));
   }
   return ids;
-}
-
-const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-
-/**
- * Config/index drift check carried over from Task 9. `papersOf` iterates
- * 1..exam.sets, so a paper file the index holds at a HIGHER number exists on
- * the CDN but can never be published or declared until the config's `sets` is
- * raised. One line per such file; empty when the config covers every file.
- * Reporting only — the config stays authoritative for what is released.
- */
-export function pyqDriftReport(pyqExams: PyqExam[]): string[] {
-  const out: string[] = [];
-  for (const exam of pyqExams) {
-    // The directory is derived from the same key builder papersOf uses.
-    const [dir] = splitKey(keys.pyqPaper(exam.prefix, 1));
-    const re = new RegExp(`^${escapeRe(exam.prefix)}(\\d+)\\.json$`);
-    for (const file of listDir(dir)) {
-      const m = re.exec(file);
-      if (!m) continue;
-      const n = parseInt(m[1], 10);
-      if (n > exam.sets) out.push(`${exam.id}: ${dir}/${file} is paper ${n} but pyq-config sets=${exam.sets}; it exists but will never be published`);
-    }
-  }
-  return out;
 }
