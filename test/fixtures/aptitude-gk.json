@@ -3,6 +3,24 @@
     { "id": "01_number_system_hcf_lcm", "folder": "01_number_system_hcf_lcm", "emoji": "🔢", "name": { "en": "Number System, HCF & LCM", "hi": "संख्या पद्धति" }, "types": [
       { "id": "type_01", "folder": "1-Divisibility Rules", "name": { "en": "Divisibility Rules", "hi": "x" }, "sets": [
         { "id": "set_01", "file": "Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] },
+      { "id": "type_02", "folder": "2-Unit Digit", "name": { "en": "Unit Digit", "hi": "x" }, "sets": [
+        { "id": "set_01", "file": "Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] }
+    ] },
+    { "id": "28_approximation", "folder": "28_approximation", "emoji": "≈", "name": { "en": "Approximation", "hi": "सन्निकटन" }, "types": [
+      { "id": "type_01", "folder": "1-Decimal Approximation", "name": { "en": "Decimal Approximation", "hi": "x" }, "sets": [
+        { "id": "set_01", "file": "Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] },
+      { "id": "type_02", "folder": "2-Square Cube Root Approx", "name": { "en": "Square Cube Root Approx", "hi": "x" }, "sets": [
+        { "id": "set_01", "file": "Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] }
+    ] }
+  ] },
+  { "id": "reasoning", "folder": "reasoning", "icon": "🧩", "name": { "en": "Reasoning", "hi": "तर्कशक्ति" }, "chapters": [
+    { "id": "01_analogy", "folder": "01_analogy", "name": { "en": "Analogy", "hi": "x" }, "types": [
+      { "id": "type_01", "folder": "1-Word Analogy", "name": { "en": "Word Analogy", "hi": "x" }, "sets": [
+        { "id": "set_01", "file": "Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
       ] }
     ] }
   ] }

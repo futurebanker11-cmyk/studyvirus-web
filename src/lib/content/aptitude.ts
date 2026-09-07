@@ -36,21 +36,30 @@ const FAMILY_META: Record<AptitudeFamily, { manifest: string; name: { en: string
 
 // Only tier 1 is free. Tier 2 is a paid product and must never be listed,
 // linked or indexed, so it is dropped here, before anything else sees it.
-function tierOne(subjects: AptSubject[]): AptSubject[] {
-  return subjects
-    .map((s) => ({
-      ...s,
-      chapters: (s.chapters || [])
-        .map((c) => ({ ...c, types: (c.types || []).map((t) => ({ ...t, sets: (t.sets || []).filter((x) => x.tier === 1) })).filter((t) => t.sets.length > 0) }))
-        .filter((c) => c.types.length > 0),
-    }))
-    .filter((s) => s.chapters.length > 0);
+// A type then survives only if at least one of its tier-1 files is actually in
+// the content index (setsOf): the manifest lists tier-1 sets whose files were
+// never uploaded (live: ssc-railway/quant/28_approximation, all five types),
+// and a type kept on manifest tier alone would render an empty page. Empty
+// chapters and subjects cascade away the same way.
+function prune(family: AptitudeFamily, subjects: AptSubject[]): AptSubject[] {
+  const out: AptSubject[] = [];
+  for (const s of subjects) {
+    const chapters: AptChapter[] = [];
+    for (const c of s.chapters || []) {
+      const types = (c.types || [])
+        .map((t) => ({ ...t, sets: (t.sets || []).filter((x) => x.tier === 1) }))
+        .filter((t) => t.sets.length > 0 && setsOf(family, s, c, t).length > 0);
+      if (types.length > 0) chapters.push({ ...c, types });
+    }
+    if (chapters.length > 0) out.push({ ...s, chapters });
+  }
+  return out;
 }
 
 export async function loadFamily(family: AptitudeFamily): Promise<AptFamilyInfo> {
   const meta = FAMILY_META[family];
   const m = await getJson<{ subjects: AptSubject[] }>(meta.manifest);
-  return { family, slug: family, name: meta.name, examQualifier: meta.examQualifier, subjects: tierOne(m?.subjects ?? []) };
+  return { family, slug: family, name: meta.name, examQualifier: meta.examQualifier, subjects: prune(family, m?.subjects ?? []) };
 }
 
 export const subjectSlug = (s: AptSubject) => aptitudeSubjectSlug(s.id);

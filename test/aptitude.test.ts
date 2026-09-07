@@ -29,7 +29,9 @@ beforeEach(() => {
 test("bank family: tier-2 sets, empty types and empty subjects are removed", async () => {
   const fam = await loadFamily("bank");
   assert.equal(fam.slug, "bank");
-  assert.deepEqual(fam.subjects.map((s) => s.id), ["quant"]);              // PYQ subject had only tier-2
+  // The fixture's PYQ subject carries only a tier-2 set. (Fixture-only: the live
+  // bank manifest has 1,057 tier-1 sets in previous_year_papers.)
+  assert.deepEqual(fam.subjects.map((s) => s.id), ["quant"]);
   const quant = fam.subjects[0];
   assert.deepEqual(quant.chapters[0].types.map((t) => t.id), ["type_01"]); // Wrong Term had only tier-2
   assert.deepEqual(quant.chapters[0].types[0].sets.map((s) => s.id), ["set_01", "set_03", "set_04"]);
@@ -64,6 +66,22 @@ test("ssc-railway family reads the gk manifest and content path", async () => {
   const s = fam.subjects[0], c = s.chapters[0], t = c.types[0];
   assert.equal(chapterSlug(c), "number-system-hcf-lcm");
   assert.equal(setsOf("ssc-railway", s, c, t)[0].key, "gk/aptitude/content/quant/01_number_system_hcf_lcm/1-Divisibility Rules/Set 01.json");
+});
+
+// A type can carry tier-1 sets in the manifest whose files are absent from the
+// index (live: ssc-railway/quant/28_approximation, all five types). Pruning on
+// manifest tier alone would still list that type and chapter, and pages would
+// render them empty. Index presence is part of pruning, cascading upward.
+test("loadFamily drops types with no indexed sets, then empty chapters, then empty subjects", async () => {
+  const fam = await loadFamily("ssc-railway");
+  // reasoning's only chapter had only index-absent sets -> subject gone
+  assert.deepEqual(fam.subjects.map((s) => s.id), ["quant"]);
+  const quant = fam.subjects[0];
+  // 28_approximation had two types, both index-absent -> chapter gone
+  assert.deepEqual(quant.chapters.map((c) => c.id), ["01_number_system_hcf_lcm"]);
+  // within the surviving chapter, the index-absent type is gone, the present one stays
+  assert.deepEqual(quant.chapters[0].types.map((t) => t.id), ["type_01"]);
+  assert.equal(setsOf("ssc-railway", quant, quant.chapters[0], quant.chapters[0].types[0]).length, 1);
 });
 
 // Ruling A. Five live bank/reasoning chapters carry two or three types all named
