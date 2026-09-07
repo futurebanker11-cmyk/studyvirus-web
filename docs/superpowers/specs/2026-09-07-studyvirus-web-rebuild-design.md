@@ -25,7 +25,8 @@ Rebuild the public site so that:
 | Set JSON shape: `{ en: Question[], hi: Question[] }`, `Question = { id, q, options[4], answer: "A"–"D", explain }`. Bank set shape: `{ set_id, title{en,hi}, description{en,hi}, tier, questions[...] }`. | sample files read |
 | Real counts: 809 topic-set files / 62,122 questions; 2,232 PYQ papers / 83,567 questions. | computed locally |
 | Free in apps: topic sets (incl. rewarded-ad-unlock sets), all PYQ papers, current affairs, articles, English sets, aptitude sets with `tier === 1`. | `SetListScreen.js:67-78`, `PYQScreen.js:37`, `CurrentAffairsScreen.js:217`, `AptitudeSetsScreen.js:30`, bank `AptitudeSetsScreen.js:273` |
-| Pro in apps (excluded from site): notes, master notes, aptitude notes, one-liners, flash cards, tricks, CBT mock/sectional/topic papers except each exam's free `mock-01`, aptitude sets with `tier === 2`. | `NotesScreen.js:158`, `NotesChaptersScreen.js` (aptitude notes render in the Pro notes screen), `cdn-gate/worker.js PAID_PREFIXES` |
+| Pro in apps (excluded from site): notes, master notes, aptitude notes, one-liners, flash cards, tricks, CBT mock/sectional/topic papers except each exam's free `mock-01`, aptitude sets with `tier === 2`, current-affairs monthly capsules and magazine PDFs (free only for listed `free_months`). | `NotesScreen.js:158`, `NotesChaptersScreen.js` (aptitude notes render in the Pro notes screen), `MonthlyCapsuleScreen.js:820`, `MonthlyMagazineScreen.js:343`, `cdn-gate/worker.js PAID_PREFIXES` |
+| Two aptitude trees exist with identical set-file shape: `gk/aptitude/` (GK/SSC/Railway apps, quant 33 ch + reasoning 24 ch, 355 tier-1 sets) and `bank/` (bank apps, 6 subjects, ~4,000 tier-1 sets). | live manifests, `rrb-ntpc-gk/src/services/aptitude.js:34` |
 | AdSense publisher `ca-pub-3496395300151813`, `public/ads.txt` present. | `src/components/AdSlot.tsx`, `public/ads.txt` |
 | Question-report endpoint exists: `POST /api/report-question` on `studyvirus-api.futurebanker11.workers.dev`. | `studyvirus-api/src/index.js:194` |
 | Live apps: 69 GK + 6 bank under Play developer "Manmeet Kumar" (`https://play.google.com/store/apps/developer?id=Manmeet+Kumar`). | `LIVE_VERSIONS.csv`, user message |
@@ -70,8 +71,8 @@ Delete `src/lib/topics.ts`, `src/lib/pyq.ts`, `src/lib/english.ts` (hand-copied,
 | `topics.ts` | `gk/topics.json` | visible topics (`hiddenFromList !== true`), chapters, `exams[]` tags, slug ↔ key maps |
 | `pyq.ts` | `gk/pyq-config.json` | exams with `sets > 0`, file name pattern `{prefix}{NN}.json` |
 | `english.ts` | `gk/topics.json` topics with keys `english_full` and `english_basic`, selected **by key** and regardless of `hiddenFromList` (verified: these two folders exist on the CDN; the visible `english` topic's folder `45-English Grammar` does not and is excluded by the content index) | same shape as topics |
-| `aptitude.ts` | `bank/manifest.json` | six subjects → chapters → types → sets, **filtered to `tier === 1`**. The `previous_year_papers` subject is the sixth aptitude subject ("Previous Year Questions"); its chapters are subjects (quant, DI, reasoning, puzzles, English), not exams, and its quant chapter has no tier-1 sets so it renders empty-hidden |
-| `currentAffairs.ts` | `gk/0-Current Affairs/daily/{YYYY_MM_DD}.json` (date-named, no index; from 2026-04-01; existence from the content index), `capsule/index.json` + `capsule/{YYYY_MM}.json`, `magazine/{YYYY_MM}.pdf` and `{YYYY_MM}_hi.pdf` (monthly PDFs already exist) | days, months, monthly PDF links |
+| `aptitude.ts` | **two manifests, two families:** `gk/aptitude/manifest.json` (family `ssc-railway`: quant 33 ch, reasoning 24 ch; files at `gk/aptitude/content/{subject.folder}/{chapter.folder}/{type.folder}/{set.file}`) and `bank/manifest.json` (family `bank`: quant, DI, puzzles, reasoning, English, previous_year_papers; files at `bank/{subject.folder}/{chapter.folder}/{type.folder}/{set.file}`) | family → subjects → chapters → types → sets, **filtered to `tier === 1`**; a chapter or type with zero tier-1 sets is omitted. Both trees share one set-file shape (`questions[]` with `question`, `question_hi`, `options`, `options_hi`, `correct_index`, `solution_conventional(_hi)`, `solution_shortcut(_hi)`, `trap_warning(_hi)`). The bank `previous_year_papers` subject is subject-wise ("Previous Year Questions"), and its quant chapter has no tier-1 sets |
+| `currentAffairs.ts` | `gk/0-Current Affairs/daily/{YYYY_MM_DD}.json` only (date-named `{en[],hi[]}` sets, no index; from 2026-04-01; existence from the content index). **Monthly capsules and magazine PDFs are Pro in the app** (`MonthlyCapsuleScreen`/`MonthlyMagazineScreen` unlock only `free_months`) and are never read | days grouped by month |
 | `contentIndex.ts` | `.content-index.json` produced by `npm run validate:content` (§10) | the set of R2 keys that exist, with size, question counts (en/hi) and last-modified. **Pages and sitemaps only emit URLs for keys in the index**, so a manifest entry whose file is missing can never become a 404 in the sitemap |
 | `articles.ts` | `gk/articles/index.json` | article index + `fetchArticle(id)` |
 | `apps.ts` | `apps/registry.json` (new, §7) | live apps, ratings, screenshots |
@@ -144,7 +145,7 @@ Install-first page (audit §2 table). Sections:
 3. Subjects for this exam: topics whose `exams[]` contains the exam id, with chapter counts, linking to `/topics/{subject}`.
 4. PYQ: papers for this exam (`pyqId`), linking to `/pyq/{exam}`.
 5. Free mock: link to the existing CBT portal's free `mock-01` (`cbtPortalSlug`), labelled clearly as the one free paper.
-6. Aptitude (bank category exams, and SSC/RRB where tagged): chapters from the bank manifest whose set `exam_tags` include this exam.
+6. Aptitude: bank-category exams link to `/aptitude/bank` subjects; SSC and Railway exams link to `/aptitude/ssc-railway` subjects; other categories omit the section.
 7. Related exams in the same category.
 
 Ads: footer only.
@@ -159,7 +160,7 @@ Bank exams (`sbi_clerk`, `sbi_po`, `ibps_clerk`, `ibps_po`, `ibps_rrb_clerk`, `i
 - `/topics/{subject}/{chapter}/set-N` — **set page** (§5.7).
 - `/topics/{subject}/{chapter}/notes` and `/oneliners` → **301** to the chapter page (Pro content).
 
-Sets are derived exactly as the app derives them: chapter file questions chunked 10 per set in file order (`buildSets` rule from `useQuestions.js`), so set numbering matches the app.
+Sets are derived exactly as the app derives them (`buildSets` in `rrb-ntpc-gk/src/hooks/useQuestions.js`, `NORMAL_SET_SIZE = 10`, `LAST_SET_SIZE = 20`): (a) if ≥ 80% of questions carry `passageGroup`, one set per passage group in first-seen order; (b) else if the chapter has ≤ 20 questions, one set; (c) else slice 10 at a time, and when the remaining questions number ≤ 20 (and at least one set already exists) they all go into the final set. The current site slices 10 at a time and therefore disagrees with the app on **every** chapter (verified 2026-09-07: 809 of 809 differ; 6,222 site set-pages vs 5,413 app sets). Adopting the app rule means the last one or two `set-N` URLs of each chapter stop existing; a request for `set-N` with `N > setCount` **301s to the last set**, so already-indexed tail URLs keep resolving. Set 1…N-2 are byte-identical between the two rules, so those URLs keep their content.
 
 ### 5.4 PYQ
 
@@ -170,10 +171,10 @@ Sets are derived exactly as the app derives them: chapter file questions chunked
 
 ### 5.5 Aptitude (audit §4 "method-first")
 
-- `/aptitude` — subjects: Quantitative Aptitude, Reasoning, Data Interpretation, Puzzles & Seating, English, Previous Year Questions (bank English is a different set from the GK English topics and is published here, not under `/english`). Subject slugs: `quant`, `reasoning`, `data-interpretation`, `puzzles`, `english`, `previous-year-questions`.
-- `/aptitude/{subject}/{chapter}` — **primary target**. Order: H1 "{Chapter}: formula, shortcuts & practice questions", method block, worked example, common mistakes, then types → free sets, then related chapters and exam hubs.
-  - Method block source: new free file `gk/aptitude/web-method/{chapter_id}.json` = `{ formula_en, formula_hi, example_en, example_hi, mistakes_en[], mistakes_hi[] }`. Authored later, outside this build; **until it exists the page renders the manifest description and the sets' `series_rubric`**, and the H1 drops "formula, shortcuts &". The Pro aptitude notes are never read.
-- `/aptitude/{subject}/{chapter}/{type}/set-N` — set page for tier-1 sets. Tier-2 sets are not listed, not linked, not in the sitemap.
+- `/aptitude` — two families, each exam-qualified in its H1 so the page never competes for school-grade traffic (audit §3): **SSC & Railway** (`/aptitude/ssc-railway`, from the GK aptitude manifest: Quantitative Aptitude, Reasoning) and **Bank** (`/aptitude/bank`, from the bank manifest: Quantitative Aptitude, Reasoning, Data Interpretation, Puzzles & Seating, English, Previous Year Questions). Family slugs: `ssc-railway`, `bank`. Subject slugs: `quant`, `reasoning`, `data-interpretation`, `puzzles`, `english`, `previous-year-questions` (bank English is a different set from the GK English topics and is published here, not under `/english`).
+- `/aptitude/{family}/{subject}/{chapter}` — **primary target**. H1 "{Chapter}: formula, shortcuts & practice questions for {SSC CGL, CHSL, RRB NTPC | SBI PO, IBPS PO, Clerk}", then method block, worked example, common mistakes, then types → free sets, then related chapters and exam hubs.
+  - Method block source: new free file `gk/aptitude/web-method/{family}/{chapter_id}.json` = `{ formula_en, formula_hi, example_en, example_hi, mistakes_en[], mistakes_hi[] }`. Authored later, outside this build; **until it exists the page renders the manifest chapter name, the sets' `description`/`series_rubric`**, and the H1 drops "formula, shortcuts &". The Pro aptitude notes (`gk/aptitude/content/notes/**`) are never read.
+- `/aptitude/{family}/{subject}/{chapter}/{type}/set-N` — set page for tier-1 sets. Tier-2 sets are not listed, not linked, not in the sitemap. Solutions render `solution_conventional` then, when present, `solution_shortcut` under a "Shortcut" heading and `trap_warning` as a callout. Inline `$…$` / `$$…$$` LaTeX is rendered server-side with KaTeX (CSS inlined, no client JS); lines beginning `📊 [VISUAL:` and the following `DATA:` line are stripped (they are app-only render hints).
 
 ### 5.6 English (GK English topics)
 
@@ -191,7 +192,7 @@ Sets are derived exactly as the app derives them: chapter file questions chunked
 ### 5.8 Current affairs
 
 - `/current-affairs` — current month capsule + last 30 days.
-- `/current-affairs/monthly/{YYYY_MM}` — the durable page: monthly capsule content, links to every day of the month, and download links to the monthly magazine PDFs (`magazine/{YYYY_MM}.pdf`, `{YYYY_MM}_hi.pdf`) whenever the content index has them. This is the audit's "monthly PDF compilation" page; the PDFs are already produced by the existing ops pipeline.
+- `/current-affairs/monthly/{YYYY_MM}` — the durable page, **built from that month's free daily sets**: H1 "{Month YYYY} current affairs: {N} questions with answers for SSC, Railway, Bank & Police", a day-by-day list with question counts, and the full question list of the month's dailies rendered inline (answers visible) so the page is the audit's "monthly compilation" as an indexable HTML asset. Capsule and magazine PDFs are Pro and are not linked.
 - `/current-affairs/daily/{YYYY_MM_DD}` — day set (set page template). Pages older than 90 days emit `robots: noindex, follow` and stay linked from the monthly page.
 
 ### 5.9 Articles
@@ -262,7 +263,7 @@ Worked in detail with the frontend-design skill at implementation; constraints f
 ## 10. Testing
 
 - **Unit** (`node --test`, TypeScript via `tsx`): loader key encoding and paid-prefix guard; slug functions pinned against the full manifest; set chunking matches the app rule; Hindi availability rule; sitemap generators (counts, no duplicates, ≤ 45k per child); monetisation placement per page kind; assetlinks generator; referrer builder.
-- **Content validation script** (`npm run validate:content`): walks every manifest entry, fetches each file from the CDN (parallel, ~3,500 files), checks shape, counts `en`/`hi` questions, and writes `.content-index.json` (§4.2). Runs before every build (`prebuild`); fails the build on a malformed file, and on a missing file **only** for keys the manifest marks visible. Missing files are listed in the build log so content gaps are visible, not silent. Also fails if the index shrinks by more than 10% versus the previous committed index (same shrink-guard idea the ops service uses).
+- **Content validation script** (`npm run validate:content`): walks every manifest entry, fetches each file from the CDN (parallel, ~3,500 files), checks shape, counts `en`/`hi` questions, and writes `.content-index.json` (§4.2). Runs as part of `npm run cf:build` (and `npm run build`), so both local and Cloudflare CI builds regenerate it; the generated file is also committed so a build without network still has a valid index. Fails the build on a malformed file, and on a **regression**: any key present in the previously committed index that is now missing. Keys that were never present (e.g. the manifest's visible `english` topic whose folder is not on the CDN) are logged as warnings, not failures, so a known content gap cannot block deploys. Also fails if the index shrinks by more than 10% versus the previous committed index (same shrink-guard idea the ops service uses); `--force` overrides both guards for a deliberate removal. The script also asserts slug uniqueness within every manifest level it walks, and writes the section totals (`totals`) into the index so `stats.ts` needs no second pass.
 - **E2E smoke** (Playwright, against `npm run preview`): home, one exam hub, one chapter, one set (en + hi), one PYQ set, one aptitude chapter, one CA day, `/apps`, one `/apps/{slug}`, `/sitemap.xml` + one child. Asserts: question text present in HTML without JS, `<html lang>`, hreflang pair present and reciprocal, canonical self, BreadcrumbList present, no FAQPage/QAPage, 301s for notes/oneliners/mock-tests.
 - **Lighthouse** on the set page and exam hub (mobile) as a report, thresholds from §9.
 
