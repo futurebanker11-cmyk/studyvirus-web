@@ -18,6 +18,20 @@ export function chapterSlug(chapterEn: string): string {
     .replace(/-+/g, "-");
 }
 
+// Chapters named only in a non-Latin script (the manifest's `general_hindi`
+// topic: संज्ञा, सर्वनाम, …) strip to "" or "-" under chapterSlug, so every such
+// chapter would collide on one URL. When that happens the slug comes from the
+// chapter file's leading number ("3-विशेषण.json" -> "chapter-3"), which is
+// stable across manifest reorders, and only if the file has no leading number
+// from the chapter's 1-based position in its topic. Latin names are unchanged.
+// scripts/validate-content.mjs mirrors this rule; keep the two in step.
+export function resolveChapterSlug(chapterEn: string, file: string, position: number): string {
+  const slug = chapterSlug(chapterEn);
+  if (slug.replace(/-/g, "") !== "") return slug;
+  const m = /^(\d+)/.exec(file);
+  return `chapter-${m ? parseInt(m[1], 10) : position}`;
+}
+
 export function dashed(id: string): string {
   return id.replace(/_/g, "-");
 }

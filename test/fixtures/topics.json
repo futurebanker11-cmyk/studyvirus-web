@@ -1,0 +1,13 @@
+{
+  "topics": [
+    { "key": "current_affairs", "folder": "0-Current Affairs", "emoji": "📰", "screen": "CurrentAffairs", "hiddenFromList": true, "exams": ["rrb_ntpc"], "en": { "name": "Current Affairs", "desc": "" }, "hi": { "name": "करेंट अफेयर्स", "desc": "" }, "accent": "#ef4444", "chapters": [] },
+    { "key": "history", "folder": "1-Indian History", "emoji": "🏛️", "exams": ["rrb_ntpc", "ssc_cgl"], "en": { "name": "Indian History", "desc": "Ancient to Modern" }, "hi": { "name": "भारतीय इतिहास", "desc": "" }, "accent": "#d97706",
+      "chapters": [ { "file": "1-Indus Valley.json", "en": "Indus Valley", "hi": "सिंधु घाटी" }, { "file": "13-Viceroys & Acts.json", "en": "Viceroys & Acts", "hi": "वायसराय" }, { "file": "99-Missing.json", "en": "Missing Chapter", "hi": "x" } ] },
+    { "key": "general_hindi", "folder": "25-General Hindi", "emoji": "🪔", "exams": [], "en": { "name": "General Hindi", "desc": "" }, "hi": { "name": "सामान्य हिंदी", "desc": "" }, "accent": "#0f766e",
+      "chapters": [ { "file": "1-संज्ञा.json", "en": "संज्ञा", "hi": "संज्ञा" }, { "file": "2-सर्वनाम.json", "en": "सर्वनाम", "hi": "सर्वनाम" }, { "file": "11-शब्द-शुद्धि.json", "en": "शब्द-शुद्धि", "hi": "शब्द-शुद्धि" } ] },
+    { "key": "english", "folder": "45-English Grammar", "emoji": "🔤", "exams": ["ssc_cgl"], "en": { "name": "English", "desc": "" }, "hi": { "name": "अंग्रेज़ी", "desc": "" }, "accent": "#000", "chapters": [ { "file": "1-Nope.json", "en": "Nope", "hi": "x" } ] },
+    { "key": "english_full", "folder": "45-English Grammar Full", "emoji": "📚", "hiddenFromList": true, "exams": ["ssc_cgl"], "en": { "name": "English Grammar Full", "desc": "" }, "hi": { "name": "अंग्रेज़ी", "desc": "" }, "accent": "#000", "chapters": [ { "file": "1-Idioms and Phrases SSC.json", "en": "Idioms & Phrases", "hi": "मुहावरे" } ] },
+    { "key": "english_basic", "folder": "46-English Grammar Basic", "emoji": "🔤", "hiddenFromList": true, "exams": [], "en": { "name": "English Grammar Basic", "desc": "" }, "hi": { "name": "अंग्रेज़ी", "desc": "" }, "accent": "#000", "chapters": [ { "file": "1-Synonyms_Basic.json", "en": "Synonyms (Basic)", "hi": "पर्यायवाची" } ] },
+    { "key": "ghost", "folder": "98-Ghost", "emoji": "👻", "exams": ["rrb_ntpc"], "en": { "name": "Ghost", "desc": "" }, "hi": { "name": "x", "desc": "" }, "accent": "#000", "chapters": [ { "file": "1-Gone.json", "en": "Gone", "hi": "x" } ] }
+  ]
+}

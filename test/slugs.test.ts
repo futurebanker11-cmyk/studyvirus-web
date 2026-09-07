@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { topicSlug, chapterSlug, dashed, aptitudeChapterSlug, aptitudeSubjectSlug, parseSetParam } from "../src/lib/content/slugs";
+import { topicSlug, chapterSlug, resolveChapterSlug, dashed, aptitudeChapterSlug, aptitudeSubjectSlug, parseSetParam } from "../src/lib/content/slugs";
 
 test("topicSlug matches the live site", () => {
   assert.equal(topicSlug("famous_people"), "famous-people");
@@ -27,6 +27,35 @@ test("aptitude slugs", () => {
   assert.equal(aptitudeSubjectSlug("puzzles"), "puzzles");
   assert.equal(aptitudeSubjectSlug("previous_year_papers"), "previous-year-questions");
   assert.equal(aptitudeSubjectSlug("unknown_thing"), "unknown-thing");
+});
+
+// Ruling B (task 8): chapters named only in Devanagari strip to "" or "-" under
+// chapterSlug, so every such chapter would share one URL. resolveChapterSlug
+// keeps chapterSlug's answer for Latin names and falls back to the file's
+// leading number, then to the 1-based position, for the rest.
+test("resolveChapterSlug keeps chapterSlug for Latin names", () => {
+  assert.equal(resolveChapterSlug("Indus Valley", "1-Indus Valley.json", 1), "indus-valley");
+  assert.equal(resolveChapterSlug("Viceroys & Acts", "13-Viceroys & Acts.json", 2), "viceroys-acts");
+});
+
+test("resolveChapterSlug derives chapter-N from the file's leading number for Devanagari names", () => {
+  assert.equal(chapterSlug("विशेषण"), "");
+  assert.equal(resolveChapterSlug("विशेषण", "3-विशेषण.json", 1), "chapter-3");
+  // dash-only residue counts as empty too
+  assert.equal(chapterSlug("शब्द-शुद्धि"), "-");
+  assert.equal(resolveChapterSlug("शब्द-शुद्धि", "11-शब्द-शुद्धि.json", 1), "chapter-11");
+});
+
+test("resolveChapterSlug falls back to the 1-based position when the file has no leading number", () => {
+  assert.equal(resolveChapterSlug("संज्ञा", "संज्ञा.json", 7), "chapter-7");
+});
+
+test("resolveChapterSlug gives two different Devanagari chapters different slugs", () => {
+  const a = resolveChapterSlug("संज्ञा", "1-संज्ञा.json", 1);
+  const b = resolveChapterSlug("सर्वनाम", "2-सर्वनाम.json", 2);
+  assert.notEqual(a, b);
+  assert.equal(a, "chapter-1");
+  assert.equal(b, "chapter-2");
 });
 
 test("parseSetParam", () => {
