@@ -12,7 +12,10 @@ export const CONTENT_ROUTES = new Set([
 // `mock-tests` passes through so the existing src/app/mock-tests route keeps
 // serving it; its 301 lands in a later plan (there is no mock-tests rule in
 // next.config.mjs today), and it must not be treated as an old WordPress URL.
-const PASSTHROUGH = new Set(["hi", "b", "privacy", "mock-tests"]);
+// `sitemap` is Next's generateSitemaps directory: child sitemaps are served at
+// /sitemap/<id>.xml, whose FIRST segment has no dot, so the "." check below
+// does not catch them and every declared child sitemap would 301 away.
+const PASSTHROUGH = new Set(["hi", "b", "privacy", "mock-tests", "sitemap"]);
 
 // Third-party pages that live under /apps but outside [lang].
 const STATIC_APPS = new Set(["stylescan"]);
@@ -45,6 +48,9 @@ export function decide(pathname: string): Decision {
   if (segments.length === 0) return { action: "rewrite", to: "/en" };
   const first = segments[0];
   if (first.startsWith("_next") || first === "api" || first.includes(".")) return { action: "next" };
+  // /__/auth/handler and /__/firebase/init.json: the Firebase auth proxy that
+  // src/middleware.ts forwards for Google sign-in on every app privacy page.
+  if (first.startsWith("__")) return { action: "next" };
   if (first === "en") return { action: "redirect", to: segments.length === 1 ? "/" : `/${segments.slice(1).join("/")}` };
   if (PASSTHROUGH.has(first)) return { action: "next" };
   if (first === "apps" && segments[1] && STATIC_APPS.has(segments[1])) return { action: "next" };

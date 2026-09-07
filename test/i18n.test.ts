@@ -45,6 +45,19 @@ test("decide: content routes rewrite to /en, hi passes, portals pass, unknown re
   assert.deepEqual(decide("/toString/x"), { action: "redirect", to: "/topics" });
 });
 
+// Two families of paths carry no dot in their FIRST segment and must still
+// pass through: the Firebase auth proxy (/__/auth/handler, /__/firebase/init.json)
+// that src/middleware.ts forwards for Google sign-in on every app privacy
+// page, and Next's generateSitemaps children at /sitemap/<id>.xml. A 301 on
+// either breaks sign-in or sends every declared child sitemap away.
+test("decide: Firebase proxy and child sitemap paths pass through", () => {
+  assert.deepEqual(decide("/__/auth/handler"), { action: "next" });
+  assert.deepEqual(decide("/__/firebase/init.json"), { action: "next" });
+  assert.deepEqual(decide("/sitemap/en-sets-0.xml"), { action: "next" });
+  assert.deepEqual(decide("/sitemap/hi-topics-0.xml"), { action: "next" });
+  assert.deepEqual(decide("/sitemap.xml"), { action: "next" });
+});
+
 test("decide: a portal whose app has no exam registry entry falls back to /exam", () => {
   // up_bihar_police has a CBT portal slug in gkApps.ts but no entry in EXAMS.
   assert.deepEqual(decide("/upbiharpolice"), { action: "redirect", to: "/exam" });
