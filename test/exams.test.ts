@@ -48,3 +48,64 @@ test("examIntro reads naturally in both languages", () => {
   assert.match(hi, /120 अध्याय/);
   assert.equal(factsFor("unknown_id").stages.length > 0, true);
 });
+
+test("no exam intro is ungrammatical, in either language", () => {
+  const n = { chapters: 120, papers: 31 };
+
+  // The acronym parenthetical an exam name may carry, e.g. "(UPPSC)".
+  const stripAcronym = (s: string) => s.replace(/\s*\([^)]*\)\s*$/, "").trim();
+  const norm = (s: string) => stripAcronym(s).toLowerCase();
+
+  for (const e of EXAMS) {
+    const f = factsFor(e.id);
+
+    for (const lang of ["en", "hi"] as const) {
+      const out = examIntro(e, lang, n);
+
+      // Hindi: the template supplies "द्वारा", so no body may bring its own.
+      assert.ok(!out.includes("द्वारा द्वारा"), `doubled द्वारा in ${lang} intro for ${e.id}: ${out}`);
+      assert.ok(!out.includes("के लिए द्वारा"), `postposition collision in ${lang} intro for ${e.id}: ${out}`);
+      assert.ok(!/\(\s*[^)]*द्वारा\s*\)\s*द्वारा/.test(out), `parenthetical द्वारा before द्वारा in ${lang} intro for ${e.id}: ${out}`);
+
+      // English: "is conducted by X, for Y" dangles.
+      assert.ok(!/is conducted by [^.]*, for /.test(out), `dangling ", for" after "conducted by" in ${lang} intro for ${e.id}: ${out}`);
+
+      // Neither language may restate the same name twice in the opening clause.
+      assert.ok(
+        !new RegExp(`\\(${escapeRe(e.fullName)}\\)[^.।]*${escapeRe(e.fullName)}`).test(out),
+        `fullName repeated verbatim in ${lang} intro for ${e.id}: ${out}`,
+      );
+    }
+
+    // The name-vs-body tautology. Equivalence, not containment: "Staff Selection
+    // Commission" is a prefix of "…Combined Graduate Level" but names a different
+    // thing (the conductor vs the exam), so both belong in that sentence.
+    const full = norm(e.fullName);
+    const enOut = examIntro(e, "en", n);
+    const hiOut = examIntro(e, "hi", n);
+
+    if (full === norm(f.body)) {
+      assert.ok(
+        !enOut.includes(`(${e.fullName})`),
+        `tautology: en intro for ${e.id} names "${e.fullName}" twice: ${enOut}`,
+      );
+      assert.ok(
+        !hiOut.includes(`(${e.fullName})`),
+        `tautology: hi intro for ${e.id} names "${e.fullName}" twice: ${hiOut}`,
+      );
+    }
+    // "Labour Inspector (Labour Inspector)" — name equal to its own fullName.
+    if (full === norm(e.en)) {
+      assert.ok(!enOut.includes(`(${e.fullName})`), `en intro for ${e.id} repeats its own name: ${enOut}`);
+    }
+    // The Hindi body must never end in a postposition the template will double.
+    assert.ok(
+      !/(द्वारा|के लिए|से|को)\)?$/.test(f.bodyHi.trim()),
+      `bodyHi for ${e.id} ends in a postposition: "${f.bodyHi}"`,
+    );
+  }
+});
+
+function escapeRe(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
