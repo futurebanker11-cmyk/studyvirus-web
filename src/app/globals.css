@@ -2,185 +2,307 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── DESIGN TOKENS ── */
+/* ═══════════════════════════════════════════════════════════════════════
+   StudyVirus — token layer
+
+   A free question bank read on cheap Android phones over patchy 4G, often
+   for months at a stretch. The design goal is a serious reference work: warm
+   paper, ink-dark text, one restrained accent, and no ornament that costs a
+   byte it does not earn.
+
+   Every colour on the site is a token defined here. Components never write a
+   raw hex value.
+
+   Theme resolution is three-state, in this order:
+     1. :root                                    — the full light palette
+     2. @media (prefers-color-scheme: dark)
+        :root:not([data-theme="light"])          — OS preference, unless the
+                                                   reader chose light
+     3. :root[data-theme="dark"]                 — explicit choice always wins
+   No colour is ever defined *only* inside a media query.
+   ═══════════════════════════════════════════════════════════════════════ */
+
 :root {
-  --accent: #3b82f6;
-  --accent-glow: rgba(59, 130, 246, 0.25);
-  --gold: #f59e0b;
-  --success: #10b981;
-  --error: #ef4444;
-  --text: #1e293b;
-  --text-muted: #64748b;
-  --border: #e2e8f0;
-  --bg: #f0f4ff;
+  /* ── Surfaces ──
+     Not pure white. A warm off-white reads as paper and cuts the glare of a
+     cheap LCD panel held close in bad light. */
+  --bg: #fbfaf7;
+  --surface: #ffffff;
+  --surface-sunk: #f4f2ed;
+
+  /* ── Ink ──
+     Near-black with a hint of warmth rather than #000, which vibrates
+     against a warm ground. */
+  --ink: #1c1a17;
+  --ink-soft: #5c574f;
+  --ink-faint: #8a8378;
+
+  /* ── Structure ── */
+  --line: #e5e1d8;
+  --line-strong: #d2ccbf;
+
+  /* ── Accent ──
+     India-ink indigo. Deliberately not the template blue: it reads as a
+     reference book's ruled line, not a SaaS call-to-action. */
+  --accent: #2f4858;
+  --accent-hover: #1f3240;
+  --accent-ink: #ffffff;
+  --accent-wash: #eef1f3;
+
+  /* ── Semantic ──
+     Muted on purpose. A correct answer should feel like a tick in a margin,
+     not a confetti burst. */
+  --ok: #2f6b46;
+  --ok-wash: #eaf3ed;
+  --warn: #8a5a12;
+  --warn-wash: #f8f1e3;
+  --err: #9b3232;
+  --err-wash: #f9edec;
+
+  /* ── Typography ──
+     Latin body + Devanagari body are both serifs so a Hindi reader gets the
+     same texture as an English one. UI chrome is a sans that recedes. */
+  --font-sans: var(--font-plex), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-serif), Georgia, "Times New Roman", serif;
+  --font-deva: var(--font-deva-serif), var(--font-serif), Georgia, serif;
+
+  /* Devanagari sits visually smaller than Latin at the same px because its
+     x-height equivalent is lower and it carries the shirorekha. A ~4% bump
+     makes the two scripts read at the same apparent size. */
+  --deva-scale: 1.04;
+
+  /* ── Measure ── */
+  --measure: 70ch;
+
+  /* ── Depth ──
+     One shadow, barely there. Cards are separated by rules, not elevation. */
+  --shadow: 0 1px 2px rgb(28 26 23 / 0.05);
+  --shadow-lift: 0 2px 8px rgb(28 26 23 / 0.08);
+
+  /* ── Focus ── */
+  --focus: #2f4858;
+
+  color-scheme: light;
 }
 
-/* ── BASE ── */
+/* ── 2. OS prefers dark, and the reader has not pinned light ── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161a;
+    --surface: #1b1e23;
+    --surface-sunk: #101215;
+
+    --ink: #ece9e3;
+    --ink-soft: #a8a49c;
+    --ink-faint: #7b776f;
+
+    --line: #2b2f36;
+    --line-strong: #3d434c;
+
+    /* Lifted well off the dark ground — the light-mode indigo would vanish. */
+    --accent: #8fb3c7;
+    --accent-hover: #a9c6d6;
+    --accent-ink: #14161a;
+    --accent-wash: #1e262c;
+
+    --ok: #7fbe97;
+    --ok-wash: #17241c;
+    --warn: #d6a961;
+    --warn-wash: #241d10;
+    --err: #d98b8b;
+    --err-wash: #241616;
+
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow-lift: 0 2px 8px rgb(0 0 0 / 0.5);
+
+    --focus: #8fb3c7;
+
+    color-scheme: dark;
+  }
+}
+
+/* ── 3. Reader explicitly chose dark — wins over any OS setting ── */
+:root[data-theme="dark"] {
+  --bg: #14161a;
+  --surface: #1b1e23;
+  --surface-sunk: #101215;
+
+  --ink: #ece9e3;
+  --ink-soft: #a8a49c;
+  --ink-faint: #7b776f;
+
+  --line: #2b2f36;
+  --line-strong: #3d434c;
+
+  --accent: #8fb3c7;
+  --accent-hover: #a9c6d6;
+  --accent-ink: #14161a;
+  --accent-wash: #1e262c;
+
+  --ok: #7fbe97;
+  --ok-wash: #17241c;
+  --warn: #d6a961;
+  --warn-wash: #241d10;
+  --err: #d98b8b;
+  --err-wash: #241616;
+
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-lift: 0 2px 8px rgb(0 0 0 / 0.5);
+
+  --focus: #8fb3c7;
+
+  color-scheme: dark;
+}
+
+/* ═══ Base elements ═══ */
+
 html {
-  scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
-  color: var(--text);
   background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
-  font-family: var(--font-body, system-ui, sans-serif);
+  text-rendering: optimizeLegibility;
 }
 
-/* Display font for all headings */
-h1, h2, h3, h4, h5, h6,
-.font-display {
-  font-family: var(--font-display, system-ui, sans-serif);
+/* Hindi pages and any explicitly-marked Hindi run get the Devanagari serif at
+   a size that matches the Latin optically rather than numerically. */
+:lang(hi),
+[lang="hi"] {
+  font-family: var(--font-deva);
+  font-size: calc(1em * var(--deva-scale));
+  line-height: 1.75; /* the shirorekha and matras need the extra room */
 }
 
-/* ── HERO DARK ── */
-.hero-dark {
-  background-color: #060d1e;
-  background-image:
-    radial-gradient(ellipse at 18% 65%, rgba(59, 130, 246, 0.22) 0%, transparent 58%),
-    radial-gradient(ellipse at 82% 18%, rgba(99, 102, 241, 0.16) 0%, transparent 55%),
-    radial-gradient(ellipse at 50% 92%, rgba(16, 185, 129, 0.09) 0%, transparent 52%);
+/* Headings: the display serif, tightened. Optical sizing does the rest. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.011em;
+  text-wrap: balance;
+  color: var(--ink);
 }
 
-/* ── GRADIENT TEXT ── */
-.text-gradient {
-  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+h1[lang="hi"],
+h2[lang="hi"],
+h3[lang="hi"],
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3 {
+  font-family: var(--font-deva);
+  letter-spacing: 0; /* never track Devanagari — it breaks conjuncts */
+  line-height: 1.35;
 }
 
-.text-gradient-blue {
-  background: linear-gradient(135deg, #60a5fa 0%, #818cf8 60%, #a78bfa 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+/* UI chrome — nav, buttons, labels, metadata — steps out of the serif. */
+button,
+input,
+select,
+textarea,
+nav,
+label,
+.ui {
+  font-family: var(--font-sans);
 }
 
-.text-gradient-gold {
-  background: linear-gradient(135deg, #f59e0b, #f97316);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
 }
 
-/* ── ANIMATIONS ── */
-@keyframes fade-up {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
+a:hover {
+  color: var(--accent-hover);
 }
 
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0px); }
-  50%       { transform: translateY(-10px); }
+::selection {
+  background: var(--accent-wash);
+  color: var(--ink);
 }
 
-@keyframes pulse-slow {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0.4; }
+/* ═══ Focus — one visible ring everywhere, never removed ═══ */
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%       { transform: translateX(-6px); }
-  40%       { transform: translateX(6px); }
-  60%       { transform: translateX(-4px); }
-  80%       { transform: translateX(4px); }
-}
-
-@keyframes progress-fill {
-  from { width: 0%; }
-}
-
-.animate-fade-up {
-  animation: fade-up 0.55s ease-out forwards;
-}
-.animate-fade-up-delay-1 {
-  opacity: 0;
-  animation: fade-up 0.55s ease-out 0.12s forwards;
-}
-.animate-fade-up-delay-2 {
-  opacity: 0;
-  animation: fade-up 0.55s ease-out 0.24s forwards;
-}
-.animate-fade-up-delay-3 {
-  opacity: 0;
-  animation: fade-up 0.55s ease-out 0.36s forwards;
-}
-.animate-float {
-  animation: float 5s ease-in-out infinite;
-}
-.animate-pulse-slow {
-  animation: pulse-slow 2.5s ease-in-out infinite;
-}
-
-/* ── QUIZ OPTIONS ── */
-.quiz-option {
-  @apply border-2 border-slate-200 rounded-xl py-3 px-3 sm:py-3.5 sm:px-4 cursor-pointer transition-all duration-200 text-left w-full text-sm sm:text-base bg-white;
+/* ═══ Touch ═══ */
+a,
+button {
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-.quiz-option:not(:disabled):hover {
-  @apply border-blue-400 bg-blue-50/80 shadow-sm;
-  transform: translateX(3px);
-}
-.quiz-option:disabled {
-  cursor: default;
-}
-.quiz-option.correct {
-  @apply border-emerald-400 bg-emerald-50/80;
-  transform: translateX(3px);
-}
-.quiz-option.wrong {
-  @apply border-red-400 bg-red-50/80;
-  animation: shake 0.4s ease-in-out;
-}
-.quiz-option.selected {
-  @apply border-blue-500 bg-blue-50/80;
+
+/* ═══ Layout safety — nothing shifts, nothing overflows ═══ */
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
 }
 
-@media (max-width: 640px) {
-  .quiz-option {
-    @apply py-3.5 px-3 text-[15px] min-h-[52px];
-  }
+/* Wide content scrolls inside itself; the page body never scrolls sideways. */
+.scroll-x {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* ── CARD HOVER ── */
-.card-hover {
-  @apply transition-all duration-200 cursor-pointer;
-}
-@media (hover: hover) {
-  .card-hover:hover {
-    @apply shadow-md border-blue-200;
-  }
+table {
+  border-collapse: collapse;
+  width: 100%;
 }
 
-/* ── RESPONSIVE TYPOGRAPHY ── */
-h1 { @apply text-2xl sm:text-3xl md:text-4xl; }
-h2 { @apply text-lg sm:text-xl md:text-2xl; }
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-/* ── FOCUS ── */
-*:focus-visible {
-  @apply outline-2 outline-offset-2 outline-blue-500;
+/* Ad slots reserve their height before the loader arrives, so the article
+   below them never jumps. */
+.ad-slot {
+  display: block;
+  min-height: var(--ad-h, 100px);
+  contain: layout;
 }
 
-/* ── REDUCED MOTION ── */
+.ad-slot:empty::after {
+  content: "";
+  display: block;
+  height: var(--ad-h, 100px);
+}
+
+/* ═══ KaTeX — rendered to HTML on the server ═══ */
+.katex {
+  font-size: 1.03em;
+  color: var(--ink);
+}
+
+/* A long derivation scrolls in its own lane rather than widening the page. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.35rem 0;
+  margin: 0.9rem 0;
+}
+
+/* ═══ Reduced motion ═══ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -188,32 +310,45 @@ h2 { @apply text-lg sm:text-xl md:text-2xl; }
   }
 }
 
-/* ── RESPONSIVE UTILITIES ── */
-img, video, iframe, table { max-width: 100%; }
+/* ═══ Print — aspirants do print sets ═══ */
+@media print {
+  :root {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --ink: #000000;
+    --ink-soft: #333333;
+    --line: #cccccc;
+  }
 
-table {
-  display: block;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
+  body {
+    background: #ffffff;
+    color: #000000;
+    font-size: 11pt;
+  }
 
-@supports (padding: env(safe-area-inset-bottom)) {
-  .pb-16 {
-    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  /* Chrome, ads and interactive affordances carry no meaning on paper. */
+  header,
+  footer,
+  nav,
+  .ad-slot,
+  .no-print {
+    display: none !important;
+  }
+
+  a {
+    text-decoration: none;
+    color: #000000;
+  }
+
+  /* Never split an explanation across a page break mid-thought. */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  li,
+  blockquote {
+    break-inside: avoid;
   }
 }
-
-a, button {
-  -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
-}
-
-.ad-container:empty { display: none; }
-
-nav[aria-label="Breadcrumb"] {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  white-space: nowrap;
-  scrollbar-width: none;
-}
-nav[aria-label="Breadcrumb"]::-webkit-scrollbar { display: none; }
