@@ -25,6 +25,9 @@ export function chapterSlug(chapterEn: string): string {
 // stable across manifest reorders, and only if the file has no leading number
 // from the chapter's 1-based position in its topic. Latin names are unchanged.
 // scripts/validate-content.mjs mirrors this rule; keep the two in step.
+// Deliberately merges two namespaces: a Latin chapter literally named "Chapter 3"
+// would collide with a Devanagari chapter whose file starts "3-"; the script's
+// assertUnique hard-fails the build if that ever happens.
 export function resolveChapterSlug(chapterEn: string, file: string, position: number): string {
   const slug = chapterSlug(chapterEn);
   if (slug.replace(/-/g, "") !== "") return slug;

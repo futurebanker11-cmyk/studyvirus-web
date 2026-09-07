@@ -8,7 +8,7 @@
 //   node scripts/validate-content.mjs --offline  # keep the committed index as-is: no network, NOT verified
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const OUT = join(ROOT, "src", "generated", "content-index.json");
@@ -107,11 +107,13 @@ function duplicateSlugs(values) {
 // index reader is a pure string lookup, so keys are stored normalised.
 const normKey = (key) => key.split("/").filter((s) => s !== ".").join("/");
 
-const chapterSlug = (s) => s.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-").replace(/-+/g, "-");
+// Both slug helpers mirror src/lib/content/slugs.ts and are exported so
+// test/validateContentSlugs.test.ts can fail the build if the pair drifts.
+export const chapterSlug = (s) => s.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-").replace(/-+/g, "-");
 // Mirrors resolveChapterSlug in src/lib/content/slugs.ts: a name that strips to
 // nothing (Devanagari chapters in general_hindi) slugs as chapter-N from the
 // file's leading number, else from the chapter's 1-based position.
-const resolveChapterSlug = (en, file, position) => {
+export const resolveChapterSlug = (en, file, position) => {
   const slug = chapterSlug(en);
   if (slug.replace(/-/g, "") !== "") return slug;
   const m = /^(\d+)/.exec(file);
@@ -288,4 +290,8 @@ async function main() {
   console.log(JSON.stringify(out.totals, null, 2));
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+// Run only when invoked as the CLI. test/validateContentSlugs.test.ts imports
+// this module for its slug helpers and must not trigger a CDN walk.
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((e) => { console.error(e); process.exit(1); });
+}
