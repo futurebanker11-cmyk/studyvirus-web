@@ -3,13 +3,16 @@ import { resolveBucket } from "./bucket";
 
 export const CDN_BASE = "https://cdn.studyvirus.com";
 const MEMO_TTL_MS = 60_000;
+// A failed load (throw, non-2xx, missing object) is memoised far more briefly:
+// one transient R2/CDN blip must not become a minute of 404s for that key.
+const FAILURE_TTL_MS = 5_000;
 
 export interface ContentObject {
   text: string;
   lastModified?: Date;
 }
 
-const memo = new Map<string, { at: number; value: Promise<ContentObject | null> }>();
+const memo = new Map<string, { at: number; ttl: number; value: Promise<ContentObject | null> }>();
 
 export function __clearMemo(): void {
   memo.clear();
@@ -35,10 +38,13 @@ export async function getText(key: string): Promise<ContentObject | null> {
   assertPublishable(key);
   const now = Date.now();
   const hit = memo.get(key);
-  if (hit && now - hit.at < MEMO_TTL_MS) return hit.value;
-  const value = load(key).catch(() => null);
-  memo.set(key, { at: now, value });
-  return value;
+  if (hit && now - hit.at < hit.ttl) return hit.value;
+  // Concurrent callers share the in-flight promise under the full TTL; once it
+  // settles as a failure the entry's window shrinks so the next caller retries.
+  const entry = { at: now, ttl: MEMO_TTL_MS, value: load(key).catch(() => null) };
+  memo.set(key, entry);
+  void entry.value.then((v) => { if (v === null) entry.ttl = FAILURE_TTL_MS; });
+  return entry.value;
 }
 
 export async function getJson<T>(key: string): Promise<T | null> {

@@ -69,3 +69,33 @@ test("memo expires after the TTL", async () => {
   try { assert.deepEqual(await getJson("gk/topics.json"), { n: 2 }); }
   finally { Date.now = realNow; }
 });
+
+// One transient R2/CDN blip must not become a minute of 404s for that key:
+// a failed load (throw or non-2xx) is memoised for at most 5 seconds, while a
+// successful load keeps the full TTL (see "memo expires after the TTL").
+test("memoises a failure for at most 5 seconds, not the full TTL", async () => {
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    if (calls === 1) throw new Error("transient blip");
+    if (calls === 2) return new Response("nope", { status: 503 });
+    return new Response('{"ok":true}', { status: 200 });
+  }) as typeof fetch;
+  const realNow = Date.now;
+  try {
+    assert.equal(await getJson("gk/topics.json"), null);
+    assert.equal(await getJson("gk/topics.json"), null, "inside the failure window the null is still served");
+    assert.equal(calls, 1);
+    Date.now = () => realNow() + 5_500;
+    assert.equal(await getJson("gk/topics.json"), null, "a 503 is a failure too");
+    assert.equal(calls, 2);
+    Date.now = () => realNow() + 11_000;
+    assert.deepEqual(await getJson("gk/topics.json"), { ok: true });
+    assert.equal(calls, 3);
+    Date.now = () => realNow() + 40_000;
+    assert.deepEqual(await getJson("gk/topics.json"), { ok: true }, "a success keeps the full TTL");
+    assert.equal(calls, 3);
+  } finally {
+    Date.now = realNow;
+  }
+});
