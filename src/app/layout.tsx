@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { siteStats, formatCount } from "@/lib/content/stats";
 
 /**
  * Metadata defaults and the global stylesheet only.
@@ -11,15 +12,26 @@ import "./globals.css";
  * had to be read from a request header, and one headers() call in a root
  * layout de-opts every route on the site out of static generation. See the
  * comment in HtmlShell.tsx for what that cost.
+ *
+ * The counts below are computed, not written. These defaults are INHERITED by
+ * every page that does not set its own openGraph/twitter block — which is most
+ * of the site — so the hard-coded "200,000+" that used to live here was served
+ * in the og:image:alt and twitter:description of every page including the new
+ * home page, whose own <title> says 1,93,431. A page cannot advertise two
+ * different totals about itself to a crawler and to a reader. siteStats() is a
+ * synchronous read of the generated content index, so evaluating it here costs
+ * nothing and cannot drift from what the pages display.
  */
+
+const QUESTIONS = formatCount(siteStats().questions, "en");
+const BLURB = `${QUESTIONS} free practice questions with answers for SSC, Railway, UPSC, Police and State exams — previous-year papers, chapter-wise sets and daily current affairs, in Hindi and English.`;
 
 export const metadata: Metadata = {
   title: {
     default: "StudyVirus - Free GK Questions for Competitive Exams",
     template: "%s",
   },
-  description:
-    "200,000+ GK questions with answers for SSC, Railway, UPSC, Police & State exams. Free quizzes, mock tests, previous year papers & current affairs.",
+  description: BLURB,
   metadataBase: new URL("https://studyvirus.com"),
   openGraph: {
     type: "website",
@@ -29,13 +41,13 @@ export const metadata: Metadata = {
       url: "/og-image.png",
       width: 1200,
       height: 630,
-      alt: "StudyVirus - 200,000+ Free GK Questions for Competitive Exams",
+      alt: `StudyVirus - ${QUESTIONS} free practice questions for competitive exams`,
     }],
   },
   twitter: {
     card: "summary_large_image",
     title: "StudyVirus - Free GK Questions for Competitive Exams",
-    description: "200,000+ GK questions with answers for SSC, Railway, UPSC, Police & State exams.",
+    description: BLURB,
     images: ["/og-image.png"],
   },
   robots: {

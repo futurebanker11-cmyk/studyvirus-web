@@ -97,6 +97,69 @@ export const STRINGS = {
   // ── Ads ──
   "ad.label": { en: "Advertisement", hi: "विज्ञापन" },
 
+  // ── Home page ──
+  /* The H1. {questions} is formatCount(siteStats().questions) and {exams} the
+     length of EXAMS — both computed at build time from things that can be
+     counted, which is the entire point: the page this replaces claimed
+     "200,000+" in its title and "23K+" in its own hero, on the same screen. */
+  "home.h1": {
+    en: "{questions} free practice questions for {exams} government exams",
+    hi: "{exams} सरकारी परीक्षाओं के लिए {questions} निःशुल्क अभ्यास प्रश्न",
+  },
+  "home.lede": {
+    en: "Every question, previous-year paper and current-affairs set on this site is free, in Hindi and English, with no sign-up.",
+    hi: "इस साइट के सभी प्रश्न, पिछले वर्षों के प्रश्नपत्र और करेंट अफेयर्स सेट हिंदी और अंग्रेज़ी में निःशुल्क हैं — बिना किसी रजिस्ट्रेशन के।",
+  },
+  "home.ctaExams": { en: "Choose your exam", hi: "अपनी परीक्षा चुनें" },
+  "home.ctaPractice": { en: "Start practising", hi: "अभ्यास शुरू करें" },
+
+  /* Stat row labels. Each is a count the content index produces, so a reader
+     who browses the tree can verify it. */
+  "home.statQuestions": { en: "Questions", hi: "प्रश्न" },
+  "home.statChapters": { en: "Chapters", hi: "अध्याय" },
+  "home.statPapers": { en: "Papers", hi: "प्रश्नपत्र" },
+  "home.statCaDays": { en: "Current-affairs days", hi: "करेंट अफेयर्स दिवस" },
+
+  // Section headings
+  "home.examsHeading": { en: "Exams we cover", hi: "हमारी कवर की गई परीक्षाएँ" },
+  "home.examsSub": {
+    en: "Pick the exam you are preparing for — each hub lists its syllabus subjects, papers and app.",
+    hi: "जिस परीक्षा की तैयारी कर रहे हैं उसे चुनें — हर हब में उसके विषय, प्रश्नपत्र और ऐप मिलेंगे।",
+  },
+  "home.subjectsHeading": { en: "Subjects", hi: "विषयवार अभ्यास" },
+  "home.subjectsSub": {
+    en: "Chapter-wise question sets with answers and explanations.",
+    hi: "उत्तर और व्याख्या के साथ अध्यायवार प्रश्न सेट।",
+  },
+  "home.pyqHeading": { en: "Previous-year papers", hi: "पिछले वर्षों के प्रश्नपत्र" },
+  "home.pyqSub": {
+    en: "Questions taken from papers that were actually set, grouped by exam.",
+    hi: "वास्तव में पूछे गए प्रश्नपत्रों के प्रश्न, परीक्षा के अनुसार।",
+  },
+  "home.caHeading": { en: "Current affairs", hi: "करेंट अफेयर्स" },
+  "home.caSub": {
+    en: "A dated question set for each day, kept month by month.",
+    hi: "हर दिन का तारीख़वार प्रश्न सेट, महीने के अनुसार संग्रहीत।",
+  },
+  "home.appsHeading": { en: "Practise offline", hi: "ऑफ़लाइन अभ्यास करें" },
+  "home.appsSub": {
+    en: "The same question bank in a free Android app, so a weak signal does not stop you.",
+    hi: "यही प्रश्न बैंक एक निःशुल्क Android ऐप में — कमज़ोर नेटवर्क आपकी तैयारी न रोके।",
+  },
+  "home.aboutHeading": { en: "About these numbers", hi: "इन आँकड़ों के बारे में" },
+  "home.aboutBody": {
+    en: "Every count on this page is produced at build time from the question files the site serves, not typed in by hand. If a chapter is missing, its questions are not counted; if a paper is added, the total goes up on the next build. You can check any of them by opening the section it came from.",
+    hi: "इस पृष्ठ का हर आँकड़ा साइट पर मौजूद प्रश्न फ़ाइलों से बिल्ड के समय निकाला जाता है, हाथ से नहीं लिखा जाता। कोई अध्याय न हो तो उसके प्रश्न गिने नहीं जाते; नया प्रश्नपत्र जुड़े तो अगले बिल्ड में संख्या बढ़ जाती है। आप कोई भी आँकड़ा उसके अनुभाग में जाकर जाँच सकते हैं।",
+  },
+
+  // Links out of a section
+  "home.viewAllExams": { en: "See all exams", hi: "सभी परीक्षाएँ देखें" },
+  "home.viewAllSubjects": { en: "See all subjects", hi: "सभी विषय देखें" },
+  "home.viewAllPyq": { en: "See all previous-year papers", hi: "सभी पिछले प्रश्नपत्र देखें" },
+  "home.viewAllCa": { en: "See all current affairs", hi: "सभी करेंट अफेयर्स देखें" },
+  "home.viewAllApps": { en: "See all apps", hi: "सभी ऐप्स देखें" },
+  "home.latestDay": { en: "Latest day", hi: "नवीनतम दिवस" },
+
   // … later tasks append their keys here
 } as const;
 
