@@ -31,7 +31,13 @@ const AD_CLIENT = "ca-pub-3496395300151813";
  * inArticle1 near the top of a long page and inArticle2 further down; a page
  * that renders the in-article spot twice should still fill both units rather
  * than serving the same one twice, which AdSense treats as a duplicate.
- * `ordinal` picks between them.
+ *
+ * `ordinal` is REQUIRED (not defaulted) for "in-article" so a caller must
+ * consciously pick 0 or 1 for each instance on the page — a default here
+ * previously meant a second in-article slot silently reused unit 1 (visible
+ * only as a duplicate-unit warning in the AdSense console, not as a type
+ * error or a test failure). It is refused for every other placement, which
+ * never has a second unit to disambiguate.
  */
 const SLOT_ID: Record<AdSpot, string> = {
   top: "4497869583", // header
@@ -42,8 +48,8 @@ const SLOT_ID: Record<AdSpot, string> = {
 
 const IN_ARTICLE_2 = "4306297892";
 
-function slotId(placement: AdSpot, ordinal: number): string {
-  if (placement === "in-article" && ordinal > 0) return IN_ARTICLE_2;
+function slotId(placement: AdSpot, ordinal?: number): string {
+  if (placement === "in-article" && ordinal === 1) return IN_ARTICLE_2;
   return SLOT_ID[placement];
 }
 
@@ -65,18 +71,27 @@ const FORMAT: Record<AdSpot, string> = {
   footer: "rectangle",
 };
 
-export default function AdSlot({
-  placement,
-  lang,
-  ordinal = 0,
-  className = "",
-}: {
-  placement: AdSpot;
-  lang: Lang;
-  /** 0 for the first slot of this placement on the page, 1 for the second. */
-  ordinal?: number;
-  className?: string;
-}) {
+type AdSlotProps =
+  | {
+      placement: "in-article";
+      lang: Lang;
+      /**
+       * 0 for the first in-article slot on the page, 1 for the second.
+       * Required (not defaulted) so a page rendering two in-article slots
+       * cannot forget to pick one and silently duplicate the unit.
+       */
+      ordinal: 0 | 1;
+      className?: string;
+    }
+  | {
+      placement: Exclude<AdSpot, "in-article">;
+      lang: Lang;
+      // No second unit exists for these placements, so no ordinal to pick.
+      ordinal?: never;
+      className?: string;
+    };
+
+export default function AdSlot({ placement, lang, ordinal, className = "" }: AdSlotProps) {
   const ref = useRef<HTMLModElement>(null);
   const pushed = useRef(false);
 
