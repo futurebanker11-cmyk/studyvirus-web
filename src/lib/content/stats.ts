@@ -15,7 +15,12 @@ export function siteStats() {
   };
 }
 
-/** Indian digit grouping: 1,98,633. Same in both languages (Devanagari digits are not used). */
+/**
+ * Indian digit grouping: 1,98,633. Same in both languages (Devanagari digits
+ * are not used), but callers pass the language so the signature does not
+ * change if that decision is ever revisited.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function formatCount(n: number, _lang: "en" | "hi"): string {
   if (!Number.isFinite(n)) return "0";
   const s = String(Math.trunc(n));

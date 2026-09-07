@@ -12,6 +12,9 @@
   // apps and the cdn-gate Worker use. The site reads it through this binding
   // because a same-zone fetch to cdn.studyvirus.com fails (spec §2).
   "r2_buckets": [
-    { "binding": "CONTENT", "bucket_name": "studyvirus-content" }
+    { "binding": "CONTENT", "bucket_name": "studyvirus-content" },
+    // OpenNext incremental cache (ISR). Separate bucket so a cache purge can
+    // never touch content.
+    { "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "studyvirus-next-cache" }
   ]
 }

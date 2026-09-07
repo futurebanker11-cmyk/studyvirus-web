@@ -6,6 +6,7 @@ declare global {
   interface CloudflareEnv {
     CONTENT: R2Bucket;
     ASSETS: Fetcher;
+    NEXT_INC_CACHE_R2_BUCKET: R2Bucket;
   }
 }
 export {};
