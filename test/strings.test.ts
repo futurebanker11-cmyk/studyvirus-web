@@ -28,6 +28,10 @@ const DEVANAGARI = /[ऀ-ॿ]/;
 const LATIN_BY_DESIGN = new Set<string>([
   "common.readInHindi", // the toggle always names the language you'd switch TO
   "app.onPlayStore", // "Google Play" is the brand name, kept verbatim
+  // The commission is called "SSC" in Hindi coaching material and on its own
+  // Hindi paperwork; src/lib/exams.ts likewise carries hi: "SSC CGL". A
+  // Devanagari rendering would be a transliteration nobody searches for.
+  "cat.ssc",
 ]);
 
 test("every Hindi value is actually in Devanagari unless Latin is the recognised form", () => {

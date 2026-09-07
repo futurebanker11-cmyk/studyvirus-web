@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Noto_Serif_Devanagari, Source_Serif_4 } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
-import SiteShell from "@/components/SiteShell";
 import { themeScript } from "@/components/site/ThemeToggle";
-import { LangProvider } from "@/lib/LangContext";
+import { isLang } from "@/lib/i18n/lang";
+import { organization } from "@/lib/seo/jsonld";
 
 /**
  * Three faces, chosen so a Hindi reader and an English reader get the same
@@ -79,13 +80,26 @@ export const metadata: Metadata = {
   verification: {},
 };
 
+/**
+ * COUPLING: src/middleware.ts sets the `x-sv-lang` header this reads.
+ *
+ * <html> is rendered here, but a Next 14 root layout cannot see the [lang]
+ * segment underneath it, and setting document.documentElement.lang from the
+ * client is not acceptable — crawlers and assistive tech read the served HTML.
+ * The middleware sees the URL, so it states the language in a request header
+ * and this reads it back. If that header stops being set, every Hindi page
+ * silently falls back to lang="en".
+ */
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const h = headers().get("x-sv-lang");
+  const lang = isLang(h) ? h : "en";
+
   return (
-    <html lang="en">
+    <html lang={lang}>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
@@ -100,23 +114,9 @@ export default function RootLayout({
       <body className={`${serif.variable} ${devaSerif.variable} ${plex.variable}`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Organization",
-              name: "StudyVirus",
-              url: "https://studyvirus.com",
-              logo: "https://studyvirus.com/og-image.png",
-              sameAs: [
-                "https://play.google.com/store/apps/details?id=com.gkpkhindi.studyvirus"
-              ],
-              description: "India's largest free GK question bank for competitive exam preparation.",
-            }),
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization()) }}
         />
-        <LangProvider>
-          <SiteShell>{children}</SiteShell>
-        </LangProvider>
+        {children}
       </body>
     </html>
   );

@@ -50,6 +50,48 @@ export const STRINGS = {
   "theme.light": { en: "Light", hi: "लाइट" },
   "theme.dark": { en: "Dark", hi: "डार्क" },
 
+  // ── Header / footer chrome ──
+  "chrome.menu": { en: "Menu", hi: "मेन्यू" },
+  "chrome.closeMenu": { en: "Close menu", hi: "मेन्यू बंद करें" },
+  "chrome.skipToContent": { en: "Skip to content", hi: "मुख्य सामग्री पर जाएँ" },
+  "chrome.tagline": {
+    en: "Free practice questions, previous-year papers and current affairs for Indian government exams.",
+    hi: "सरकारी नौकरी की परीक्षाओं के लिए निःशुल्क अभ्यास प्रश्न, पिछले वर्षों के प्रश्नपत्र और करेंट अफेयर्स।",
+  },
+
+  // ── Footer column headings ──
+  "footer.examsByCategory": { en: "Exams by category", hi: "श्रेणी के अनुसार परीक्षाएँ" },
+  "footer.content": { en: "Study material", hi: "अध्ययन सामग्री" },
+  "footer.about": { en: "About", hi: "हमारे बारे में" },
+  "footer.aboutUs": { en: "About us", hi: "परिचय" },
+  "footer.contact": { en: "Contact", hi: "संपर्क" },
+  "footer.privacy": { en: "Privacy policy", hi: "गोपनीयता नीति" },
+  "footer.terms": { en: "Terms of use", hi: "उपयोग की शर्तें" },
+  "footer.allExams": { en: "All exams", hi: "सभी परीक्षाएँ" },
+  "footer.rights": { en: "All rights reserved.", hi: "सर्वाधिकार सुरक्षित।" },
+  /* Filled from siteStats() at render time: questions, chapters, papers. */
+  "footer.statLine": {
+    en: "{questions} questions · {chapters} chapters · {papers} previous-year papers",
+    hi: "{questions} प्रश्न · {chapters} अध्याय · {papers} पिछले वर्षों के प्रश्नपत्र",
+  },
+
+  // ── Exam categories (footer column) ──
+  "cat.railway": { en: "Railway", hi: "रेलवे" },
+  "cat.ssc": { en: "SSC", hi: "SSC" },
+  "cat.police": { en: "Police", hi: "पुलिस" },
+  "cat.defence": { en: "Defence", hi: "रक्षा" },
+  "cat.teaching": { en: "Teaching", hi: "शिक्षक भर्ती" },
+  "cat.state": { en: "State exams", hi: "राज्य परीक्षाएँ" },
+
+  // ── App card ──
+  "app.install": { en: "Install", hi: "इंस्टॉल करें" },
+  "app.rating": { en: "rating", hi: "रेटिंग" },
+  "app.ratingsCount": { en: "ratings", hi: "रेटिंग" },
+  "app.practiceOffline": { en: "Practise offline on your phone", hi: "फ़ोन पर ऑफ़लाइन अभ्यास करें" },
+
+  // ── Ads ──
+  "ad.label": { en: "Advertisement", hi: "विज्ञापन" },
+
   // … later tasks append their keys here
 } as const;
 
