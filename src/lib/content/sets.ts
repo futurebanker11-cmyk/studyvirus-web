@@ -4,7 +4,13 @@
 export const NORMAL_SET_SIZE = 10;
 export const LAST_SET_SIZE = 20;
 
-type HasPassage = { passageGroup?: string };
+// The Record<string, unknown> intersection is required, not decoration: with a
+// bare { passageGroup?: string } every property is optional, making it a *weak
+// type*, and TypeScript rejects any argument sharing no property with it
+// ("no properties in common"). Real questions carry id/question/options and
+// only sometimes passageGroup, so the bare form fails to typecheck for exactly
+// the ordinary chapters this must handle. Inference of T is unaffected.
+type HasPassage = Record<string, unknown> & { passageGroup?: string };
 
 export function buildSets<T extends HasPassage>(questions: T[]): T[][] {
   const list = questions || [];
