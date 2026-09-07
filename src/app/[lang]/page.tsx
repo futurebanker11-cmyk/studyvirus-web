@@ -81,7 +81,14 @@ export async function generateMetadata({
   const s = siteStats();
   const questions = formatCount(s.questions, lang);
 
-  const title = `${questions} free practice questions for ${EXAMS.length} government exams | StudyVirus`;
+  // Reuses home.h1 — the exact string the H1 itself renders — so the <title>
+  // can never say something different from what the page's own heading says.
+  // This was previously hard-coded in English only: a Hindi visitor got a
+  // correctly-localised H1 and description on the same response as an
+  // English <title>, which is the same class of self-contradiction (numbers
+  // disagreeing across one screen) this page exists to eliminate. Caught in
+  // Plan B Task 4 review, 2026-09-08.
+  const title = `${format(lang, "home.h1", { questions, exams: EXAMS.length })} | StudyVirus`;
 
   return {
     title,
