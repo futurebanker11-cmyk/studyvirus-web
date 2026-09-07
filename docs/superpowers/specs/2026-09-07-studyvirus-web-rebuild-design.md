@@ -33,16 +33,18 @@ Rebuild the public site so that:
 | OpenNext is on the default config: ISR revalidation is a no-op; prerendered pages freeze until redeploy; non-prerendered pages render per request. | `open-next.config.ts`, `CLOUDFLARE_DEPLOY.md:89-98` |
 | FAQPage rich results removed by Google 7 May 2026; QAPage requires community answers; no Quiz schema exists. | Audit §8 |
 
-## 3. What stays untouched
+## 3. What stays, what goes (amended 2026-09-07 per user decision)
 
-These are working, linked from Play listings or the apps, and out of scope:
+**Removed from the site until the paid-mocks launch** (user: the CBT portals are for paid mocks launching later; don't engineer around them). They remain in git history and come back with the paid launch:
 
-- CBT portals: `src/app/[sscexam]/**`, `src/app/bank/**`, `public/cbt/**`, `public/bank/**`, `src/lib/gkApps.ts`, `src/lib/sscCatalog.ts`, `src/lib/bankCatalog.ts`, `src/components/{bank,ssc}/**`.
-- Per-app privacy pages `src/app/privacy/**`, `src/app/privacy-policy`, `src/app/apps/stylescan/**`.
-- `/b/[code]` battle invite route, Firebase auth proxy in `src/middleware.ts`, all WordPress-era redirects in `next.config.mjs`.
+- CBT portals and the bank web player: `src/app/[sscexam]/**`, `src/app/bank/**`, `public/cbt/**`, `public/bank/**`, `public/mock-content/**` (paid bank papers with answer keys served ungated as static files today), `src/lib/sscCatalog.ts`, `src/lib/bankCatalog.ts`, `src/components/{bank,ssc}/**`, and the portal branch of `SiteShell`. Their URLs 301 to the matching exam hub (`/ssccgl` → `/exam/ssc-cgl`, `/bank` → `/exam#bank`) so any link equity moves to the hub.
+- The uncommitted working-tree edits to those files predate this work; they are discarded together with the files (the user was told before this decision).
+
+**Kept as-is (Play-linked or functional):**
+
+- Per-app privacy pages `src/app/privacy/**` and the third-party pages `src/app/apps/stylescan/**` — moved unchanged into the `(legacy)` route group so they keep a root layout; URLs do not change.
+- `src/lib/gkApps.ts` (generated registry; used for package/portal lookups), `/b/[code]` battle-invite route handler, the Firebase auth proxy in `src/middleware.ts`, all WordPress-era redirects in `next.config.mjs`, `public/ads.txt`, `public/app-ads.txt`.
 - The deploy pipeline (`npm run deploy`, GitHub → Cloudflare build).
-
-Uncommitted working-tree changes to `public/bank/player.html`, `public/cbt/**`, and the two `playerHtml.ts` files predate this work and are not touched or committed by it.
 
 ## 4. Architecture
 
