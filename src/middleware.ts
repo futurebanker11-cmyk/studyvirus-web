@@ -8,21 +8,14 @@ import { decide } from "@/lib/i18n/routing";
 // MUST run before decide(), which would otherwise redirect them to /topics.
 const FIREBASE_AUTH_ORIGIN = "https://study-virus-wordpress-app.firebaseapp.com";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COUPLING: src/app/layout.tsx reads this header.
-//
-// The root layout renders <html>, but in the Next 14 App Router a layout cannot
-// read the route segment below it, so it cannot know whether the page it is
-// wrapping is English or Hindi. Setting the attribute client-side is not an
-// option — crawlers and screen readers need `lang` in the served HTML, and
-// getting it wrong on half the site is precisely the accessibility/SEO defect
-// the rebuild exists to fix.
-//
-// So the middleware, which *does* see the URL, states the language here and the
-// root layout reads it back with headers(). Rename or drop this header and
-// every Hindi page silently reverts to lang="en".
-// ─────────────────────────────────────────────────────────────────────────────
-const LANG_HEADER = "x-sv-lang";
+// NOTE: an earlier revision set an `x-sv-lang` request header here for the root
+// layout to read into <html lang>. That worked, and was also a serious mistake:
+// a root layout wraps every route, so its headers() call opted the WHOLE site
+// out of static generation — 201 prerendered routes and 197 static HTML files
+// went to zero, the 26 Play-linked privacy pages included, while the build log
+// still printed "● (SSG)" beside them. <html> now lives in each route group's
+// layout, where the language is statically knowable, and the middleware is back
+// to routing only. Do not reintroduce a header read in the root layout.
 
 async function proxyFirebaseAuth(request: NextRequest): Promise<Response> {
   const target = new URL(request.nextUrl.pathname + request.nextUrl.search, FIREBASE_AUTH_ORIGIN);
@@ -35,22 +28,6 @@ async function proxyFirebaseAuth(request: NextRequest): Promise<Response> {
   return new Response(res.body, { status: res.status, statusText: res.statusText, headers: res.headers });
 }
 
-/** Hindi is the only prefixed language; everything else renders as English. */
-function langOf(pathname: string): "en" | "hi" {
-  return pathname === "/hi" || pathname.startsWith("/hi/") ? "hi" : "en";
-}
-
-/**
- * The header has to reach the *render*, not just the response, so it is set on
- * the request headers that NextResponse.next()/rewrite() forward to the server
- * components. Setting it only on the response would leave headers() empty.
- */
-function withLang(request: NextRequest, lang: "en" | "hi") {
-  const headers = new Headers(request.headers);
-  headers.set(LANG_HEADER, lang);
-  return headers;
-}
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   if (pathname.startsWith("/__/auth") || pathname.startsWith("/__/firebase")) {
@@ -58,25 +35,12 @@ export function middleware(request: NextRequest) {
   }
 
   const d = decide(pathname);
-
-  if (d.action === "next") {
-    // Passthrough: /hi/... is Hindi, the (legacy) group and everything else
-    // is English.
-    const lang = langOf(pathname);
-    const res = NextResponse.next({ request: { headers: withLang(request, lang) } });
-    res.headers.set(LANG_HEADER, lang);
-    return res;
-  }
+  if (d.action === "next") return NextResponse.next();
 
   const url = request.nextUrl.clone();
   if (d.action === "rewrite") {
-    // Rewrites only ever target /en/... (decide() rewrites the prefix-less
-    // English URL), so the rendered page is English.
     url.pathname = d.to;
-    const lang = langOf(d.to);
-    const res = NextResponse.rewrite(url, { request: { headers: withLang(request, lang) } });
-    res.headers.set(LANG_HEADER, lang);
-    return res;
+    return NextResponse.rewrite(url);
   }
   const [path, hash] = d.to.split("#");
   url.pathname = path;

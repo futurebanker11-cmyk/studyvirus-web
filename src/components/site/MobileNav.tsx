@@ -58,10 +58,10 @@ export default function MobileNav({
             type="button"
             aria-label={t(lang, "chrome.closeMenu")}
             onClick={() => setOpen(false)}
-            className="absolute inset-0 h-full w-full cursor-default bg-ink/40"
+            className="absolute inset-0 h-full w-full cursor-default bg-scrim"
           />
           <nav
-            aria-label="Main"
+            aria-label={t(lang, "chrome.menuNav")}
             className="ui absolute right-0 top-0 flex h-full w-72 max-w-[85vw] flex-col overflow-y-auto border-l border-line bg-surface p-4"
           >
             <button

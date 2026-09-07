@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Script from "next/script";
 import { isLang } from "@/lib/i18n/lang";
+import HtmlShell from "@/components/site/HtmlShell";
 import Header from "@/components/site/Header";
 import Footer from "@/components/site/Footer";
 
@@ -13,9 +14,11 @@ import Footer from "@/components/site/Footer";
  * carry a language prefix, and there is still exactly one place that knows
  * which language a page is in.
  *
- * NOTE: <html lang> is NOT set here — <html> is rendered by the root layout,
- * which reads the `x-sv-lang` header the middleware sets. See the comments in
- * src/app/layout.tsx and src/middleware.ts.
+ * This layout renders <html> (via HtmlShell) rather than the root layout,
+ * because `lang` here comes from params — which generateStaticParams
+ * enumerates, so it is known at build time and every page still prerenders.
+ * Reading it from a request header in the root layout instead would make the
+ * whole site dynamic; see the comment in HtmlShell.tsx.
  */
 export function generateStaticParams() {
   return [{ lang: "en" }, { lang: "hi" }];
@@ -35,7 +38,7 @@ export default async function LangLayout({
   if (!isLang(lang)) notFound();
 
   return (
-    <>
+    <HtmlShell lang={lang}>
       <Script
         src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3496395300151813"
         crossOrigin="anonymous"
@@ -46,6 +49,6 @@ export default async function LangLayout({
         {children}
       </main>
       <Footer lang={lang} />
-    </>
+    </HtmlShell>
   );
 }

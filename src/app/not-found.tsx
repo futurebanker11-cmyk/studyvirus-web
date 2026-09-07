@@ -1,47 +1,60 @@
 import Link from "next/link";
+import HtmlShell from "@/components/site/HtmlShell";
+import { t } from "@/lib/ui/strings";
+
+/**
+ * Where every mistyped and every retired URL lands — and, given how much of
+ * the old WordPress site is being redirected, a page real readers will see.
+ *
+ * It renders its own document shell: the root layout deliberately renders no
+ * <html>, and a root not-found sits outside both route groups, so it has to
+ * supply one itself. English, because a 404 has no language segment to read.
+ *
+ * Restyled onto the Task 2 tokens. It previously used text-primary,
+ * bg-blue-700 and the slate ramp — all from the design system that was
+ * deleted, so the heading and the button rendered unstyled.
+ */
+
+const LINKS: { path: string; label: string }[] = [
+  { path: "/topics", label: t("en", "nav.topics") },
+  { path: "/exam", label: t("en", "nav.exams") },
+  { path: "/pyq", label: t("en", "nav.pyq") },
+  { path: "/aptitude", label: t("en", "nav.aptitude") },
+  { path: "/english", label: t("en", "nav.english") },
+  { path: "/current-affairs", label: t("en", "nav.currentAffairs") },
+];
 
 export default function NotFound() {
-  const popularLinks = [
-    { href: "/topics", label: "All Topics" },
-    { href: "/topics/history", label: "Indian History" },
-    { href: "/topics/polity", label: "Indian Polity" },
-    { href: "/topics/geography", label: "Geography" },
-    { href: "/pyq", label: "Previous Year Papers" },
-    { href: "/mock-tests", label: "Mock Tests" },
-    { href: "/current-affairs", label: "Current Affairs" },
-    { href: "/english", label: "English Grammar" },
-    { href: "/articles", label: "Study Articles" },
-  ];
-
   return (
-    <div className="text-center py-16 max-w-xl mx-auto">
-      <h1 className="text-7xl font-black text-primary mb-3">404</h1>
-      <p className="text-xl text-slate-500 mb-2">Page not found</p>
-      <p className="text-slate-400 mb-8">
-        The page you are looking for does not exist or has been moved.
-      </p>
+    <HtmlShell lang="en">
+      <main id="main" className="mx-auto w-full max-w-measure px-4 py-20 sm:px-6">
+        <p className="ui text-sm font-semibold uppercase tracking-wider text-ink-faint">404</p>
+        <h1 className="mt-2 text-3xl font-semibold">Page not found</h1>
+        <p className="mt-3 text-ink-soft">
+          This page does not exist, or it moved when the site was rebuilt. The
+          sections below cover everything the site holds.
+        </p>
 
-      <Link
-        href="/"
-        className="inline-block bg-accent text-white px-6 py-3 rounded-full font-bold hover:bg-blue-700 transition mb-10"
-      >
-        Go to Homepage
-      </Link>
+        <Link
+          href="/"
+          className="ui mt-6 inline-flex items-center rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-ink no-underline transition-colors hover:bg-accent-hover"
+        >
+          {t("en", "common.home")}
+        </Link>
 
-      <div className="text-left mt-6">
-        <h2 className="text-lg font-bold text-primary mb-4">Popular Sections</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {popularLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="bg-white rounded-xl px-4 py-3 border border-slate-100 hover:border-blue-200 hover:shadow-sm transition text-sm font-medium text-slate-600 hover:text-accent"
-            >
-              {link.label}
-            </Link>
+        <ul className="ui mt-10 grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {LINKS.map((l) => (
+            <li key={l.path}>
+              <Link
+                href={l.path}
+                className="flex min-h-[44px] items-center rounded-md border border-line bg-surface px-3 text-sm text-ink no-underline transition-colors hover:border-line-strong"
+              >
+                {l.label}
+              </Link>
+            </li>
           ))}
-        </div>
-      </div>
-    </div>
+        </ul>
+      </main>
+    </HtmlShell>
   );
 }

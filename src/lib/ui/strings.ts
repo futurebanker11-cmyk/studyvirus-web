@@ -52,6 +52,11 @@ export const STRINGS = {
 
   // ── Header / footer chrome ──
   "chrome.menu": { en: "Menu", hi: "मेन्यू" },
+  /* Two <nav> landmarks are on the page at once on narrow screens, so they
+     need distinct accessible names or a screen reader announces "navigation"
+     twice with no way to tell them apart. */
+  "chrome.primaryNav": { en: "Primary", hi: "मुख्य" },
+  "chrome.menuNav": { en: "Menu navigation", hi: "मेन्यू नेविगेशन" },
   "chrome.closeMenu": { en: "Close menu", hi: "मेन्यू बंद करें" },
   "chrome.skipToContent": { en: "Skip to content", hi: "मुख्य सामग्री पर जाएँ" },
   "chrome.tagline": {
@@ -99,4 +104,21 @@ export type T = keyof typeof STRINGS;
 
 export function t(lang: Lang, key: T): string {
   return STRINGS[key][lang];
+}
+
+/**
+ * A string with {placeholders} filled in.
+ *
+ * Deliberately tiny and deliberately here rather than open-coded at each call
+ * site: the footer's stat line was the first parameterised string, and a
+ * hand-rolled `.replace().replace().replace()` chain is exactly the kind of
+ * thing that spreads by copy-paste and then diverges.
+ *
+ * An unknown placeholder is left untouched rather than blanked, so a typo
+ * shows up as a visible `{questoins}` in review instead of a silent gap.
+ */
+export function format(lang: Lang, key: T, params: Record<string, string | number>): string {
+  return t(lang, key).replace(/\{(\w+)\}/g, (whole, name: string) =>
+    Object.prototype.hasOwnProperty.call(params, name) ? String(params[name]) : whole,
+  );
 }

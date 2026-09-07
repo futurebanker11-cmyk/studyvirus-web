@@ -29,7 +29,7 @@ export default function Header({ lang }: { lang: Lang }) {
   const items = NAV.map((n) => ({ href: href(lang, n.path), label: t(lang, n.key) }));
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-bg/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-40 border-b border-line bg-bg-blur backdrop-blur-sm">
       {/* First tabbable element on every page: keyboard users should not have
           to walk seven nav links to reach the article. */}
       <a
@@ -53,7 +53,7 @@ export default function Header({ lang }: { lang: Lang }) {
           <span className="font-display text-lg font-semibold tracking-tight">StudyVirus</span>
         </Link>
 
-        <nav aria-label="Main" className="ui ml-auto hidden items-center gap-1 lg:flex">
+        <nav aria-label={t(lang, "chrome.primaryNav")} className="ui ml-auto hidden items-center gap-1 lg:flex">
           {items.map((i) => (
             <Link
               key={i.href}

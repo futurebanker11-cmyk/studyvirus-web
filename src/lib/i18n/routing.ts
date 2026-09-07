@@ -41,6 +41,21 @@ const RETIRED_TO_EXAM = new Set(["cbt", "mock-content"]);
 // paths breaks the running apps. Land the takedown deliberately, at the same
 // time as the exam-hub bank section, not as a side effect of the rewrite.
 
+/**
+ * Which language a path renders in, judged from the URL alone.
+ *
+ * Hindi is the only prefixed language; everything else — the prefix-less
+ * English URLs, the (legacy) group, /b/[code] — is English.
+ *
+ * The exact-match-or-slash test matters: a bare startsWith("/hi") would
+ * mislabel /hindi-grammar (and any future /hi*-prefixed slug) as Hindi, which
+ * would put lang="hi" on an English page. That is the same class of defect the
+ * rebuild exists to fix, so it is covered by a test.
+ */
+export function langOf(pathname: string): "en" | "hi" {
+  return pathname === "/hi" || pathname.startsWith("/hi/") ? "hi" : "en";
+}
+
 export type Decision = { action: "next" } | { action: "rewrite"; to: string } | { action: "redirect"; to: string };
 
 export function decide(pathname: string): Decision {

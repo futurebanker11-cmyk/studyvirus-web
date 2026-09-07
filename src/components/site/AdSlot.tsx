@@ -23,13 +23,29 @@ import { t } from "@/lib/ui/strings";
 
 const AD_CLIENT = "ca-pub-3496395300151813";
 
-/** Live AdSense unit ids — do not renumber. */
+/**
+ * Live AdSense unit ids — do not renumber.
+ *
+ * `in-article` maps to TWO units because five are configured and AdSpot (a
+ * Task 1 interface, not ours to change) names four. The old site placed
+ * inArticle1 near the top of a long page and inArticle2 further down; a page
+ * that renders the in-article spot twice should still fill both units rather
+ * than serving the same one twice, which AdSense treats as a duplicate.
+ * `ordinal` picks between them.
+ */
 const SLOT_ID: Record<AdSpot, string> = {
   top: "4497869583", // header
   "in-article": "1871706240", // inArticle1
   "sticky-bottom": "6716838813",
   footer: "2969796383", // sidebar unit, reused in the footer rail
 };
+
+const IN_ARTICLE_2 = "4306297892";
+
+function slotId(placement: AdSpot, ordinal: number): string {
+  if (placement === "in-article" && ordinal > 0) return IN_ARTICLE_2;
+  return SLOT_ID[placement];
+}
 
 /**
  * Reserved height per placement, in px. These match the sizes the units are
@@ -52,10 +68,13 @@ const FORMAT: Record<AdSpot, string> = {
 export default function AdSlot({
   placement,
   lang,
+  ordinal = 0,
   className = "",
 }: {
   placement: AdSpot;
   lang: Lang;
+  /** 0 for the first slot of this placement on the page, 1 for the second. */
+  ordinal?: number;
   className?: string;
 }) {
   const ref = useRef<HTMLModElement>(null);
@@ -79,7 +98,7 @@ export default function AdSlot({
     <aside
       // `no-print` and `ad-slot` are both defined in globals.css: the first
       // drops ads on paper, the second holds the height open.
-      className={`no-print my-6 ${placement === "sticky-bottom" ? "sticky bottom-0 z-30 bg-bg/95 backdrop-blur-sm" : ""} ${className}`}
+      className={`no-print my-6 ${placement === "sticky-bottom" ? "sticky bottom-0 z-30 bg-bg-blur backdrop-blur-sm" : ""} ${className}`}
       aria-label={t(lang, "ad.label")}
       style={{ ["--ad-h" as string]: `${h}px` }}
     >
@@ -89,7 +108,7 @@ export default function AdSlot({
           className="adsbygoogle block w-full"
           style={{ display: "block", width: "100%", height: `${h}px` }}
           data-ad-client={AD_CLIENT}
-          data-ad-slot={SLOT_ID[placement]}
+          data-ad-slot={slotId(placement, ordinal)}
           data-ad-format={FORMAT[placement]}
           data-full-width-responsive="true"
         />

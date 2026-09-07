@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { href, splitLang, isLang, otherLang } from "../src/lib/i18n/lang";
-import { decide } from "../src/lib/i18n/routing";
+import { decide, langOf } from "../src/lib/i18n/routing";
 import { buildAlternates, abs } from "../src/lib/i18n/alternates";
 import { PORTAL_SLUGS } from "../src/lib/gkApps";
 import { EXAMS } from "../src/lib/exams";
@@ -91,4 +91,36 @@ test("alternates", () => {
   });
   assert.deepEqual(buildAlternates({ lang: "hi", path: "/topics/history", hasHi: true }).canonical, "https://studyvirus.com/hi/topics/history");
   assert.deepEqual(buildAlternates({ lang: "en", path: "/topics/history", hasHi: false }), { canonical: "https://studyvirus.com/topics/history" });
+});
+
+/**
+ * langOf decides what goes in <html lang>. Nothing else fails if it is wrong —
+ * the page renders, it just tells crawlers and screen readers the wrong
+ * language on half the site, which is the exact defect the rebuild exists to
+ * fix. So it gets its own test.
+ */
+test("langOf: only a real /hi segment is Hindi", () => {
+  assert.equal(langOf("/hi"), "hi");
+  assert.equal(langOf("/hi/"), "hi");
+  assert.equal(langOf("/hi/topics"), "hi");
+  assert.equal(langOf("/hi/topics/history/1"), "hi");
+
+  assert.equal(langOf("/"), "en");
+  assert.equal(langOf("/topics"), "en");
+  assert.equal(langOf("/privacy/wbcs"), "en");
+  assert.equal(langOf("/en/topics"), "en");
+
+  // The guard that a bare startsWith("/hi") would fail: these are English
+  // paths that merely begin with the same two letters.
+  assert.equal(langOf("/hindi-something"), "en");
+  assert.equal(langOf("/hindi"), "en");
+  assert.equal(langOf("/history"), "en");
+});
+
+test("langOf agrees with splitLang on every path both understand", () => {
+  // Two independent implementations of the same rule live in the codebase
+  // (splitLang also returns the stripped path). They must not drift.
+  for (const p of ["/", "/hi", "/hi/topics", "/topics", "/hindi-something", "/privacy/wbcs"]) {
+    assert.equal(langOf(p), splitLang(p).lang, p);
+  }
 });

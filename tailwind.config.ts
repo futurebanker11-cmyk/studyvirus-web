@@ -16,6 +16,13 @@ const config: Config = {
     extend: {
       colors: {
         bg: "var(--bg)",
+        // Sticky chrome and the modal scrim. These exist as their own tokens
+        // rather than as `bg-bg/95` / `bg-ink/40` opacity modifiers: Tailwind
+        // cannot alpha-composite an arbitrary var() colour and drops such a
+        // utility SILENTLY, so the sticky header shipped fully transparent.
+        // Never write an opacity modifier on a token colour here.
+        "bg-blur": "var(--bg-blur)",
+        scrim: "var(--scrim)",
         surface: "var(--surface)",
         "surface-sunk": "var(--surface-sunk)",
 

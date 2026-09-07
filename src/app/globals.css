@@ -30,6 +30,14 @@
   --surface: #ffffff;
   --surface-sunk: #f4f2ed;
 
+  /* Translucent chrome. Sticky bars sit ON the page background, so they need
+     the *same* colour at high opacity — not an alpha modifier on --bg, which
+     Tailwind cannot composite from a var() and silently drops, leaving the
+     sticky header fully transparent with content scrolling through it.
+     --scrim is the modal backdrop: dark in both themes, because it dims. */
+  --bg-blur: rgb(251 250 247 / 0.95);
+  --scrim: rgb(28 26 23 / 0.45);
+
   /* ── Ink ──
      Near-black with a hint of warmth rather than #000, which vibrates
      against a warm ground. */
@@ -92,6 +100,9 @@
     --surface: #1b1e23;
     --surface-sunk: #101215;
 
+    --bg-blur: rgb(20 22 26 / 0.95);
+    --scrim: rgb(0 0 0 / 0.6);
+
     --ink: #ece9e3;
     --ink-soft: #a8a49c;
     --ink-faint: #7b776f;
@@ -126,6 +137,9 @@
   --bg: #14161a;
   --surface: #1b1e23;
   --surface-sunk: #101215;
+
+  --bg-blur: rgb(20 22 26 / 0.95);
+  --scrim: rgb(0 0 0 / 0.6);
 
   --ink: #ece9e3;
   --ink-soft: #a8a49c;

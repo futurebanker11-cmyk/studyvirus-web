@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { href, type Lang } from "@/lib/i18n/lang";
-import { t, type T } from "@/lib/ui/strings";
+import { t, format, type T } from "@/lib/ui/strings";
 import { siteStats, formatCount } from "@/lib/content/stats";
 
 /**
@@ -68,10 +68,11 @@ function Item({ to, label }: { to: string; label: string }) {
 
 export default function Footer({ lang }: { lang: Lang }) {
   const s = siteStats();
-  const statLine = t(lang, "footer.statLine")
-    .replace("{questions}", formatCount(s.questions, lang))
-    .replace("{chapters}", formatCount(s.chapters, lang))
-    .replace("{papers}", formatCount(s.papers, lang));
+  const statLine = format(lang, "footer.statLine", {
+    questions: formatCount(s.questions, lang),
+    chapters: formatCount(s.chapters, lang),
+    papers: formatCount(s.papers, lang),
+  });
 
   return (
     <footer className="mt-16 border-t border-line bg-surface-sunk">
