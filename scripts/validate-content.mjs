@@ -18,7 +18,9 @@ const force = process.argv.includes("--force");
 const offline = process.argv.includes("--offline");
 
 const NORMAL = 10, LAST = 20;
-const ENGLISH_KEYS = new Set(["english_full", "english_basic"]);
+// Mirrors ENGLISH_KEYS in src/lib/content/topics.ts: these count under the
+// "english" section, every other listed topic under "topic".
+const ENGLISH_KEYS = new Set(["english", "english_full", "english_basic"]);
 const CA_START = new Date(Date.UTC(2026, 3, 1)); // 2026-04-01
 
 const enc = (key) => key.split("/").map(encodeURIComponent).join("/");
@@ -106,6 +108,15 @@ function duplicateSlugs(values) {
 const normKey = (key) => key.split("/").filter((s) => s !== ".").join("/");
 
 const chapterSlug = (s) => s.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-").replace(/-+/g, "-");
+// Mirrors resolveChapterSlug in src/lib/content/slugs.ts: a name that strips to
+// nothing (Devanagari chapters in general_hindi) slugs as chapter-N from the
+// file's leading number, else from the chapter's 1-based position.
+const resolveChapterSlug = (en, file, position) => {
+  const slug = chapterSlug(en);
+  if (slug.replace(/-/g, "") !== "") return slug;
+  const m = /^(\d+)/.exec(file);
+  return `chapter-${m ? parseInt(m[1], 10) : position}`;
+};
 const aptChapterSlug = (id) => id.replace(/^\d+_/, "").replace(/_/g, "-");
 
 async function collect() {
@@ -116,19 +127,9 @@ async function collect() {
   assertUnique("topic key", topics.map((t) => t.key));
   for (const t of topics) {
     if (t.screen === "CurrentAffairs") continue;
-    // Deviation from the Task 7 brief (see task-7-report.md): the live manifest's
-    // `general_hindi` topic names its chapters in Devanagari, so chapterSlug()
-    // collapses all of them to "" / "-". No slug rule for non-Latin names exists
-    // yet, so such a topic is left OUT of the index -- pages and sitemaps can
-    // then never emit colliding URLs for it -- and reported on every build,
-    // the same way a never-present folder is a warning rather than a failure.
-    // Every other uniqueness assertion below remains a hard failure.
-    const slugs = (t.chapters || []).map((c) => chapterSlug(c.en));
-    const dup = duplicateSlugs(slugs);
-    if (dup.size) {
-      console.warn(`WARN skipping topic ${t.key} (gk/${t.folder}, ${slugs.length} chapters): duplicate chapter slug ${[...dup].map((x) => `"${x}"`).join(", ")} -- unroutable until a slug rule for non-Latin chapter names exists`);
-      continue;
-    }
+    // The site routes chapters by resolveChapterSlug, so a collision here would
+    // be two chapters on one URL: a hard failure like every other assertion.
+    assertUnique(`topic ${t.key} chapter slug`, (t.chapters || []).map((c, i) => resolveChapterSlug(c.en, c.file, i + 1)));
     const section = ENGLISH_KEYS.has(t.key) ? "english" : "topic";
     for (const c of t.chapters || []) targets.push({ key: `gk/${t.folder}/${c.file}`, kind: "bilingual", section, meta: { hidden: !!t.hiddenFromList } });
   }
