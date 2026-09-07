@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { encodeKey, assertPublishable, keys } from "../src/lib/content/keys";
+import { readFileSync } from "node:fs";
+import { encodeKey, assertPublishable, keys, normalizeKey } from "../src/lib/content/keys";
+import { hasKey, __setIndexForTests, type ContentIndex } from "../src/lib/content/index";
 
 test("encodeKey encodes spaces and ampersands but keeps slashes", () => {
   assert.equal(
@@ -52,4 +54,26 @@ test("key builders produce the verified CDN layout", () => {
   assert.equal(keys.article("crack-first-attempt.json"), "gk/articles/crack-first-attempt.json");
   assert.equal(keys.appsRegistry(), "apps/registry.json");
   assert.equal(keys.webMethod("bank", "01_number_series"), "gk/aptitude/web-method/bank/01_number_series.json");
+});
+
+// 2,136 live bank manifest entries have a folder of ".". The validator stores
+// keys normalised (scripts/validate-content.mjs normKey) and hasKey/counts are
+// pure string lookups, so the builder must normalise too or every such set
+// silently vanishes from the site.
+test("aptitudeSet normalises \".\" manifest folders to match the normalised index", () => {
+  assert.equal(normalizeKey("bank/2-Data Interpretation/table/./prelims/set_084.json"), "bank/2-Data Interpretation/table/prelims/set_084.json");
+  assert.equal(normalizeKey("gk/topics.json"), "gk/topics.json");
+
+  const key = keys.aptitudeSet("bank", "2-Data Interpretation", "table", ".", "prelims/set_084.json");
+  assert.equal(key, "bank/2-Data Interpretation/table/prelims/set_084.json");
+  assert.ok(!key.split("/").includes("."), "key must carry no \".\" segment");
+  assert.equal(
+    keys.aptitudeSet("ssc-railway", "quant", ".", "1-Divisibility Rules", "Set 01.json"),
+    "gk/aptitude/content/quant/1-Divisibility Rules/Set 01.json",
+  );
+
+  // The key it produces is the one the validator actually wrote for that live set.
+  const real = JSON.parse(readFileSync(new URL("../src/generated/content-index.json", import.meta.url), "utf8")) as ContentIndex;
+  __setIndexForTests(real);
+  assert.equal(hasKey(key), true, `${key} must be present in the committed index`);
 });

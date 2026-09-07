@@ -95,13 +95,6 @@ function assertUnique(label, values) {
   }
 }
 
-// Slugs that occur more than once in `values` (empty set when all unique).
-function duplicateSlugs(values) {
-  const seen = new Set(), dup = new Set();
-  for (const v of values) (seen.has(v) ? dup : seen).add(v);
-  return dup;
-}
-
 // Manifest `folder` fields are sometimes "." (e.g. bank DI chapters), which would
 // leak a literal "." segment into the key. The CDN resolves both forms, but the
 // index reader is a pure string lookup, so keys are stored normalised.
@@ -120,6 +113,11 @@ export const resolveChapterSlug = (en, file, position) => {
   return `chapter-${m ? parseInt(m[1], 10) : position}`;
 };
 const aptChapterSlug = (id) => id.replace(/^\d+_/, "").replace(/_/g, "-");
+// Mirrors typeSlug in src/lib/content/aptitude.ts: folder first (unique per
+// chapter, unlike names: bank/reasoning has chapters with two or three types all
+// named "Previous Year Questions"), then the name when the folder slugs to
+// nothing (the "." bank DI types), then the id.
+export const typeSlug = (t) => chapterSlug(t.folder ?? "") || chapterSlug(t.name?.en ?? "") || chapterSlug(t.id);
 
 async function collect() {
   const targets = []; // { key, kind, section, meta }
@@ -152,26 +150,16 @@ async function collect() {
     for (const s of m.subjects) {
       assertUnique(`${fam.family}/${s.id} chapter slug`, s.chapters.map((c) => aptChapterSlug(c.id)));
       for (const c of s.chapters) {
-        // Same deviation as for topics above: the live bank manifest has chapters
-        // with two or three types all named "Previous Year Questions" (folders
-        // "4-Previous Year", "4-Previous Year (Arihant)", "5-Previous Year"), which
-        // Task 10's typeSlug (name-based) cannot tell apart. Those types are left
-        // out of the index and reported until the type slug rule disambiguates them.
+        // The site routes types by typeSlug, so a collision here would be two
+        // types on one URL: a hard failure like every other assertion.
         const types = c.types || [];
-        const typeSlugs = types.map((t) => chapterSlug(t.name?.en || t.id));
-        const dupType = duplicateSlugs(typeSlugs);
-        if (dupType.size) {
-          const skipped = types.filter((t, i) => dupType.has(typeSlugs[i]));
-          const sets = skipped.reduce((a, t) => a + (t.sets || []).filter((x) => x.tier === 1).length, 0);
-          console.warn(`WARN skipping ${skipped.length} types (${sets} tier-1 sets) in ${fam.family}/${s.id}/${c.id}: duplicate type slug ${[...dupType].map((x) => `"${x}"`).join(", ")} -- ${skipped.map((t) => `${t.id} (${t.folder})`).join(", ")} -- unroutable until the type slug rule disambiguates same-named types`);
-        }
-        types.forEach((t, i) => {
-          if (dupType.has(typeSlugs[i])) return;
+        assertUnique(`${fam.family}/${s.id}/${c.id} type slug`, types.map(typeSlug));
+        for (const t of types) {
           for (const st of t.sets || []) {
             if (st.tier !== 1) continue;
             targets.push({ key: fam.base(s.folder, c.folder, t.folder, st.file), kind: "aptitude", section: "aptitude", meta: {} });
           }
-        });
+        }
       }
     }
   }

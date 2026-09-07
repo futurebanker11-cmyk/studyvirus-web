@@ -1,0 +1,9 @@
+{ "version": 1, "subjects": [
+  { "id": "quant", "folder": "quant", "icon": "🔢", "name": { "en": "Quantitative Aptitude", "hi": "मात्रात्मक अभिक्षमता" }, "chapters": [
+    { "id": "01_number_system_hcf_lcm", "folder": "01_number_system_hcf_lcm", "emoji": "🔢", "name": { "en": "Number System, HCF & LCM", "hi": "संख्या पद्धति" }, "types": [
+      { "id": "type_01", "folder": "1-Divisibility Rules", "name": { "en": "Divisibility Rules", "hi": "x" }, "sets": [
+        { "id": "set_01", "file": "Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] }
+    ] }
+  ] }
+] }

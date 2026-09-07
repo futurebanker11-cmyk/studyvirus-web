@@ -1,0 +1,33 @@
+{ "version": 1, "subjects": [
+  { "id": "quant", "folder": "1-Quantitative Aptitude", "icon": "🔢", "name": { "en": "Quantitative Aptitude", "hi": "मात्रात्मक अभिक्षमता" }, "chapters": [
+    { "id": "01_number_series", "folder": "01_number_series", "name": { "en": "Number Series", "hi": "संख्या श्रृंखला" }, "types": [
+      { "id": "type_01", "folder": "1-Missing Term", "name": { "en": "Missing Term", "hi": "लुप्त पद" }, "sets": [
+        { "id": "set_01", "file": "Foundation/Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } },
+        { "id": "set_02", "file": "Foundation/Set 02.json", "tier": 2, "count": 10, "name": { "en": "Set 02", "hi": "सेट 02" } },
+        { "id": "set_03", "file": "Foundation/Set 03.json", "tier": 1, "count": 10, "name": { "en": "Set 03", "hi": "सेट 03" } },
+        { "id": "set_04", "file": "Foundation/Set 04.json", "tier": 1, "count": 10, "name": { "en": "Set 04", "hi": "सेट 04" } }
+      ] },
+      { "id": "type_02", "folder": "2-Wrong Term", "name": { "en": "Wrong Term", "hi": "गलत पद" }, "sets": [
+        { "id": "set_01", "file": "Foundation/Set 01.json", "tier": 2, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] }
+    ] },
+    { "id": "R01_blood_relation", "folder": "R01_blood_relation", "name": { "en": "Blood Relation", "hi": "रक्त संबंध" }, "types": [
+      { "id": "type_04_7", "folder": "4-Previous Year", "name": { "en": "Previous Year Questions", "hi": "पिछले वर्ष के प्रश्न" }, "sets": [
+        { "id": "set_01", "file": "mains/Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] },
+      { "id": "type_04_8", "folder": "4-Previous Year (Arihant)", "name": { "en": "Previous Year Questions", "hi": "पिछले वर्ष के प्रश्न" }, "sets": [
+        { "id": "set_01", "file": "mains/Set 01.json", "tier": 1, "count": 10, "name": { "en": "Set 01", "hi": "सेट 01" } }
+      ] }
+    ] },
+    { "id": "table", "folder": "table", "name": { "en": "Table", "hi": "तालिका" }, "types": [
+      { "id": "type_01", "folder": ".", "name": { "en": "Table", "hi": "तालिका" }, "sets": [
+        { "id": "set_084", "file": "prelims/set_084.json", "tier": 1, "count": 10, "name": { "en": "Set 84", "hi": "सेट 84" } }
+      ] }
+    ] }
+  ] },
+  { "id": "previous_year_papers", "folder": "7-Previous Year Papers", "name": { "en": "Previous Year Questions Papers", "hi": "पिछले वर्ष" }, "chapters": [
+    { "id": "1-Quantitative Aptitude", "folder": "1-Quantitative Aptitude", "name": { "en": "Quantitative Aptitude", "hi": "x" }, "types": [
+      { "id": "t", "folder": "t", "name": { "en": "T", "hi": "T" }, "sets": [ { "id": "s", "file": "S.json", "tier": 2, "count": 10, "name": { "en": "S", "hi": "S" } } ] }
+    ] }
+  ] }
+] }

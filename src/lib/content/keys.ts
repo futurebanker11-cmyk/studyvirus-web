@@ -35,6 +35,17 @@ export function encodeKey(key: string): string {
 
 const pad2 = (n: number) => String(n).padStart(2, "0");
 
+/**
+ * Drop "." path segments. Manifest `folder` fields are sometimes "." (2,136
+ * bank entries, mostly DI), which would leak a literal "." segment into the
+ * key. The CDN resolves both forms, but scripts/validate-content.mjs stores
+ * the index normalised and hasKey/counts are pure string lookups, so the read
+ * side must build the identical key or the set silently vanishes.
+ */
+export function normalizeKey(key: string): string {
+  return key.split("/").filter((s) => s !== ".").join("/");
+}
+
 export const keys = {
   topicsManifest: () => "gk/topics.json",
   chapterFile: (folder: string, file: string) => `gk/${folder}/${file}`,
@@ -49,9 +60,11 @@ export const keys = {
     typeFolder: string,
     file: string,
   ) =>
-    family === "bank"
-      ? `bank/${subjectFolder}/${chapterFolder}/${typeFolder}/${file}`
-      : `gk/aptitude/content/${subjectFolder}/${chapterFolder}/${typeFolder}/${file}`,
+    normalizeKey(
+      family === "bank"
+        ? `bank/${subjectFolder}/${chapterFolder}/${typeFolder}/${file}`
+        : `gk/aptitude/content/${subjectFolder}/${chapterFolder}/${typeFolder}/${file}`,
+    ),
   caDaily: (date: string) => `gk/0-Current Affairs/daily/${date}.json`,
   articlesIndex: () => "gk/articles/index.json",
   article: (file: string) => `gk/articles/${file}`,
