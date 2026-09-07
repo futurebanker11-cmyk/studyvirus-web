@@ -5,7 +5,7 @@
 //
 //   node scripts/validate-content.mjs            # normal
 //   node scripts/validate-content.mjs --force    # skip regression + shrink guards
-//   node scripts/validate-content.mjs --offline  # rebuild totals from the committed index, no network
+//   node scripts/validate-content.mjs --offline  # keep the committed index as-is: no network, NOT verified
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -59,8 +59,15 @@ function countFor(kind, json) {
     return [en, hi];
   }
   if (kind === "aptitude") {
-    const q = Array.isArray(json?.questions) ? json.questions : [];
-    return [q.length, q.filter((x) => typeof x?.question_hi === "string" && x.question_hi.trim()).length];
+    // Two set-file shapes live under bank/ (and gk/aptitude/): the app's
+    // { questions: [{ question, question_hi, … }] } and the bilingual
+    // { en: [], hi: [] } shape topics use. Without the fall-through, roughly a
+    // third of bank sets counted [0, 0] and lost their set URLs.
+    if (Array.isArray(json?.questions)) {
+      const q = json.questions;
+      return [q.length, q.filter((x) => typeof x?.question_hi === "string" && x.question_hi.trim()).length];
+    }
+    return countFor("bilingual", json);
   }
   if (kind === "article") {
     const p = Array.isArray(json?.paragraphs) ? json.paragraphs : [];
@@ -92,6 +99,11 @@ function duplicateSlugs(values) {
   for (const v of values) (seen.has(v) ? dup : seen).add(v);
   return dup;
 }
+
+// Manifest `folder` fields are sometimes "." (e.g. bank DI chapters), which would
+// leak a literal "." segment into the key. The CDN resolves both forms, but the
+// index reader is a pure string lookup, so keys are stored normalised.
+const normKey = (key) => key.split("/").filter((s) => s !== ".").join("/");
 
 const chapterSlug = (s) => s.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-").replace(/-+/g, "-");
 const aptChapterSlug = (id) => id.replace(/^\d+_/, "").replace(/_/g, "-");
@@ -173,6 +185,9 @@ async function collect() {
   assertUnique("article id", articles.map((a) => a.id));
   for (const a of articles) targets.push({ key: `gk/articles/${a.file}`, kind: "article", section: "articles", meta: {} });
 
+  for (const tg of targets) tg.key = normKey(tg.key);
+  assertUnique("target key (after normalising \".\" segments)", targets.map((t) => t.key));
+
   return { targets, pyqExams: pyq.length };
 }
 
@@ -201,8 +216,12 @@ async function main() {
   const previous = existsSync(OUT) ? JSON.parse(readFileSync(OUT, "utf8")) : null;
 
   if (offline) {
+    // Totals are a pure function of the files map and the manifests; without the
+    // manifests nothing can be re-derived or verified, so the committed index is
+    // used exactly as the last online run wrote it. Say so plainly.
     if (!previous) throw new Error("--offline needs an existing index");
-    console.log(`offline: keeping ${Object.values(previous.files).reduce((a, d) => a + Object.keys(d).length, 0)} keys`);
+    const n = Object.values(previous.files).reduce((a, d) => a + Object.keys(d).length, 0);
+    console.log(`offline: keeping the committed index as-is, UNVERIFIED (${n} keys, generated ${previous.generatedAt})`);
     return;
   }
 
@@ -217,6 +236,8 @@ async function main() {
     for (let attempt = 0; attempt < 3; attempt++) {
       try { r = await fetchJson(tg.key); break; } catch (e) { if (attempt === 2) throw e; await new Promise((res) => setTimeout(res, 500 * (attempt + 1))); }
     }
+    // `r` is always defined here: the loop either breaks after a successful
+    // fetchJson or rethrows on the third failure.
     if (r.status === 404) { if (!tg.meta.neverFail) missing.push(tg); }
     else if (r.malformed) malformed.push(tg.key);
     else {
@@ -234,11 +255,13 @@ async function main() {
   // Regression guard: keys present before, missing now.
   const regressions = [];
   if (previous) {
+    const targetKeys = new Set(targets.map((t) => t.key));
     for (const [dir, m] of Object.entries(previous.files)) for (const file of Object.keys(m)) {
-      if (!files[dir]?.[file] && targets.some((t) => t.key === `${dir}/${file}`)) regressions.push(`${dir}/${file}`);
+      if (!files[dir]?.[file] && targetKeys.has(`${dir}/${file}`)) regressions.push(`${dir}/${file}`);
     }
   }
-  const neverPresent = missing.filter((tg) => !regressions.includes(tg.key));
+  const regressionSet = new Set(regressions);
+  const neverPresent = missing.filter((tg) => !regressionSet.has(tg.key));
   if (neverPresent.length) {
     console.warn(`WARN never-present (${neverPresent.length}), not failing:`);
     neverPresent.slice(0, 40).forEach((tg) => console.warn("  " + tg.key));
