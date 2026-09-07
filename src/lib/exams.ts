@@ -94,12 +94,31 @@ export const EXAMS: Exam[] = [
   { id: 'agriculture_supervisor', slug: 'agriculture-supervisor', en: 'Agri Supervisor', hi: 'कृषि पर्यवेक्षक', fullName: 'Agriculture Supervisor', category: 'agriculture', color: '#33691e', icon: '🌾' },
   { id: 'ibps_afo', slug: 'ibps-afo', en: 'IBPS AFO', hi: 'IBPS AFO', fullName: 'IBPS Agriculture Field Officer', category: 'agriculture', color: '#1b5e20', icon: '🌾' },
   { id: 'labour_inspector', slug: 'labour-inspector', en: 'Labour Inspector', hi: 'श्रम निरीक्षक', fullName: 'Labour Inspector', category: 'central', color: '#4a148c', icon: '🏢' },
+
+  // ── Bank (6 bank apps, bank-apps/config/exams.js) ──
+  { id: 'sbi_clerk', slug: 'sbi-clerk', en: 'SBI Clerk', hi: 'SBI क्लर्क', fullName: 'State Bank of India Junior Associate (Clerk)', category: 'bank', color: '#1e40af', icon: '🏦' },
+  { id: 'sbi_po', slug: 'sbi-po', en: 'SBI PO', hi: 'SBI PO', fullName: 'State Bank of India Probationary Officer', category: 'bank', color: '#1d4ed8', icon: '🏦' },
+  { id: 'ibps_clerk', slug: 'ibps-clerk', en: 'IBPS Clerk', hi: 'IBPS क्लर्क', fullName: 'IBPS Customer Service Associate (Clerk)', category: 'bank', color: '#0f766e', icon: '🏦' },
+  { id: 'ibps_po', slug: 'ibps-po', en: 'IBPS PO', hi: 'IBPS PO', fullName: 'IBPS Probationary Officer / Management Trainee', category: 'bank', color: '#0e7490', icon: '🏦' },
+  { id: 'ibps_rrb_clerk', slug: 'ibps-rrb-clerk', en: 'IBPS RRB Clerk', hi: 'IBPS RRB क्लर्क', fullName: 'IBPS RRB Office Assistant (Multipurpose)', category: 'bank', color: '#7c2d12', icon: '🏦' },
+  { id: 'ibps_rrb_po', slug: 'ibps-rrb-po', en: 'IBPS RRB PO', hi: 'IBPS RRB PO', fullName: 'IBPS RRB Officer Scale I', category: 'bank', color: '#9a3412', icon: '🏦' },
+
+  // ── Exams that have a live app but were missing from this registry (LIVE_VERSIONS.csv) ──
+  { id: 'gujarat_police', slug: 'gujarat-police', en: 'Gujarat Police', hi: 'गुजरात पुलिस', fullName: 'Gujarat Police Constable / LRB', category: 'police', color: '#1a237e', icon: '👮' },
+  { id: 'maharashtra_police', slug: 'maharashtra-police', en: 'Maharashtra Police', hi: 'महाराष्ट्र पुलिस', fullName: 'Maharashtra Police Constable', category: 'police', color: '#b71c1c', icon: '👮' },
+  { id: 'wbcs', slug: 'wbcs', en: 'WBCS', hi: 'WBCS', fullName: 'West Bengal Civil Service', category: 'state_psc', color: '#4a148c', icon: '🏛️' },
+  { id: 'jpsc', slug: 'jpsc', en: 'JPSC', hi: 'JPSC', fullName: 'Jharkhand Public Service Commission', category: 'state_psc', color: '#004d40', icon: '🏛️' },
+  { id: 'upsssc_lower', slug: 'upsssc-lower', en: 'UPSSSC Lower', hi: 'UPSSSC लोअर', fullName: 'UPSSSC Lower Subordinate', category: 'state_sub', color: '#1a237e', icon: '📝' },
+  { id: 'bpsc_tre', slug: 'bpsc-tre', en: 'BPSC TRE', hi: 'BPSC TRE', fullName: 'Bihar Teacher Recruitment Exam', category: 'teaching', color: '#880e4f', icon: '🎓' },
+  { id: 'mptet', slug: 'mptet', en: 'MPTET', hi: 'MPTET', fullName: 'Madhya Pradesh Teacher Eligibility Test', category: 'teaching', color: '#1b5e20', icon: '🎓' },
+  { id: 'gram_sevak', slug: 'gram-sevak', en: 'Gram Sevak', hi: 'ग्राम सेवक', fullName: 'Gram Sevak / Village Development', category: 'revenue', color: '#4e342e', icon: '📑' },
 ];
 
 export const EXAM_CATEGORIES: Record<string, string> = {
   railway: 'Railway Exams',
   ssc: 'SSC Exams',
   police: 'Police Exams',
+  bank: 'Bank Exams',
   defence: 'Defence Exams',
   upsc: 'UPSC & Central',
   central: 'Central Government',
