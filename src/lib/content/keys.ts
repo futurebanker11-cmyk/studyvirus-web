@@ -20,8 +20,20 @@ export const PRO_PREFIXES = [
   "gk/0-Current Affairs/magazine/",
 ] as const;
 
-/** Throws if the key is paid or Pro content. Manifests inside paid prefixes are public. */
+/**
+ * Throws if the key is paid or Pro content. Manifests inside paid prefixes are
+ * public. Any empty, "." or ".." segment is rejected FIRST: the prefix check
+ * below runs on the literal string, but the HTTPS fallback in loader.ts hands
+ * the key to a URL parser that collapses dot segments, so
+ * "gk/articles/../notes/x.json" would otherwise pass and resolve to Pro
+ * content. R2 looks the literal key up, so production was never exposed, but
+ * `next build` prerendering and `next dev` use the HTTPS path. Keys built by
+ * `keys.aptitudeSet` are normalised (normalizeKey strips the "." manifest
+ * folders) before they reach this guard, so the 2,136 bank keys still pass.
+ */
 export function assertPublishable(key: string): void {
+  const segs = key.split("/");
+  if (segs.some((s) => s === "" || s === "." || s === "..")) throw new Error(`refusing malformed content key: ${key}`);
   if (key.endsWith("/manifest.json")) return;
   for (const p of [...PAID_PREFIXES, ...PRO_PREFIXES]) {
     if (key.startsWith(p)) throw new Error(`refusing to read non-free content key: ${key}`);

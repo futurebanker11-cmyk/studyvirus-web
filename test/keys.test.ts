@@ -28,6 +28,29 @@ test("assertPublishable refuses paid and Pro prefixes", () => {
   }
 });
 
+// A prefix check on an unnormalised string is bypassable: the HTTPS fallback
+// (next build prerendering, next dev) hands the key to a URL parser that
+// collapses "." and ".." segments, so both of these resolve to real Pro content
+// on the CDN. R2 looks the literal key up and returns nothing, which is why
+// production was never exposed. Reject any empty, "." or ".." segment before
+// the prefix check runs.
+test("assertPublishable refuses keys with dot or empty segments before the prefix check", () => {
+  for (const k of [
+    "gk/articles/../notes/1-Indian History/x.json",
+    "./gk/notes/x.json",
+    "gk/./notes/x.json",
+    "gk//notes/x.json",
+    "gk/1-Indian History/../../mock-content/x.json",
+    "gk/articles/./a.json",
+    "gk/topics.json/",
+    "/gk/topics.json",
+    "..",
+    "gk/articles/../notes/manifest.json",
+  ]) {
+    assert.throws(() => assertPublishable(k), /refusing malformed content key/, k);
+  }
+});
+
 test("assertPublishable allows manifests inside paid prefixes and all free keys", () => {
   assertPublishable("mock-content/manifest.json");
   assertPublishable("gk/topics.json");
