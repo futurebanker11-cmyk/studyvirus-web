@@ -4,7 +4,9 @@ export function siteStats() {
   const t = totals();
   return {
     questions: t.topicQuestions + t.pyqQuestions + t.aptitudeQuestions + t.englishQuestions + t.caQuestions,
-    chapters: t.topicChapters + t.englishChapters,
+    // Every chapter a visitor can browse, aptitude included: a count that can be
+    // disproved by browsing the tree is the trust failure these numbers replace.
+    chapters: t.topicChapters + t.englishChapters + (t.aptitudeChapters ?? 0),
     papers: t.pyqPapers,
     pyqExams: t.pyqExams,
     caDays: t.caDays,
@@ -15,6 +17,7 @@ export function siteStats() {
 
 /** Indian digit grouping: 1,98,633. Same in both languages (Devanagari digits are not used). */
 export function formatCount(n: number, _lang: "en" | "hi"): string {
+  if (!Number.isFinite(n)) return "0";
   const s = String(Math.trunc(n));
   if (s.length <= 3) return s;
   const last3 = s.slice(-3);

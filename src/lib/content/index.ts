@@ -7,6 +7,12 @@ export interface ContentTotals {
   englishQuestions: number; englishChapters: number;
   caQuestions: number; caDays: number;
   articles: number;
+  /**
+   * Optional: scripts/validate-content.mjs does not populate this yet, so the
+   * committed index stays valid without regeneration. siteStats() treats a
+   * missing value as 0 until the next regeneration fills it in.
+   */
+  aptitudeChapters?: number;
 }
 
 export interface ContentIndex {

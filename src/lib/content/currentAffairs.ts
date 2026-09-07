@@ -10,6 +10,11 @@ export interface CaDay { date: string; month: string; key: string; enCount: numb
 const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const MONTHS_HI = ["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"];
 
+/**
+ * Recomputed on every call, deliberately: listMonths/daysOfMonth/findDay all
+ * re-derive from here so __setIndexForTests stays honest (a memo would need
+ * invalidation). 146 entries makes the cost irrelevant.
+ */
 export function listDays(): CaDay[] {
   const out: CaDay[] = [];
   for (const file of listDir(CA_DAILY_DIR)) {

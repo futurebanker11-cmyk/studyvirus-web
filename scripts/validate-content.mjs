@@ -182,6 +182,12 @@ async function collect() {
   return { targets, pyqExams: pyq.length };
 }
 
+// TODO: populate `aptitudeChapters` here on the next regeneration — count the
+// distinct chapter directories among the aptitude targets (the parent of each
+// set's type folder), the way topicChapters/englishChapters are counted. It is
+// declared optional in ContentTotals (src/lib/content/index.ts) so the committed
+// index stays valid until then; siteStats() reads it as 0 meanwhile, which
+// understates the homepage chapter count by ~119.
 function totalsFrom(files, targets) {
   const t = { topicQuestions: 0, topicChapters: 0, topicSets: 0, pyqQuestions: 0, pyqPapers: 0, pyqExams: 0, aptitudeQuestions: 0, aptitudeSets: 0, englishQuestions: 0, englishChapters: 0, caQuestions: 0, caDays: 0, articles: 0 };
   const pyqExamIds = new Set();

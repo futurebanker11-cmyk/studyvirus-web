@@ -1,6 +1,7 @@
 import { getJson } from "./loader";
 import { keys } from "./keys";
 import { hasKey, counts } from "./index";
+import { hasHindiCounts } from "./hindi";
 
 export interface ArticleMeta { id: string; title_en: string; title_hi?: string; category: string; tag?: string; readTime?: number; views?: string; file: string }
 export interface ArticleBody { id: string; paragraphs: { type?: string; en: string; hi?: string }[] }
@@ -20,5 +21,5 @@ export function loadArticleBody(meta: ArticleMeta): Promise<ArticleBody | null> 
 
 export function articleHasHindi(meta: ArticleMeta): boolean {
   const c = counts(keys.article(meta.file));
-  return Boolean(c && c[0] > 0 && c[1] === c[0]);
+  return c ? hasHindiCounts(c[0], c[1]) : false;
 }

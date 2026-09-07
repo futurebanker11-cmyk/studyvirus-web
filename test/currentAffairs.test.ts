@@ -5,12 +5,21 @@ import { listDays, listMonths, daysOfMonth, findDay, isStale, monthLabel } from 
 
 beforeEach(() => __setIndexForTests({ generatedAt: "x", files: { "gk/0-Current Affairs/daily": {
   "2026_08_30.json": [10, 10], "2026_09_02.json": [10, 10], "2026_09_01.json": [12, 0], "notes.txt": [0, 0],
+  "2026_09_03.json": [0, 0],
 } }, totals: { topicQuestions: 0, topicChapters: 0, topicSets: 0, pyqQuestions: 0, pyqPapers: 0, pyqExams: 0, aptitudeQuestions: 0, aptitudeSets: 0, englishQuestions: 0, englishChapters: 0, caQuestions: 0, caDays: 0, articles: 0 } }));
 
 test("listDays newest first, only date-named json with questions", () => {
   assert.deepEqual(listDays().map((d) => d.date), ["2026_09_02", "2026_09_01", "2026_08_30"]);
   assert.equal(listDays()[0].iso, "2026-09-02");
   assert.equal(listDays()[0].key, "gk/0-Current Affairs/daily/2026_09_02.json");
+});
+
+test("a date-named day with no questions is not published", () => {
+  // 2026_09_03 exists in the index with a zero English count: an empty day is
+  // not a day. It must not appear anywhere the dailies are enumerated.
+  assert.equal(listDays().some((d) => d.date === "2026_09_03"), false);
+  assert.equal(findDay("2026_09_03"), undefined);
+  assert.equal(daysOfMonth("2026_09").some((d) => d.date === "2026_09_03"), false);
 });
 
 test("months and days of month", () => {
