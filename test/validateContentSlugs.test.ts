@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { chapterSlug, resolveChapterSlug } from "../src/lib/content/slugs";
+import { chapterSlug, resolveChapterSlug, aptitudeChapterSlug } from "../src/lib/content/slugs";
 import { typeSlug, type AptType } from "../src/lib/content/aptitude";
-import { chapterSlug as scriptChapterSlug, resolveChapterSlug as scriptResolveChapterSlug, typeSlug as scriptTypeSlug } from "../scripts/validate-content.mjs";
+import { chapterSlug as scriptChapterSlug, resolveChapterSlug as scriptResolveChapterSlug, typeSlug as scriptTypeSlug, aptitudeChapterSlug as scriptAptitudeChapterSlug } from "../scripts/validate-content.mjs";
 
 // scripts/validate-content.mjs must not import the TypeScript build (that
 // boundary is deliberate), so it carries its own copies of chapterSlug and
@@ -65,6 +65,35 @@ test("the validator's typeSlug mirror agrees with src/lib/content/aptitude", () 
   for (const t of typeCases) {
     assert.equal(scriptTypeSlug(t), typeSlug(t), `typeSlug(${JSON.stringify({ id: t.id, folder: t.folder, name: t.name.en })})`);
   }
+});
+
+// Same contract for aptitude chapter slugs. Live bank/previous_year_papers
+// chapter ids are human-readable folder names ("2-Data Interpretation",
+// "4-Puzzles & Seating Arrangement"), which the old prefix-strip-and-dash rule
+// passed straight through into 414 sitemap URLs with raw spaces and "&".
+const aptChapterCases: string[] = [
+  "01_number_system_hcf_lcm",        // already clean, numeric prefix
+  "30_number_series",                // already clean, numeric prefix
+  "R01_blood_relation",              // leading letter+number, no spaces -> lowercased
+  "02_Simplification",               // numeric prefix, capitalised word
+  "2-Data Interpretation",           // digit-dash prefix, space
+  "4-Puzzles & Seating Arrangement", // digit-dash prefix, ampersand
+  "puzzles_CORRUPTED",               // no prefix, uppercase
+  "algebra",                         // nothing to do
+];
+
+test("the validator's aptitudeChapterSlug mirror agrees with src/lib/content/slugs", () => {
+  for (const id of aptChapterCases) {
+    assert.equal(scriptAptitudeChapterSlug(id), aptitudeChapterSlug(id), `aptitudeChapterSlug(${JSON.stringify(id)})`);
+  }
+});
+
+test("the shared fixture exercises every branch of aptitudeChapterSlug", () => {
+  assert.deepEqual(aptChapterCases.map(aptitudeChapterSlug), [
+    "number-system-hcf-lcm", "number-series", "r01-blood-relation", "simplification",
+    "data-interpretation", "puzzles-seating-arrangement", "puzzles-corrupted", "algebra",
+  ]);
+  for (const s of aptChapterCases.map(aptitudeChapterSlug)) assert.match(s, /^[a-z0-9]+(-[a-z0-9]+)*$/);
 });
 
 test("the shared fixture exercises every branch of typeSlug", () => {

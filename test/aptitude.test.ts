@@ -90,7 +90,7 @@ test("loadFamily drops types with no indexed sets, then empty chapters, then emp
 test("type slugs come from the folder, so same-named types stay distinct and routable", async () => {
   const fam = await loadFamily("bank");
   const s = fam.subjects[0];
-  const c = findAptChapter(s, "R01-blood-relation")!;
+  const c = findAptChapter(s, "r01-blood-relation")!;
   assert.deepEqual(c.types.map(typeSlug), ["4-previous-year", "4-previous-year-arihant"]);
   const a = findType(c, "4-previous-year")!, b = findType(c, "4-previous-year-arihant")!;
   assert.equal(a.id, "type_04_7");

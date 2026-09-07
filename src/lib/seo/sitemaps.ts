@@ -30,7 +30,10 @@ export const MAX_PER_SITEMAP = 45_000;
 export const SECTIONS = ["static", "exams", "topics", "sets", "pyq", "aptitude", "english", "current-affairs", "articles", "apps"] as const;
 export type SitemapSection = (typeof SECTIONS)[number];
 
-const STATIC_PATHS = ["/", "/topics", "/pyq", "/aptitude", "/english", "/current-affairs", "/articles", "/exam", "/apps", "/about", "/contact", "/privacy-policy", "/terms"];
+// Section hubs (/topics, /pyq, /aptitude, /english, /current-affairs,
+// /articles, /apps) are declared by their own sections, not here: a URL in two
+// sitemaps is counted twice. /exam stays because the exams section has no hub.
+const STATIC_PATHS = ["/", "/exam", "/about", "/contact", "/privacy-policy", "/terms"];
 
 const e = (lang: Lang, path: string, changeFrequency: SitemapEntry["changeFrequency"], priority: number, now: Date): SitemapEntry =>
   ({ url: abs(href(lang, path)), lastModified: now, changeFrequency, priority });

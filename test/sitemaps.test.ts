@@ -136,6 +136,37 @@ test("english, articles, exams, static, apps", () => {
   assert.deepEqual(urls("apps", "en"), ["https://studyvirus.com/apps"]);
 });
 
+// Each section declares its own hub, so `static` must not repeat it: a URL
+// declared twice makes the declared count a lie.
+test("no URL is declared by more than one section", () => {
+  for (const lang of ["en", "hi"] as const) {
+    const all = SECTIONS.flatMap((s) => urls(s, lang));
+    const dup = all.filter((u, i) => all.indexOf(u) !== i);
+    assert.deepEqual(dup, [], `duplicated in ${lang}`);
+  }
+  assert.ok(urls("static", "en").includes("https://studyvirus.com/exam"), "the exams section has no hub of its own");
+});
+
+// The guard that would have caught 414 live aptitude URLs with raw spaces and
+// "&": every path segment must be usable verbatim, without percent-encoding.
+test("every generated URL is a bare path of unreserved characters", () => {
+  const families: AptFamilyInfo[] = [{
+    ...data.families[0],
+    subjects: [{
+      ...data.families[0].subjects[0],
+      chapters: [{ ...data.families[0].subjects[0].chapters[0], id: "4-Puzzles & Seating Arrangement", folder: "01_number_series" }],
+    }],
+  }];
+  const d: SitemapData = { ...data, families };
+  for (const section of SECTIONS) for (const lang of ["en", "hi"] as const) for (const u of urls(section, lang, d)) {
+    assert.ok(u.startsWith("https://studyvirus.com"), u);
+    const path = u.slice("https://studyvirus.com".length);
+    assert.match(path, /^(\/[A-Za-z0-9._~-]+)*$/, `unsafe character in ${u}`);
+    assert.equal(encodeURI(path), path, `needs percent-encoding: ${u}`);
+  }
+  assert.ok(urls("aptitude", "en", d).includes("https://studyvirus.com/aptitude/bank/quant/puzzles-seating-arrangement/1-missing-term/set-1"));
+});
+
 // The audit's core promise: a URL is declared iff its content is in the index.
 // The fixture manifest names content the index does not carry — a missing
 // history chapter, a whole "ghost" topic, the `english` topic's only chapter,

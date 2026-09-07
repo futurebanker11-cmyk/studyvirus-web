@@ -112,7 +112,10 @@ export const resolveChapterSlug = (en, file, position) => {
   const m = /^(\d+)/.exec(file);
   return `chapter-${m ? parseInt(m[1], 10) : position}`;
 };
-const aptChapterSlug = (id) => id.replace(/^\d+_/, "").replace(/_/g, "-");
+// Mirrors aptitudeChapterSlug in src/lib/content/slugs.ts: numeric prefix off
+// ("01_", "2-"), underscores dashed, then chapterSlug's character rules, so a
+// folder-like id ("2-Data Interpretation") cannot leak spaces or "&" into a URL.
+export const aptitudeChapterSlug = (id) => chapterSlug(id.replace(/^\d+[_-]/, "").replace(/_/g, "-"));
 // Mirrors typeSlug in src/lib/content/aptitude.ts: folder first (unique per
 // chapter, unlike names: bank/reasoning has chapters with two or three types all
 // named "Previous Year Questions"), then the name when the folder slugs to
@@ -148,7 +151,7 @@ async function collect() {
     const m = await mustJson(fam.manifest);
     assertUnique(`${fam.family} subject id`, m.subjects.map((s) => s.id));
     for (const s of m.subjects) {
-      assertUnique(`${fam.family}/${s.id} chapter slug`, s.chapters.map((c) => aptChapterSlug(c.id)));
+      assertUnique(`${fam.family}/${s.id} chapter slug`, s.chapters.map((c) => aptitudeChapterSlug(c.id)));
       for (const c of s.chapters) {
         // The site routes types by typeSlug, so a collision here would be two
         // types on one URL: a hard failure like every other assertion.

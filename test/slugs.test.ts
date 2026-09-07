@@ -22,6 +22,11 @@ test("aptitude slugs", () => {
   assert.equal(aptitudeChapterSlug("01_number_system_hcf_lcm"), "number-system-hcf-lcm");
   assert.equal(aptitudeChapterSlug("30_number_series"), "number-series");
   assert.equal(aptitudeChapterSlug("algebra"), "algebra");
+  // Folder-like ids (live bank/previous_year_papers) must be sanitised like
+  // chapter names, or the URL carries raw spaces and "&".
+  assert.equal(aptitudeChapterSlug("2-Data Interpretation"), "data-interpretation");
+  assert.equal(aptitudeChapterSlug("4-Puzzles & Seating Arrangement"), "puzzles-seating-arrangement");
+  assert.equal(aptitudeChapterSlug("R01_blood_relation"), "r01-blood-relation");
   assert.equal(aptitudeSubjectSlug("quant"), "quant");
   assert.equal(aptitudeSubjectSlug("di"), "data-interpretation");
   assert.equal(aptitudeSubjectSlug("puzzles"), "puzzles");

@@ -39,8 +39,18 @@ export function dashed(id: string): string {
   return id.replace(/_/g, "-");
 }
 
+// Chapter ids are mostly machine-like ("01_number_system_hcf_lcm",
+// "R01_blood_relation"), but the live bank previous_year_papers subject uses
+// folder names as ids ("2-Data Interpretation", "4-Puzzles & Seating
+// Arrangement"). Stripping the numeric prefix and dashing underscores alone let
+// those reach the URL with raw spaces and "&", so after the prefix strip the
+// result goes through the same character rules as chapterSlug: lowercase,
+// non-[a-z0-9 -] dropped, whitespace and dash runs collapsed. Lowercasing also
+// turns "R01_…" into "r01-…". scripts/validate-content.mjs mirrors this rule
+// and asserts per-subject uniqueness; test/validateContentSlugs.test.ts keeps
+// the two in step.
 export function aptitudeChapterSlug(chapterId: string): string {
-  return dashed(chapterId.replace(/^\d+_/, ""));
+  return chapterSlug(dashed(chapterId.replace(/^\d+[_-]/, "")));
 }
 
 const SUBJECT_SLUGS: Record<string, string> = {
