@@ -59,3 +59,13 @@ test("memoises a key for the TTL window", async () => {
   await getJson("gk/topics.json");
   assert.equal(calls, 1);
 });
+
+test("memo expires after the TTL", async () => {
+  let n = 0;
+  globalThis.fetch = (async () => new Response(JSON.stringify({ n: ++n }), { status: 200 })) as typeof fetch;
+  assert.deepEqual(await getJson("gk/topics.json"), { n: 1 });
+  const realNow = Date.now;
+  Date.now = () => realNow() + 61_000;
+  try { assert.deepEqual(await getJson("gk/topics.json"), { n: 2 }); }
+  finally { Date.now = realNow; }
+});
