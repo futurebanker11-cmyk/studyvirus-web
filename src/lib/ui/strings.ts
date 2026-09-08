@@ -810,10 +810,18 @@ export const STRINGS = {
   "privacy.useList3": { en: "To display relevant advertisements through Google AdSense.", hi: "Google AdSense के माध्यम से प्रासंगिक विज्ञापन दिखाने के लिए।" },
   "privacy.useList4": { en: "To comply with legal obligations when required.", hi: "आवश्यक होने पर कानूनी दायित्वों का पालन करने के लिए।" },
   "privacy.adsHeading": { en: "Advertising & cookies", hi: "विज्ञापन और कुकीज़" },
+  /* Two real outbound links sit mid-sentence: Google's own opt-out settings
+     and the industry-wide aboutads.info choices page. The pre-rebuild page
+     had both as real <a> tags; a first pass here left the second as inert
+     prose ("...at www.aboutads.info.") with no href — fixed by giving it the
+     same {adsLink}/{choicesLink} placeholder treatment terms.contactBody
+     already uses, split via .split() in the page component rather than
+     format() (Task 12 review, 2026-09-08). */
   "privacy.adsBody1": {
-    en: "StudyVirus uses Google AdSense to display advertisements. Google and its partners use cookies to serve ads based on your prior visits to this or other websites. You can opt out of personalised advertising through Google's Ads Settings, and learn about interest-based advertising and your choices at www.aboutads.info.",
-    hi: "StudyVirus विज्ञापन दिखाने के लिए Google AdSense का उपयोग करता है। Google और उसके साझेदार आपकी इस या अन्य वेबसाइटों पर पिछली विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करते हैं। आप Google की Ads Settings से व्यक्तिगत विज्ञापन बंद कर सकते हैं, और रुचि-आधारित विज्ञापन तथा अपने विकल्पों के बारे में www.aboutads.info पर जान सकते हैं।",
+    en: "StudyVirus uses Google AdSense to display advertisements. Google and its partners use cookies to serve ads based on your prior visits to this or other websites. You can opt out of personalised advertising through Google's {adsLink}, and learn about interest-based advertising and your choices at {choicesLink}.",
+    hi: "StudyVirus विज्ञापन दिखाने के लिए Google AdSense का उपयोग करता है। Google और उसके साझेदार आपकी इस या अन्य वेबसाइटों पर पिछली विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करते हैं। आप Google की {adsLink} से व्यक्तिगत विज्ञापन बंद कर सकते हैं, और रुचि-आधारित विज्ञापन तथा अपने विकल्पों के बारे में {choicesLink} पर जान सकते हैं।",
   },
+  "privacy.adsChoicesLink": { en: "www.aboutads.info", hi: "www.aboutads.info" },
   "privacy.adsBody2": {
     en: "Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.",
     hi: "Google सहित तृतीय-पक्ष विक्रेता, किसी उपयोगकर्ता की इस या अन्य वेबसाइटों पर पिछली विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करते हैं।",

@@ -32,6 +32,9 @@ const LATIN_BY_DESIGN = new Set<string>([
   // Hindi paperwork; src/lib/exams.ts likewise carries hi: "SSC CGL". A
   // Devanagari rendering would be a transliteration nobody searches for.
   "cat.ssc",
+  // A literal URL, identical in both languages — there is no Hindi rendering
+  // of a domain name.
+  "privacy.adsChoicesLink",
 ]);
 
 test("every Hindi value is actually in Devanagari unless Latin is the recognised form", () => {

@@ -112,14 +112,36 @@ export default async function PrivacyPolicyPage({
 
           <h2>{t(lang, "privacy.adsHeading")}</h2>
           <p>
-            {t(lang, "privacy.adsBody1")}{" "}
-            <a
-              href="https://www.google.com/settings/ads"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              {t(lang, "privacy.adsSettingsLink")}
-            </a>
+            {/* privacy.adsBody1 carries two placeholders, {adsLink} and
+                {choicesLink}, for the two real outbound links this sentence
+                names — split on both rather than format() so each lands as a
+                real <a>, not inert prose (Task 12 review, 2026-09-08). */}
+            {(() => {
+              const [before, mid, after] = t(lang, "privacy.adsBody1").split(
+                /\{adsLink\}|\{choicesLink\}/,
+              );
+              return (
+                <>
+                  {before}
+                  <a
+                    href="https://www.google.com/settings/ads"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t(lang, "privacy.adsSettingsLink")}
+                  </a>
+                  {mid}
+                  <a
+                    href="https://www.aboutads.info"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {t(lang, "privacy.adsChoicesLink")}
+                  </a>
+                  {after}
+                </>
+              );
+            })()}
           </p>
           <p>{t(lang, "privacy.adsBody2")}</p>
 
