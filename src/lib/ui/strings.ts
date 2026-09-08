@@ -552,6 +552,74 @@ export const STRINGS = {
      untranslated raw key shown to a reader. */
   "artCat.other": { en: "More articles", hi: "और लेख" },
 
+  // ── Apps directory (/apps and /apps/{slug}) ──
+  /* The H1 takes {apps}, which is the length of the list the page has actually
+     just built — never a typed-in number. When the registry is absent that is
+     the count of exams with a real package, so the heading and the body agree
+     by construction on both paths. */
+  "apps.h1": {
+    en: "{apps} free Android apps for government exams",
+    hi: "सरकारी परीक्षाओं के लिए {apps} निःशुल्क Android ऐप",
+  },
+  "apps.lede": {
+    en: "Every app is free, works offline and carries the same question bank as this site. Nothing here needs a sign-up or a subscription.",
+    hi: "हर ऐप निःशुल्क है, ऑफ़लाइन चलता है और इसमें वही प्रश्न बैंक है जो इस साइट पर है। किसी भी ऐप के लिए रजिस्ट्रेशन या सब्सक्रिप्शन ज़रूरी नहीं।",
+  },
+  /* The one-line description synthesised per exam when the registry is absent.
+     Built only from the exam's own name — no rating, no install count, no
+     claim the site cannot check. */
+  "apps.fallbackDescription": {
+    en: "Free practice questions and previous-year papers for {exam}.",
+    hi: "{exam} के लिए निःशुल्क अभ्यास प्रश्न और पिछले वर्षों के प्रश्नपत्र।",
+  },
+  "apps.practiceOnSite": { en: "Practice on the site", hi: "साइट पर अभ्यास करें" },
+  "apps.practiceAllTopics": { en: "Browse all subjects", hi: "सभी विषय देखें" },
+  "apps.none": {
+    en: "The app list is being rebuilt. Every exam hub still links to its own app.",
+    hi: "ऐप सूची फिर से तैयार की जा रही है। हर परीक्षा पेज अपने ऐप से अब भी जुड़ा है।",
+  },
+
+  "appPage.titleSuffix": {
+    en: "{app} – Free Practice & Mock Tests",
+    hi: "{app} – निःशुल्क अभ्यास और मॉक टेस्ट",
+  },
+  "appPage.whatsInside": { en: "What's inside", hi: "ऐप में क्या है" },
+  "appPage.screenshots": { en: "Screenshots", hi: "स्क्रीनशॉट" },
+  "appPage.screenshotAlt": { en: "{app} screen {n}", hi: "{app} स्क्रीन {n}" },
+  "appPage.whyHeading": { en: "Why the app", hi: "ऐप क्यों" },
+  "appPage.whyOffline": {
+    en: "Works offline once the questions are downloaded, so a weak signal does not stop a practice session.",
+    hi: "प्रश्न डाउनलोड होने के बाद ऑफ़लाइन चलता है, इसलिए कमज़ोर नेटवर्क अभ्यास नहीं रोकता।",
+  },
+  "appPage.whyProgress": {
+    en: "Keeps your attempt history on the phone, so you can see which chapters you keep getting wrong.",
+    hi: "आपकी हर कोशिश का रिकॉर्ड फ़ोन में रखता है, जिससे पता चलता है कि किन अध्यायों में बार-बार गलती हो रही है।",
+  },
+  "appPage.whySite": {
+    en: "The website needs no install and every question on it is readable without an account.",
+    hi: "वेबसाइट के लिए कुछ इंस्टॉल करने की ज़रूरत नहीं और उसका हर प्रश्न बिना खाता बनाए पढ़ा जा सकता है।",
+  },
+  "appPage.compareHeading": { en: "App or website", hi: "ऐप या वेबसाइट" },
+  "appPage.compareSub": {
+    en: "The same content either way. These are the numbers this exam actually has on the site today.",
+    hi: "सामग्री दोनों जगह एक ही है। नीचे वे आँकड़े हैं जो इस परीक्षा के लिए आज साइट पर मौजूद हैं।",
+  },
+  "appPage.compareWhat": { en: "What", hi: "क्या" },
+  "appPage.compareSite": { en: "On the website", hi: "वेबसाइट पर" },
+  "appPage.compareApp": { en: "In the app", hi: "ऐप में" },
+  "appPage.compareIncluded": { en: "Included", hi: "शामिल है" },
+  "appPage.compareOffline": { en: "Offline practice", hi: "ऑफ़लाइन अभ्यास" },
+  "appPage.compareNoInstall": { en: "No install needed", hi: "इंस्टॉल की ज़रूरत नहीं" },
+  "appPage.compareYes": { en: "Yes", hi: "हाँ" },
+  "appPage.compareNo": { en: "No", hi: "नहीं" },
+  "appPage.exploreHeading": { en: "Practise the same questions here", hi: "यही प्रश्न यहाँ हल करें" },
+  "appPage.examHubLink": { en: "{exam} exam page", hi: "{exam} परीक्षा पेज" },
+  /* No appPage.pyqLink key: "{exam} previous-year papers" is already
+     exam.pyqHeading, and two keys with the same English value is the collision
+     the strings test refuses. The PYQ link below reuses that key. */
+  "appPage.downloadHeading": { en: "Download", hi: "डाउनलोड" },
+  "appPage.backToApps": { en: "All apps", hi: "सभी ऐप" },
+
   // … later tasks append their keys here
 } as const;
 
