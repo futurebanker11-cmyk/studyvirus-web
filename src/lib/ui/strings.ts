@@ -160,6 +160,69 @@ export const STRINGS = {
   "home.viewAllApps": { en: "See all apps", hi: "सभी ऐप्स देखें" },
   "home.latestDay": { en: "Latest day", hi: "नवीनतम दिवस" },
 
+  // ── Exam index (/exam) ──
+  /* {exams} is EXAMS.length, computed — never a written-in number. The page it
+     replaces said "60+ Exams" in its <title> while listing 74, which is the
+     same self-contradiction the home page's totals were rebuilt to end. */
+  "examIndex.h1": {
+    en: "All {exams} government exams we cover",
+    hi: "हमारी कवर की गई सभी {exams} सरकारी परीक्षाएँ",
+  },
+  "examIndex.lede": {
+    en: "Pick your exam. Each hub lists its syllabus subjects, previous-year papers, aptitude practice and free Android app.",
+    hi: "अपनी परीक्षा चुनें। हर हब में उसके पाठ्यक्रम के विषय, पिछले वर्षों के प्रश्नपत्र, एप्टीट्यूड अभ्यास और निःशुल्क Android ऐप मिलेंगे।",
+  },
+  // ── Exam hub (/exam/[slug]) ──
+  /* The H1. {exam} is the exam's name in the page's own language and {year} the
+     build year, so the heading dates itself without anyone editing it. */
+  "exam.h1": {
+    en: "{exam} {year}: free GK questions, PYQ & practice",
+    hi: "{exam} {year}: निःशुल्क GK प्रश्न, PYQ और अभ्यास",
+  },
+  "exam.factsHeading": { en: "Exam at a glance", hi: "परीक्षा एक नज़र में" },
+  "exam.conductingBody": { en: "Conducted by", hi: "आयोजक संस्था" },
+  "exam.stages": { en: "Selection stages", hi: "चयन के चरण" },
+  "exam.category": { en: "Category", hi: "श्रेणी" },
+
+  "exam.appHeading": { en: "Practise on your phone", hi: "अपने फ़ोन पर अभ्यास करें" },
+  "exam.appSub": {
+    en: "The same question bank in a free Android app — it works offline, so a weak signal does not stop you.",
+    hi: "यही प्रश्न बैंक एक निःशुल्क Android ऐप में — यह ऑफ़लाइन चलता है, इसलिए कमज़ोर नेटवर्क आपकी तैयारी नहीं रोकेगा।",
+  },
+  /* Shown on the plain Play link, the shape used when the apps registry is
+     unreachable: the package is known from the exam registry but the name,
+     icon and rating are not, so the card claims none of them. */
+  "exam.appFallbackName": { en: "{exam} preparation app", hi: "{exam} तैयारी ऐप" },
+
+  "exam.subjectsHeading": { en: "{exam} subjects", hi: "{exam} के विषय" },
+  "exam.subjectsSub": {
+    en: "The syllabus subjects for this exam, with chapter-wise question sets.",
+    hi: "इस परीक्षा के पाठ्यक्रम विषय, अध्यायवार प्रश्न सेट के साथ।",
+  },
+
+  "exam.pyqHeading": { en: "{exam} previous-year papers", hi: "{exam} के पिछले वर्षों के प्रश्नपत्र" },
+  "exam.pyqSub": {
+    en: "Questions taken from papers that were actually set, with answers and explanations.",
+    hi: "वास्तव में पूछे गए प्रश्नपत्रों के प्रश्न, उत्तर और व्याख्या सहित।",
+  },
+  "exam.pyqNone": {
+    en: "Previous-year papers for this exam are not on the site yet. The subjects above cover the same syllabus.",
+    hi: "इस परीक्षा के पिछले वर्षों के प्रश्नपत्र अभी साइट पर नहीं हैं। ऊपर दिए विषय उसी पाठ्यक्रम को कवर करते हैं।",
+  },
+  "exam.pyqAll": { en: "All {papers} papers", hi: "सभी {papers} प्रश्नपत्र" },
+
+  "exam.aptitudeHeading": { en: "Aptitude for {exam}", hi: "{exam} के लिए एप्टीट्यूड" },
+  "exam.aptitudeSub": {
+    en: "Quantitative aptitude and reasoning practice, worked step by step.",
+    hi: "संख्यात्मक अभिक्षमता और रीज़निंग का अभ्यास, चरण-दर-चरण हल के साथ।",
+  },
+
+  "exam.relatedHeading": { en: "Other {category} exams", hi: "अन्य {category} परीक्षाएँ" },
+  /* The aptitude section's "see all" points at the family hub, not at /topics,
+     so it needs its own wording — "See all subjects" (home.viewAllSubjects) is
+     reused verbatim for the GK subjects section above it. */
+  "exam.viewAllAptitude": { en: "See all aptitude practice", hi: "सारा एप्टीट्यूड अभ्यास देखें" },
+
   // … later tasks append their keys here
 } as const;
 
