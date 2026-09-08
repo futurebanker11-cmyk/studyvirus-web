@@ -567,10 +567,15 @@ export const STRINGS = {
   },
   /* The one-line description synthesised per exam when the registry is absent.
      Built only from the exam's own name — no rating, no install count, no
-     claim the site cannot check. */
+     claim the site cannot check. Deliberately says "practice questions", not
+     "previous-year papers": PYQ coverage is not universal (loadPyqExams()
+     drops any exam with zero indexed papers, and the exam hub has a dedicated
+     exam.pyqNone string for exactly this case) — a blanket PYQ claim here
+     would have this page assert what that exam's own hub says is false
+     (Task 11 review, 2026-09-08). */
   "apps.fallbackDescription": {
-    en: "Free practice questions and previous-year papers for {exam}.",
-    hi: "{exam} के लिए निःशुल्क अभ्यास प्रश्न और पिछले वर्षों के प्रश्नपत्र।",
+    en: "Free practice questions for {exam}, offline and without a sign-up.",
+    hi: "{exam} के लिए निःशुल्क अभ्यास प्रश्न, ऑफ़लाइन और बिना रजिस्ट्रेशन के।",
   },
   "apps.practiceOnSite": { en: "Practice on the site", hi: "साइट पर अभ्यास करें" },
   "apps.practiceAllTopics": { en: "Browse all subjects", hi: "सभी विषय देखें" },

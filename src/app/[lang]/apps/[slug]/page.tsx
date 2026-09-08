@@ -117,7 +117,9 @@ export async function generateMetadata({
     title: `${format(lang, "appPage.titleSuffix", { app: app.name })} | StudyVirus`,
     // The registry's own Play description, trimmed to a snippet length rather
     // than rewritten — the site does not author marketing copy for its apps.
-    description: app.description.slice(0, 300),
+    // `?? ""`: the registry is unvalidated per-entry (see the same guard in
+    // the page component below) — a missing description must not throw here.
+    description: (app.description ?? "").slice(0, 300),
     alternates: buildAlternates({ lang, path: `/apps/${app.slug}`, hasHi: true }),
   };
 }
@@ -133,6 +135,16 @@ export default async function AppPage({
 
   const app = await findApp(slug);
   if (!app) notFound();
+
+  // AppEntry types description/screenshots as always present, but the
+  // registry comes from a bare JSON.parse cast (getJson, loader.ts) that
+  // loadAppsRegistry() validates only at the {apps: [...]} level, never
+  // per-entry — so a real ops-job entry missing either field would
+  // otherwise throw here and fail the build for this one page (Task 11
+  // review, 2026-09-08). Zero blast radius today (no registry exists, this
+  // route generates no pages), armed for the day one first ships.
+  const description = app.description ?? "";
+  const screenshots = app.screenshots ?? [];
 
   const exam = examFor(app);
   const counts = await siteCounts(exam);
@@ -150,7 +162,7 @@ export default async function AppPage({
   // omits aggregateRating below 5 ratings.
   const appJsonLd = softwareApplication({
     name: app.name,
-    description: app.description,
+    description,
     packageName: app.package,
     url,
     rating: app.rating,
@@ -249,14 +261,14 @@ export default async function AppPage({
           {t(lang, "appPage.whatsInside")}
         </h2>
         <p className="mt-3 max-w-measure whitespace-pre-line text-ink-soft">
-          {app.description}
+          {description}
         </p>
       </Container>
 
       {/* ── Screenshots ──
           Real per-app images mirrored to R2 by the ops job. The section is
           skipped entirely when the entry carries none rather than shown empty. */}
-      {app.screenshots.length > 0 && (
+      {screenshots.length > 0 && (
         <Container as="section" aria-labelledby="shots" className="pt-12">
           <h2 id="shots" className="font-display text-2xl font-semibold">
             {t(lang, "appPage.screenshots")}
@@ -264,7 +276,7 @@ export default async function AppPage({
           {/* A scroller, not a grid: phone screenshots are tall and narrow, and
               six of them in a row would each be unreadably small. */}
           <ul className="mt-4 flex snap-x gap-4 overflow-x-auto pb-2">
-            {app.screenshots.map((src, i) => (
+            {screenshots.map((src, i) => (
               <li key={src} className="shrink-0 snap-start">
                 {/* Plain <img>: remote CDN files outside the next/image
                     allowlist, the same call AppCard makes for the icon. */}
