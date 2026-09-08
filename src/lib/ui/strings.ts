@@ -625,6 +625,233 @@ export const STRINGS = {
   "appPage.downloadHeading": { en: "Download", hi: "डाउनलोड" },
   "appPage.backToApps": { en: "All apps", hi: "सभी ऐप" },
 
+  // ── Task 12: static pages (about, contact, terms, privacy policy) ──
+  //
+  // placement("static") is {ads: [], installCta: "none"}: no AdSlot, no
+  // AppCard on any of these four pages. Brand only on About — no person is
+  // named anywhere (a prior, explicit user decision).
+
+  "about.h1": { en: "About StudyVirus", hi: "StudyVirus के बारे में" },
+  "about.lede": {
+    en: "A free question bank for Indian competitive exams, built so that not being able to pay for coaching is never the reason someone fails.",
+    hi: "भारतीय प्रतियोगी परीक्षाओं के लिए एक निःशुल्क प्रश्न बैंक — इस सोच के साथ बनाया गया कि कोचिंग का खर्च न उठा पाना कभी किसी की असफलता की वजह न बने।",
+  },
+  "about.missionHeading": { en: "What StudyVirus is", hi: "StudyVirus क्या है" },
+  "about.missionBody": {
+    en: "StudyVirus is a free practice platform for SSC, Railway, Police, Defence, Teaching and State-level government exams — chapter-wise questions, previous-year papers, aptitude practice and daily current affairs, all in one place, all free, with no sign-up.",
+    hi: "StudyVirus, SSC, रेलवे, पुलिस, रक्षा, शिक्षक भर्ती और राज्य-स्तरीय सरकारी परीक्षाओं के लिए एक निःशुल्क अभ्यास मंच है — अध्यायवार प्रश्न, पिछले वर्षों के प्रश्नपत्र, एप्टीट्यूड अभ्यास और दैनिक करेंट अफेयर्स, सब एक ही जगह, बिना किसी रजिस्ट्रेशन के।",
+  },
+  "about.explanationsHeading": { en: "Every question is explained", hi: "हर प्रश्न की व्याख्या दी गई है" },
+  "about.explanationsBody": {
+    en: "This is not just an answer key. Every question on the site carries a written explanation of why that answer is correct, so a wrong attempt teaches something instead of only being marked wrong.",
+    hi: "यह केवल उत्तर कुंजी नहीं है। साइट के हर प्रश्न के साथ यह लिखित व्याख्या दी गई है कि वह उत्तर सही क्यों है — ताकि ग़लत प्रयास केवल ग़लत चिह्नित होकर न रह जाए, बल्कि कुछ सिखा भी दे।",
+  },
+  "about.bilingualHeading": { en: "Hindi and English, both first-class", hi: "हिंदी और अंग्रेज़ी, दोनों समान रूप से" },
+  "about.bilingualBody": {
+    en: "Most of this site's content is fully bilingual — the same questions, the same explanations, in both languages, not a Hindi page bolted on as an afterthought. Where a chapter is not yet translated, the site says so plainly instead of quietly showing English on a Hindi page.",
+    hi: "इस साइट की अधिकांश सामग्री पूरी तरह द्विभाषी है — वही प्रश्न, वही व्याख्या, दोनों भाषाओं में; हिंदी पन्ना किसी बाद के जोड़ की तरह नहीं जोड़ा गया है। जिस अध्याय का अनुवाद अभी नहीं हुआ है, वहाँ साइट यह साफ़ बता देती है, चुपचाप हिंदी पन्ने पर अंग्रेज़ी नहीं दिखाती।",
+  },
+  "about.statsHeading": { en: "By the numbers", hi: "आँकड़ों में" },
+  "about.statExams": { en: "Exams covered", hi: "परीक्षाएँ" },
+  /* {questions}/{chapters} are formatCount(siteStats()...) — never typed in;
+     see the file comment in about/page.tsx. */
+  "about.statsNote": {
+    en: "Every number above is counted from the content the site actually serves at build time — not a figure typed into a page.",
+    hi: "ऊपर दिया हर आँकड़ा साइट पर मौजूद सामग्री से बिल्ड के समय स्वतः गिना जाता है — किसी पन्ने पर हाथ से नहीं लिखा जाता।",
+  },
+  "about.errorHeading": { en: "Found a mistake?", hi: "कोई गलती मिली?" },
+  "about.errorBody": {
+    en: "Every set on the site has a \"Report a mistake\" form right below the questions — open any set to use it, or write to us from the Contact page.",
+    hi: "साइट के हर सेट में प्रश्नों के ठीक नीचे \"गलती की शिकायत करें\" फ़ॉर्म मौजूद है — किसी भी सेट को खोलकर इसका उपयोग करें, या Contact पेज से हमें लिखें।",
+  },
+  "about.errorExampleLink": { en: "Open an example set", hi: "एक उदाहरण सेट खोलें" },
+  "about.appsHeading": { en: "Also available as an app", hi: "ऐप के रूप में भी उपलब्ध" },
+  "about.appsBody": {
+    en: "The same question bank is available as free, offline-capable Android apps — one for many of the exams this site covers.",
+    hi: "यही प्रश्न बैंक निःशुल्क, ऑफ़लाइन चलने वाले Android ऐप्स के रूप में भी उपलब्ध है — इस साइट पर कवर की गई कई परीक्षाओं के लिए अलग-अलग ऐप।",
+  },
+
+  // ── Contact page ──
+  "contact.h1": { en: "Contact us", hi: "संपर्क करें" },
+  "contact.lede": {
+    en: "Spotted an error, have a question, or want to suggest a topic? Write to us — we read every message.",
+    hi: "कोई गलती दिखी, कोई सवाल है, या किसी विषय का सुझाव देना है? हमें लिखें — हम हर संदेश पढ़ते हैं।",
+  },
+  "contact.emailHeading": { en: "Email us", hi: "ईमेल करें" },
+  "contact.emailBody": {
+    en: "The fastest way to reach us is by email. We read every message and usually reply within a day or two.",
+    hi: "हम तक पहुँचने का सबसे तेज़ तरीका ईमेल है। हम हर संदेश पढ़ते हैं और आमतौर पर एक-दो दिन में जवाब देते हैं।",
+  },
+  "contact.topicsHeading": { en: "What you can write about", hi: "आप किस बारे में लिख सकते हैं" },
+  "contact.errorTitle": { en: "Report an error", hi: "गलती बताएँ" },
+  "contact.errorBody": {
+    en: "If a question, answer or explanation is wrong, tell us which topic and set. We usually fix errors within a day. You can also use the \"Report a mistake\" form on the set itself.",
+    hi: "यदि कोई प्रश्न, उत्तर या व्याख्या गलत है, तो हमें विषय और सेट बताएँ। हम आमतौर पर एक दिन में गलती ठीक कर देते हैं। आप सेट पर मौजूद \"गलती की शिकायत करें\" फ़ॉर्म का भी उपयोग कर सकते हैं।",
+  },
+  "contact.suggestTitle": { en: "Suggest a topic or exam", hi: "विषय या परीक्षा सुझाएँ" },
+  "contact.suggestBody": {
+    en: "Preparing for an exam we do not cover yet? Let us know and we will add it to the roadmap.",
+    hi: "किसी ऐसी परीक्षा की तैयारी कर रहे हैं जो हमने अभी कवर नहीं की? हमें बताएँ, हम इसे अपनी सूची में शामिल करेंगे।",
+  },
+  "contact.contentTitle": { en: "Content requests", hi: "सामग्री का अनुरोध" },
+  "contact.contentBody": {
+    en: "Want specific notes, one-liners or mock tests? Tell us what would help your preparation.",
+    hi: "कोई खास नोट्स, वन-लाइनर या मॉक टेस्ट चाहिए? हमें बताएँ कि आपकी तैयारी में क्या मदद करेगा।",
+  },
+  "contact.dmcaTitle": { en: "DMCA or copyright", hi: "DMCA या कॉपीराइट" },
+  "contact.dmcaBody": {
+    en: "Believe some content on this site infringes your rights? Email us with the details — the material, its location on the site, and proof of ownership — and we will respond promptly.",
+    hi: "क्या आपको लगता है कि साइट पर मौजूद कोई सामग्री आपके अधिकारों का उल्लंघन करती है? हमें विवरण के साथ ईमेल करें — सामग्री, साइट पर उसका स्थान, और स्वामित्व का प्रमाण — हम शीघ्र जवाब देंगे।",
+  },
+  "contact.partnerTitle": { en: "Partnerships & advertising", hi: "साझेदारी और विज्ञापन" },
+  "contact.partnerBody": {
+    en: "For business inquiries, write to the same email with \"Partnership\" in the subject line.",
+    hi: "व्यावसायिक पूछताछ के लिए, विषय पंक्ति में \"Partnership\" लिखकर उसी ईमेल पर लिखें।",
+  },
+  "contact.appHeading": { en: "Download the app", hi: "ऐप डाउनलोड करें" },
+  "contact.appBody": {
+    en: "The same question bank is also available as free Android apps for offline practice.",
+    hi: "यही प्रश्न बैंक ऑफ़लाइन अभ्यास के लिए निःशुल्क Android ऐप्स के रूप में भी उपलब्ध है।",
+  },
+
+  // ── Terms of use ──
+  /* footer.terms already says "Terms of use" for the footer link label; the
+     page's own H1 needs a distinct English value so the two do not collide
+     under the strings test. */
+  "terms.h1": { en: "StudyVirus terms of use", hi: "StudyVirus की उपयोग शर्तें" },
+  "terms.updated": { en: "Last updated: {date}", hi: "अंतिम अद्यतन: {date}" },
+  "terms.intro": {
+    en: "Welcome to StudyVirus. By accessing or using studyvirus.com and the StudyVirus mobile app (the \"Service\"), you agree to these terms of use. Please read them carefully.",
+    hi: "StudyVirus में आपका स्वागत है। studyvirus.com और StudyVirus मोबाइल ऐप (\"सेवा\") का उपयोग करके, आप इन उपयोग की शर्तों से सहमत होते हैं। कृपया इन्हें ध्यान से पढ़ें।",
+  },
+  "terms.useHeading": { en: "Use of the Service", hi: "सेवा का उपयोग" },
+  "terms.useBody": {
+    en: "StudyVirus provides free study material, practice questions, mock tests and previous-year papers for Indian competitive exams. You may use the Service for personal, non-commercial study purposes. You agree not to:",
+    hi: "StudyVirus भारतीय प्रतियोगी परीक्षाओं के लिए निःशुल्क अध्ययन सामग्री, अभ्यास प्रश्न, मॉक टेस्ट और पिछले वर्षों के प्रश्नपत्र उपलब्ध कराता है। आप सेवा का उपयोग केवल व्यक्तिगत, गैर-व्यावसायिक अध्ययन उद्देश्यों के लिए कर सकते हैं। आप सहमत होते हैं कि आप निम्नलिखित नहीं करेंगे:",
+  },
+  "terms.useList1": { en: "Copy, redistribute or resell our content without permission.", hi: "हमारी अनुमति के बिना हमारी सामग्री की नकल, पुनर्वितरण या पुनर्विक्रय करना।" },
+  "terms.useList2": { en: "Use automated tools to scrape or download the content.", hi: "सामग्री को स्क्रैप या डाउनलोड करने के लिए स्वचालित उपकरणों का उपयोग करना।" },
+  "terms.useList3": { en: "Interfere with the normal operation of the Service.", hi: "सेवा के सामान्य संचालन में बाधा डालना।" },
+  "terms.useList4": { en: "Use the Service for any unlawful purpose.", hi: "सेवा का उपयोग किसी गैरकानूनी उद्देश्य के लिए करना।" },
+  "terms.accuracyHeading": { en: "Accuracy of content", hi: "सामग्री की सटीकता" },
+  "terms.accuracyBody": {
+    en: "We make every effort to ensure questions, answers and explanations are accurate and up to date. However, competitive exam syllabi and answer keys can change, and errors may occur. StudyVirus is an independent study platform and is not affiliated with SSC, Railway Recruitment Boards, UPSC or any other official examination body. Always verify important information with the official exam notification.",
+    hi: "हम यह सुनिश्चित करने का पूरा प्रयास करते हैं कि प्रश्न, उत्तर और व्याख्या सटीक और अद्यतन हों। हालाँकि, प्रतियोगी परीक्षाओं के पाठ्यक्रम और उत्तर कुंजी बदल सकते हैं, और गलतियाँ हो सकती हैं। StudyVirus एक स्वतंत्र अध्ययन मंच है और SSC, रेलवे भर्ती बोर्ड, UPSC या किसी अन्य आधिकारिक परीक्षा निकाय से संबद्ध नहीं है। महत्वपूर्ण जानकारी की पुष्टि हमेशा आधिकारिक परीक्षा अधिसूचना से करें।",
+  },
+  "terms.ipHeading": { en: "Intellectual property", hi: "बौद्धिक संपदा" },
+  "terms.ipBody": {
+    en: "All content on StudyVirus, including question text, explanations, notes and study material, is either original work or compiled from publicly available sources for educational use. The StudyVirus name, logo and design are owned by us. You may share individual questions or links for personal study, but mass reproduction requires written permission.",
+    hi: "StudyVirus पर मौजूद सारी सामग्री — प्रश्न, व्याख्या, नोट्स और अध्ययन सामग्री — या तो मौलिक रचना है या शैक्षणिक उपयोग के लिए सार्वजनिक रूप से उपलब्ध स्रोतों से संकलित है। StudyVirus नाम, लोगो और डिज़ाइन का स्वामित्व हमारे पास है। आप व्यक्तिगत अध्ययन के लिए अलग-अलग प्रश्न या लिंक साझा कर सकते हैं, लेकिन बड़े पैमाने पर पुनरुत्पादन के लिए लिखित अनुमति आवश्यक है।",
+  },
+  "terms.thirdPartyHeading": { en: "Third-party links & ads", hi: "तृतीय-पक्ष लिंक और विज्ञापन" },
+  "terms.thirdPartyBody": {
+    en: "The Service may display advertisements through Google AdSense and may contain links to third-party websites. We are not responsible for the content, accuracy or practices of any third-party site. Clicking any third-party link is at your own risk.",
+    hi: "सेवा पर Google AdSense के माध्यम से विज्ञापन दिखाए जा सकते हैं और इसमें तृतीय-पक्ष वेबसाइटों के लिंक हो सकते हैं। हम किसी भी तृतीय-पक्ष साइट की सामग्री, सटीकता या प्रथाओं के लिए ज़िम्मेदार नहीं हैं। किसी भी तृतीय-पक्ष लिंक पर क्लिक करना पूर्णतः आपके अपने जोखिम पर है।",
+  },
+  "terms.disclaimerHeading": { en: "Disclaimer", hi: "अस्वीकरण" },
+  "terms.disclaimerBody": {
+    en: "The Service is provided \"as is\" without warranties of any kind. We do not guarantee that using StudyVirus will result in exam success. Exam preparation is your responsibility, and StudyVirus is one of many resources you should use. We disclaim liability for any loss arising from the use of the Service.",
+    hi: "सेवा \"जैसी है वैसी\" उपलब्ध कराई जाती है, बिना किसी प्रकार की गारंटी के। हम यह गारंटी नहीं देते कि StudyVirus का उपयोग करने से परीक्षा में सफलता मिलेगी। परीक्षा की तैयारी आपकी अपनी ज़िम्मेदारी है, और StudyVirus उन कई संसाधनों में से एक है जिनका आपको उपयोग करना चाहिए। सेवा के उपयोग से होने वाली किसी भी हानि के लिए हम दायित्व अस्वीकार करते हैं।",
+  },
+  "terms.liabilityHeading": { en: "Limitation of liability", hi: "दायित्व की सीमा" },
+  "terms.liabilityBody": {
+    en: "To the fullest extent permitted by law, StudyVirus shall not be liable for any indirect, incidental, special or consequential damages arising from your use of the Service. Your sole remedy for dissatisfaction with the Service is to stop using it.",
+    hi: "कानून द्वारा अनुमत पूरी सीमा तक, StudyVirus सेवा के आपके उपयोग से उत्पन्न किसी भी अप्रत्यक्ष, आकस्मिक, विशेष या परिणामी क्षति के लिए उत्तरदायी नहीं होगा। सेवा से असंतुष्टि की स्थिति में आपका एकमात्र उपाय इसका उपयोग बंद करना है।",
+  },
+  "terms.changesHeading": { en: "Changes to these terms", hi: "इन शर्तों में बदलाव" },
+  "terms.changesBody": {
+    en: "We may update these terms from time to time. When we do, we will revise the \"Last updated\" date above. Continued use of the Service after any change constitutes acceptance of the updated terms.",
+    hi: "हम समय-समय पर इन शर्तों को अद्यतन कर सकते हैं। ऐसा करने पर, हम ऊपर दी गई \"अंतिम अद्यतन\" तारीख़ बदल देंगे। किसी भी बदलाव के बाद सेवा का निरंतर उपयोग अद्यतन शर्तों की स्वीकृति माना जाएगा।",
+  },
+  "terms.lawHeading": { en: "Governing law", hi: "शासकीय कानून" },
+  "terms.lawBody": {
+    en: "These terms are governed by the laws of India. Any disputes arising from the use of the Service shall be subject to the exclusive jurisdiction of Indian courts.",
+    hi: "ये शर्तें भारत के कानूनों द्वारा शासित हैं। सेवा के उपयोग से उत्पन्न किसी भी विवाद पर भारतीय न्यायालयों का विशेष अधिकार क्षेत्र होगा।",
+  },
+  // No terms.contactHeading: footer.contact already says "Contact" and the
+  // strings test rejects two keys sharing an English value.
+  /* {link} is the localized Contact-page link, inlined mid-sentence via
+     format() — see terms/page.tsx. Keeps one sentence per language instead of
+     stitching English word order onto Hindi. */
+  "terms.contactBody": {
+    en: "For questions about these terms, please use our {link}.",
+    hi: "इन शर्तों से जुड़े सवालों के लिए, कृपया हमारे {link} का उपयोग करें।",
+  },
+
+  // ── Privacy policy ──
+  /* footer.privacy already says "Privacy policy" for the footer link label;
+     the page's own H1 needs a distinct English value, matching terms.h1's fix
+     above. */
+  "privacy.h1": { en: "StudyVirus privacy policy", hi: "StudyVirus की गोपनीयता नीति" },
+  "privacy.intro": {
+    en: "StudyVirus (\"we\", \"our\" or \"us\") operates the website studyvirus.com and the StudyVirus mobile app (together, the \"Service\"). This page explains what information we collect, how we use it, and the choices you have.",
+    hi: "StudyVirus (\"हम\", \"हमारा\" या \"हमें\") वेबसाइट studyvirus.com और StudyVirus मोबाइल ऐप (सम्मिलित रूप से, \"सेवा\") का संचालन करता है। यह पृष्ठ बताता है कि हम कौन-सी जानकारी एकत्र करते हैं, उसका उपयोग कैसे करते हैं, और आपके पास क्या विकल्प हैं।",
+  },
+  "privacy.collectHeading": { en: "Information we collect", hi: "हम कौन-सी जानकारी एकत्र करते हैं" },
+  "privacy.collectBody": {
+    en: "StudyVirus does not require an account to access quizzes, notes or study material. We collect only the information needed to run and improve the Service:",
+    hi: "क्विज़, नोट्स या अध्ययन सामग्री तक पहुँचने के लिए StudyVirus किसी खाते की आवश्यकता नहीं रखता। हम केवल वही जानकारी एकत्र करते हैं जो सेवा चलाने और उसे बेहतर बनाने के लिए ज़रूरी है:",
+  },
+  "privacy.collectUsage": {
+    en: "Usage data: pages visited, time spent, clicks and general device information (browser, operating system, screen size).",
+    hi: "उपयोग डेटा: देखे गए पृष्ठ, बिताया गया समय, क्लिक और सामान्य डिवाइस जानकारी (ब्राउज़र, ऑपरेटिंग सिस्टम, स्क्रीन आकार)।",
+  },
+  "privacy.collectLog": {
+    en: "Log data: IP address, referrer and request timestamps, collected automatically by our hosting provider.",
+    hi: "लॉग डेटा: IP पता, रेफरर और अनुरोध का समय, जो हमारे होस्टिंग प्रदाता द्वारा स्वचालित रूप से एकत्र किया जाता है।",
+  },
+  "privacy.collectCookies": {
+    en: "Cookies: small files stored in your browser to remember preferences and to serve advertising (see below).",
+    hi: "कुकीज़: आपके ब्राउज़र में संग्रहीत छोटी फ़ाइलें, जो प्राथमिकताएँ याद रखने और विज्ञापन दिखाने के लिए उपयोग होती हैं (नीचे देखें)।",
+  },
+  "privacy.useHeading": { en: "How we use information", hi: "हम जानकारी का उपयोग कैसे करते हैं" },
+  "privacy.useList1": { en: "To deliver study content, quizzes and practice tests.", hi: "अध्ययन सामग्री, क्विज़ और अभ्यास परीक्षण प्रदान करने के लिए।" },
+  "privacy.useList2": { en: "To measure traffic, diagnose issues and improve the Service.", hi: "ट्रैफ़िक मापने, समस्याओं का निदान करने और सेवा को बेहतर बनाने के लिए।" },
+  "privacy.useList3": { en: "To display relevant advertisements through Google AdSense.", hi: "Google AdSense के माध्यम से प्रासंगिक विज्ञापन दिखाने के लिए।" },
+  "privacy.useList4": { en: "To comply with legal obligations when required.", hi: "आवश्यक होने पर कानूनी दायित्वों का पालन करने के लिए।" },
+  "privacy.adsHeading": { en: "Advertising & cookies", hi: "विज्ञापन और कुकीज़" },
+  "privacy.adsBody1": {
+    en: "StudyVirus uses Google AdSense to display advertisements. Google and its partners use cookies to serve ads based on your prior visits to this or other websites. You can opt out of personalised advertising through Google's Ads Settings, and learn about interest-based advertising and your choices at www.aboutads.info.",
+    hi: "StudyVirus विज्ञापन दिखाने के लिए Google AdSense का उपयोग करता है। Google और उसके साझेदार आपकी इस या अन्य वेबसाइटों पर पिछली विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करते हैं। आप Google की Ads Settings से व्यक्तिगत विज्ञापन बंद कर सकते हैं, और रुचि-आधारित विज्ञापन तथा अपने विकल्पों के बारे में www.aboutads.info पर जान सकते हैं।",
+  },
+  "privacy.adsBody2": {
+    en: "Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to this website or other websites.",
+    hi: "Google सहित तृतीय-पक्ष विक्रेता, किसी उपयोगकर्ता की इस या अन्य वेबसाइटों पर पिछली विज़िट के आधार पर विज्ञापन दिखाने के लिए कुकीज़ का उपयोग करते हैं।",
+  },
+  "privacy.adsSettingsLink": { en: "Google Ads Settings", hi: "Google Ads सेटिंग्स" },
+  "privacy.analyticsHeading": { en: "Analytics", hi: "एनालिटिक्स" },
+  "privacy.analyticsBody": {
+    en: "We may use Google Analytics or similar tools to understand aggregate usage patterns. These tools use cookies and may collect anonymised data such as page views, session duration and approximate location. We do not use this data to identify individual users.",
+    hi: "समग्र उपयोग पैटर्न समझने के लिए हम Google Analytics या इसी तरह के उपकरणों का उपयोग कर सकते हैं। ये उपकरण कुकीज़ का उपयोग करते हैं और पेज व्यू, सत्र अवधि और अनुमानित स्थान जैसा गुमनाम डेटा एकत्र कर सकते हैं। हम इस डेटा का उपयोग किसी व्यक्तिगत उपयोगकर्ता की पहचान के लिए नहीं करते।",
+  },
+  "privacy.sharingHeading": { en: "Data sharing", hi: "डेटा साझाकरण" },
+  "privacy.sharingBody": {
+    en: "We do not sell personal information. We only share data with service providers that help us operate the Service (hosting, analytics, advertising) and only to the extent necessary. Each of these providers is bound by their own privacy policies.",
+    hi: "हम व्यक्तिगत जानकारी नहीं बेचते। हम केवल उन सेवा प्रदाताओं के साथ डेटा साझा करते हैं जो सेवा चलाने में हमारी मदद करते हैं (होस्टिंग, एनालिटिक्स, विज्ञापन) और केवल आवश्यक सीमा तक। ये प्रत्येक प्रदाता अपनी-अपनी गोपनीयता नीतियों से बाध्य हैं।",
+  },
+  "privacy.childrenHeading": { en: "Children's privacy", hi: "बच्चों की गोपनीयता" },
+  "privacy.childrenBody": {
+    en: "StudyVirus is intended for students preparing for competitive exams, typically aged 16 and above. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal data, please contact us and we will delete it.",
+    hi: "StudyVirus उन विद्यार्थियों के लिए है जो प्रतियोगी परीक्षाओं की तैयारी कर रहे हैं, सामान्यतः 16 वर्ष या उससे अधिक आयु के। हम जानबूझकर 13 वर्ष से कम आयु के बच्चों से व्यक्तिगत जानकारी एकत्र नहीं करते। यदि आपको लगता है कि 13 वर्ष से कम आयु के किसी बच्चे ने हमें व्यक्तिगत डेटा दिया है, तो कृपया हमसे संपर्क करें, हम उसे हटा देंगे।",
+  },
+  "privacy.choicesHeading": { en: "Your choices", hi: "आपके विकल्प" },
+  "privacy.choicesList1": { en: "You can disable cookies in your browser settings at any time.", hi: "आप कभी भी अपने ब्राउज़र सेटिंग्स में कुकीज़ बंद कर सकते हैं।" },
+  "privacy.choicesList2": { en: "You can opt out of personalised advertising using the links above.", hi: "आप ऊपर दिए लिंक का उपयोग करके व्यक्तिगत विज्ञापन बंद कर सकते हैं।" },
+  "privacy.choicesList3": { en: "You can request deletion of any data associated with you by contacting us.", hi: "आप हमसे संपर्क करके अपने से जुड़े किसी भी डेटा को हटाने का अनुरोध कर सकते हैं।" },
+  "privacy.changesHeading": { en: "Changes to this policy", hi: "इस नीति में बदलाव" },
+  "privacy.changesBody": {
+    en: "We may update this policy from time to time. When we do, we will revise the \"Last updated\" date at the top of this page. Continued use of the Service after any change constitutes acceptance of the updated policy.",
+    hi: "हम समय-समय पर इस नीति को अद्यतन कर सकते हैं। ऐसा करने पर, हम इस पृष्ठ के शीर्ष पर दी गई \"अंतिम अद्यतन\" तारीख़ बदल देंगे। किसी भी बदलाव के बाद सेवा का निरंतर उपयोग अद्यतन नीति की स्वीकृति माना जाएगा।",
+  },
+  // No privacy.contactHeading: contact.h1 already says "Contact us" and the
+  // strings test rejects two keys sharing an English value.
+  /* {link} placeholder, split-and-rendered inline with a real <Link> in
+     privacy-policy/page.tsx — same pattern as terms.contactBody. */
+  "privacy.contactBody": {
+    en: "Questions about this privacy policy can be sent through our {link}.",
+    hi: "इस गोपनीयता नीति से जुड़े सवाल हमारे {link} के ज़रिए भेजे जा सकते हैं।",
+  },
+
   // … later tasks append their keys here
 } as const;
 
