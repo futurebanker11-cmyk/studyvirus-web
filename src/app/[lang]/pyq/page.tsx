@@ -108,12 +108,11 @@ export async function generateMetadata({
   const lang: Lang = raw;
 
   const { exams, totalPapers } = await pyqIndexData();
-  const title = `${format(lang, "pyqIndex.h1", { exams: exams.length })} | StudyVirus`;
+  const title = `${format(lang, "pyqIndex.h1", { exams: formatCount(exams.length, lang) })} | StudyVirus`;
 
   return {
     title,
     description: format(lang, "pyqIndex.lede", {
-      exams: formatCount(exams.length, lang),
       papers: formatCount(totalPapers, lang),
     }),
     alternates: buildAlternates({ lang, path: "/pyq", hasHi: true }),
@@ -157,7 +156,7 @@ export default async function PyqIndexPage({
         </nav>
 
         <h1 className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-          {format(lang, "pyqIndex.h1", { exams: exams.length })}
+          {format(lang, "pyqIndex.h1", { exams: formatCount(exams.length, lang) })}
         </h1>
         <p className="mt-3 max-w-measure text-lg text-ink-soft">
           {format(lang, "pyqIndex.lede", {

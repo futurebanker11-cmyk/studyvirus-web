@@ -395,7 +395,7 @@ export const STRINGS = {
     en: "{papers} papers, {questions} questions in total, each with the answer and an explanation.",
     hi: "{papers} प्रश्नपत्र, कुल {questions} प्रश्न — हर एक के उत्तर और व्याख्या सहित।",
   },
-  /* Per-paper card label: "Set 4". {en} is the count on that card, "38 Qs". */
+  /* The count line under a paper card, e.g. "38 questions". */
   "pyqExam.paperMeta": { en: "{questions} questions", hi: "{questions} प्रश्न" },
 
   // ── PYQ set page (/pyq/[exam]/set-N) ──

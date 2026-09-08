@@ -16,8 +16,9 @@ import SetPageShell from "@/components/site/SetPageShell";
 import type { ReportContext } from "@/components/site/ReportError";
 
 /**
- * One full previous-year paper — a whole set (typically ~40 questions) on one
- * page, via SetPageShell (Task 6).
+ * One full previous-year paper — a whole set (25, 30 or 40 questions,
+ * whatever that paper actually has — never assumed) on one page, via
+ * SetPageShell (Task 6).
  *
  * ── Why this route is NOT statically generated ──
  *
@@ -46,9 +47,13 @@ import type { ReportContext } from "@/components/site/ReportError";
  *
  * ── The tail case ──
  *
- * /pyq/[exam]/set-99 on an exam with fewer real papers 301s to the last real
- * one, mirroring Task 7's chapter-set tail redirect — a hand-typed or stale
- * set number lands on the last real paper instead of a dead end.
+ * /pyq/[exam]/set-99 on an exam with fewer real papers redirects (308, via
+ * permanentRedirect) to the last real one, mirroring Task 7's chapter-set
+ * tail redirect — a hand-typed or stale set number lands on the last real
+ * paper instead of a dead end. "Last" is the highest paper number actually
+ * present, not papersOf(exam).length: papersOf() skips any n missing from
+ * the content index, so a gapped exam's last real paper can have n greater
+ * than its paper count.
  *
  * No headers(), no cookies(), no <html>.
  */
@@ -83,9 +88,16 @@ async function resolve(
   if (!exam) return { kind: "missing" };
   if (n === null) return { kind: "missing" };
 
+  // papersOf() skips any n whose file is absent from the content index, so
+  // the array can have gaps — its length is a COUNT, not the highest real
+  // paper number, and its last element is not guaranteed to be paper n ===
+  // papers.length. The tail redirect and the prev/next pager below must
+  // therefore key off the real papers actually present, never off n ± 1 or
+  // off papers.length as if paper numbering were contiguous.
   const papers = papersOf(exam);
   if (papers.length === 0) return { kind: "missing" };
-  if (n > papers.length) return { kind: "tail", exam, last: papers.length };
+  const lastPaper = papers[papers.length - 1];
+  if (n > lastPaper.n) return { kind: "tail", exam, last: lastPaper.n };
 
   const paper = findPaper(exam, n);
   if (!paper) return { kind: "missing" };
@@ -161,7 +173,13 @@ export default async function PyqSetPage({
 
   const { exam, paper, file, questions } = r.data;
   const name = lang === "hi" ? exam.hi : exam.en;
-  const total = papersOf(exam).length;
+  const papers = papersOf(exam);
+  // Indexed by position in the real papers array, not by paper.n ± 1: a
+  // gapped exam (papers 1,2,4,5) would otherwise link "next" from paper 2 to
+  // a nonexistent paper 3 and 404 a reader straight off a working page.
+  const posInPapers = papers.findIndex((p) => p.n === paper.n);
+  const prevPaper = posInPapers > 0 ? papers[posInPapers - 1] : null;
+  const nextPaper = posInPapers >= 0 && posInPapers < papers.length - 1 ? papers[posInPapers + 1] : null;
   const app = await appFor(exam.id);
 
   const base = `/pyq/${examSlug}`;
@@ -194,8 +212,8 @@ export default async function PyqSetPage({
       ]}
       questions={questions}
       reportContext={reportContext}
-      prev={paper.n > 1 ? href(lang, `${base}/set-${paper.n - 1}`) : null}
-      next={paper.n < total ? href(lang, `${base}/set-${paper.n + 1}`) : null}
+      prev={prevPaper ? href(lang, `${base}/set-${prevPaper.n}`) : null}
+      next={nextPaper ? href(lang, `${base}/set-${nextPaper.n}`) : null}
       indexHref={href(lang, base)}
       langPath={`${base}/set-${paper.n}`}
       hasHi={hasHindiSet(file)}
