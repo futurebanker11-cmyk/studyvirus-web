@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 import type { Lang } from "@/lib/i18n/lang";
 import { t } from "@/lib/ui/strings";
@@ -67,6 +67,7 @@ export default function SetPageShell({
   intro,
   crumbs,
   questions,
+  reportContext,
   startNumber = 1,
   prev,
   next,
@@ -74,7 +75,6 @@ export default function SetPageShell({
   langPath,
   hasHi = true,
   app,
-  reportContext,
   children,
 }: {
   lang: Lang;
@@ -86,6 +86,20 @@ export default function SetPageShell({
   crumbs: Crumb[];
   /** Raw question objects, in either bank shape. */
   questions: Record<string, unknown>[];
+  /**
+   * REQUIRED, not optional, even though every field inside ReportContext is
+   * itself optional. A caller with genuinely nothing to add can pass `{}` —
+   * that is a deliberate choice, made once, visible in the diff. Making this
+   * prop optional at the SetPageShell level was found (Task 6 review,
+   * 2026-09-08) to be an easy field to forget entirely: it sat 13th of 14
+   * props, defaulted silently, and a report filed without it still succeeds
+   * — it just lands in the CMS reports queue with no topic, chapter or set
+   * to triage against, and nothing anywhere signals the gap. Every one of
+   * Tasks 7-10 renders exactly one of these per page and knows its own
+   * topic/chapter/set at the call site, so there is no real case where this
+   * is unavailable — only cases where it was skipped by omission.
+   */
+  reportContext: ReportContext;
   /** The number of the first question, for a chapter paged across sets. */
   startNumber?: number;
   prev?: string | null;
@@ -97,8 +111,6 @@ export default function SetPageShell({
   hasHi?: boolean;
   /** The end-of-page install card. Omitted when no app matches. */
   app?: AppEntry | null;
-  /** Extra fields sent with a question report. */
-  reportContext?: ReportContext;
   /** Anything extra between the questions and the pager. */
   children?: ReactNode;
 }) {
@@ -106,9 +118,27 @@ export default function SetPageShell({
   const breaks = adBreaks(questions.length);
   const breakAt = new Map(breaks.map((b) => [b.afterIndex, b.ordinal]));
 
-  // The wrapper PracticeToggle writes `data-practice` onto. A constant id is
-  // fine: one set page renders one shell.
-  const practiceId = "set-questions";
+  // The wrapper PracticeToggle writes `data-practice` onto. useId(), not a
+  // constant string: a hardcoded id was tried first and found, by an
+  // independent build-and-inspect check (Task 6 review, 2026-09-08), to
+  // produce invalid HTML (id="set-questions" twice) and a toggle that drove
+  // only the FIRST shell's document.getElementById(target) match, the moment
+  // a route ever rendered two SetPageShells. Neither failure produces a type
+  // error or a failing test, so it would surface only as a live,
+  // hard-to-trace production symptom. useId() removes it outright.
+  //
+  // Two shells on one route also duplicate anything ELSE this component
+  // renders once per instance regardless of `practiceId` — the same review
+  // found the sticky-bottom AdSlot (line ~221, gated only on `ads.has(...)`)
+  // and the BreadcrumbList JSON-LD (keyed on `crumbs`, at the top of the
+  // render) both appear twice in that case, each requesting/declaring the
+  // same unit or data independently of this id. That is a DIFFERENT,
+  // unfixed failure mode — rendering the shell twice at all is the problem,
+  // not something useId() addresses — so a future page combining two sets on
+  // one URL still needs its own dedicated header/footer treatment; it cannot
+  // simply mount two SetPageShells side by side. No Task 7-10 page does this
+  // today (confirmed against the plan).
+  const practiceId = useId();
 
   const crumbJson = breadcrumbList(
     crumbs.map((c) => ({ name: c.name, url: abs(c.href) })),

@@ -259,7 +259,6 @@ export const STRINGS = {
   },
   "report.submit": { en: "Send report", hi: "शिकायत भेजें" },
   "report.sending": { en: "Sending…", hi: "भेजा जा रहा है…" },
-  "report.cancel": { en: "Cancel", hi: "रद्द करें" },
   "report.thanks": {
     en: "Thank you — we will check this question.",
     hi: "धन्यवाद — हम इस प्रश्न की जाँच करेंगे।",

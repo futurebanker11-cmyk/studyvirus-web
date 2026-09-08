@@ -15,13 +15,17 @@ import type { Lang } from "@/lib/i18n/lang";
  *     "hi": [ {id, q, options[4], answer: "A"-"D", explain}, … ] }
  *
  *   Language is a property of the FILE, not of the question: the two arrays are
- *   parallel and every object inside them has the identical five keys. Surveyed
- *   across 30 chapter files / 3,818 questions: 100% carried exactly those keys,
- *   100% had four options, and 100% stored `answer` as a single uppercase
- *   letter. There is no `q_hi`, no `options_hi`, no `explain_hi` in the GK bank.
- *   The PAGE picks the array for its language; `lang` therefore has no effect
- *   on a GK question here, and must not — looking for a "_hi" field that does
- *   not exist would blank out every Hindi question on the site.
+ *   parallel and every object inside them has the identical five keys. Sampled
+ *   twice against the real bank (3,165 GK chapter files in total, per the
+ *   content index) — 30 files / 3,818 questions on 2026-09-08, then
+ *   independently re-sampled at 60 files / 6,168 questions spread across the
+ *   whole bank during Task 6 review the same day: 100% carried exactly those
+ *   keys, 100% had four options, and 100% stored `answer` as a single
+ *   uppercase letter in both passes. There is no `q_hi`, no `options_hi`, no
+ *   `explain_hi` anywhere in either sample. The PAGE picks the array for its
+ *   language; `lang` therefore has no effect on a GK question here, and must
+ *   not — looking for a "_hi" field that does not exist would blank out every
+ *   Hindi question on the site.
  *
  * Aptitude (`gk/aptitude/content/…/Set NN.json`, `bank/…`):
  *
@@ -30,10 +34,12 @@ import type { Lang } from "@/lib/i18n/lang";
  *                   solution_shortcut(_hi), trap_warning(_hi), …}, … ] }
  *
  *   Here BOTH languages live on ONE object, so `lang` does the choosing.
- *   Surveyed across 8 sets / 78 questions: `correct_index` was an integer every
- *   time, options were four every time, and `options_hi` was present and the
- *   same length every time. The fallbacks below are for the day that stops
- *   being true, not for today.
+ *   Sampled twice against the real bank (350 aptitude set files in total) — 8
+ *   sets / 78 questions on 2026-09-08, then independently re-sampled at 6 sets
+ *   / 60 questions during Task 6 review the same day: `correct_index` was an
+ *   integer every time in both passes, options were four every time, and
+ *   `options_hi` was present and the same length every time. The fallbacks
+ *   below are for the day that stops being true, not for today.
  *
  * ── The rule that matters ──
  *
