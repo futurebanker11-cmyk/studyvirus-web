@@ -89,6 +89,24 @@ export const STRINGS = {
   "cat.teaching": { en: "Teaching", hi: "शिक्षक भर्ती" },
   "cat.state": { en: "State exams", hi: "राज्य परीक्षाएँ" },
 
+  // ── PYQ category labels (/pyq index) ──
+  /* PyqExam.category (src/lib/content/pyq.ts) is a flatter, 8-value taxonomy
+     used only for grouping previous-year papers — NOT the same field as
+     EXAMS[].category in src/lib/exams.ts, which is more granular (state_psc,
+     state_sub, forest, jail, revenue, central, agriculture, …) and serves the
+     exam-hub pages. These eight keys exist only to label the PYQ groups; four
+     of them (railway/ssc/police/defence) intentionally read differently from
+     the similarly-named "cat.*" footer keys above, which is fine — the two
+     labels sit in different sections and neither page shows both at once. */
+  "pyqCat.railway": { en: "Railway Exams", hi: "रेलवे परीक्षाएं" },
+  "pyqCat.ssc": { en: "SSC Exams", hi: "SSC परीक्षाएं" },
+  "pyqCat.police": { en: "Police Exams", hi: "पुलिस परीक्षाएं" },
+  "pyqCat.forest": { en: "Forest Exams", hi: "वन विभाग परीक्षाएं" },
+  "pyqCat.defence": { en: "Defence Exams", hi: "रक्षा परीक्षाएं" },
+  "pyqCat.banking": { en: "Banking Exams", hi: "बैंकिंग परीक्षाएं" },
+  "pyqCat.teaching": { en: "Teaching Exams", hi: "शिक्षक परीक्षाएं" },
+  "pyqCat.state": { en: "State Exams", hi: "राज्य परीक्षाएं" },
+
   // ── App card ──
   "app.install": { en: "Install", hi: "इंस्टॉल करें" },
   "app.rating": { en: "rating", hi: "रेटिंग" },
@@ -354,6 +372,37 @@ export const STRINGS = {
   "set.lede": {
     en: "Questions {from} to {to} of {total} in {chapter}, with the answer and an explanation under each one.",
     hi: "{chapter} के कुल {total} में से प्रश्न {from} से {to} तक — हर प्रश्न के नीचे उत्तर और व्याख्या।",
+  },
+
+  // ── PYQ index (/pyq) ──
+  /* {exams} and {papers} are loadPyqExams().length and the summed papersOf()
+     count, both computed at build/request time — never a written-in number,
+     the same discipline as examIndex.h1 and topics.h1 above. */
+  "pyqIndex.h1": {
+    en: "Previous-year papers for {exams} exams",
+    hi: "{exams} परीक्षाओं के पिछले वर्षों के प्रश्नपत्र",
+  },
+  "pyqIndex.lede": {
+    en: "{papers} real papers, grouped by exam, with every question answered and explained — free, in Hindi and English.",
+    hi: "{papers} वास्तविक प्रश्नपत्र, परीक्षा के अनुसार — हर प्रश्न के उत्तर और व्याख्या सहित, हिंदी और अंग्रेज़ी में निःशुल्क।",
+  },
+  /* Per-exam line on the index: "31 papers". */
+  "pyqIndex.examMeta": { en: "{papers} papers", hi: "{papers} प्रश्नपत्र" },
+
+  // ── PYQ exam page (/pyq/[exam]) ──
+  "pyqExam.h1": { en: "{exam}: previous-year papers", hi: "{exam}: पिछले वर्षों के प्रश्नपत्र" },
+  "pyqExam.lede": {
+    en: "{papers} papers, {questions} questions in total, each with the answer and an explanation.",
+    hi: "{papers} प्रश्नपत्र, कुल {questions} प्रश्न — हर एक के उत्तर और व्याख्या सहित।",
+  },
+  /* Per-paper card label: "Set 4". {en} is the count on that card, "38 Qs". */
+  "pyqExam.paperMeta": { en: "{questions} questions", hi: "{questions} प्रश्न" },
+
+  // ── PYQ set page (/pyq/[exam]/set-N) ──
+  "pyqSet.h1": { en: "{exam} — Set {n}", hi: "{exam} — सेट {n}" },
+  "pyqSet.lede": {
+    en: "All {total} questions from this paper, with the answer and an explanation under each one.",
+    hi: "इस प्रश्नपत्र के सभी {total} प्रश्न — हर प्रश्न के नीचे उत्तर और व्याख्या।",
   },
 
   // … later tasks append their keys here
