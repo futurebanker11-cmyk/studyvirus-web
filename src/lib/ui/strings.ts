@@ -223,6 +223,60 @@ export const STRINGS = {
      reused verbatim for the GK subjects section above it. */
   "exam.viewAllAptitude": { en: "See all aptitude practice", hi: "सारा एप्टीट्यूड अभ्यास देखें" },
 
+  // ── Set page: the question renderer, practice toggle and pager ──
+  /* Practice mode hides the answers with CSS — they stay in the HTML for a
+     crawler and a screen reader either way — so the control describes what it
+     does to the page, not what it does to the data. */
+  "set.practiceHint": {
+    en: "Hide the answers while you attempt the set.",
+    hi: "सेट हल करते समय उत्तर छिपाए रखें।",
+  },
+  "set.hideAnswers": { en: "Hide answers", hi: "उत्तर छिपाएँ" },
+  /* The numbered label on each question. {n} is its number within the set. */
+  "set.questionN": { en: "Question {n}", hi: "प्रश्न {n}" },
+  /* Read out for a correct option; the tick glyph beside it is aria-hidden, so
+     colour and shape are never the only signal that an option is the answer. */
+  "set.correctOption": { en: "Correct answer", hi: "सही उत्तर" },
+  /* Shown in place of the answer line when the source file does not identify
+     one unambiguously. Saying so is the honest alternative to guessing — a
+     wrongly-marked option is the one error a reader cannot catch. */
+  "set.answerUnknown": {
+    en: "The answer key for this question is being checked.",
+    hi: "इस प्रश्न की उत्तर कुंजी की जाँच की जा रही है।",
+  },
+  "set.pagerLabel": { en: "Sets in this chapter", hi: "इस अध्याय के सेट" },
+  "set.allSets": { en: "All sets", hi: "सभी सेट" },
+
+  // ── Set page: reporting a mistake in a question ──
+  /* The API stores a free-text `reason` and REQUIRES it (studyvirus-api
+     src/reports.js: "question and reason required", 400 without it), so the
+     form asks for one instead of sending a bare flag that the server rejects. */
+  "report.open": { en: "Report a mistake", hi: "गलती की शिकायत करें" },
+  "report.heading": { en: "What is wrong with this question?", hi: "इस प्रश्न में क्या गलत है?" },
+  "report.placeholder": {
+    en: "For example: the marked answer is wrong, or option B is a duplicate.",
+    hi: "उदाहरण के लिए: चिह्नित उत्तर गलत है, या विकल्प B दोहराया गया है।",
+  },
+  "report.submit": { en: "Send report", hi: "शिकायत भेजें" },
+  "report.sending": { en: "Sending…", hi: "भेजा जा रहा है…" },
+  "report.cancel": { en: "Cancel", hi: "रद्द करें" },
+  "report.thanks": {
+    en: "Thank you — we will check this question.",
+    hi: "धन्यवाद — हम इस प्रश्न की जाँच करेंगे।",
+  },
+  "report.needReason": {
+    en: "Please describe the mistake first.",
+    hi: "कृपया पहले गलती बताएँ।",
+  },
+  "report.failed": {
+    en: "That did not send. Please try again in a moment.",
+    hi: "शिकायत नहीं भेजी जा सकी। कृपया थोड़ी देर बाद फिर कोशिश करें।",
+  },
+  "report.rateLimited": {
+    en: "Too many reports have been sent from this device today. Please try tomorrow.",
+    hi: "आज इस डिवाइस से बहुत सारी शिकायतें भेजी जा चुकी हैं। कृपया कल कोशिश करें।",
+  },
+
   // … later tasks append their keys here
 } as const;
 

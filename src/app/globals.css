@@ -359,6 +359,50 @@ table {
   background: var(--accent-wash);
 }
 
+/* ═══ Practice mode ═══
+   PracticeToggle sets data-practice="on" on the set wrapper and these rules
+   hide the answers. CSS, deliberately — NOT conditional rendering.
+
+   The answer, the explanation and the correct-option mark are in the
+   server-rendered HTML at all times, in every mode. That is the whole point:
+   this site was flagged for a content gap where its answers existed only
+   after JavaScript ran, so a crawler indexed pages of bare questions and a
+   screen reader on a slow connection got the same. Rendering the answer only
+   when practice mode is off would reintroduce exactly that gap.
+
+   `display: none` rather than a visual trick: a reader in practice mode
+   should not have the answer read out to them either, and hidden content is
+   correctly skipped by assistive technology while remaining in the document
+   for a crawler, which does not honour a runtime attribute toggle.
+
+   Printing ignores practice mode entirely — an aspirant printing a set wants
+   the answer key on the paper. */
+[data-practice="on"] .answer,
+[data-practice="on"] .explanation {
+  display: none;
+}
+
+/* The tick and the green wash would give the answer away on their own. */
+[data-practice="on"] .option-correct {
+  border-color: var(--line-strong);
+  background: var(--surface);
+}
+
+[data-practice="on"] .option-mark {
+  visibility: hidden;
+}
+
+@media print {
+  [data-practice="on"] .answer,
+  [data-practice="on"] .explanation {
+    display: block;
+  }
+
+  [data-practice="on"] .option-mark {
+    visibility: visible;
+  }
+}
+
 /* ═══ KaTeX — rendered to HTML on the server ═══ */
 .katex {
   font-size: 1.03em;
