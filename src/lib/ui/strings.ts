@@ -478,6 +478,80 @@ export const STRINGS = {
     hi: "{total} हल किए गए प्रश्न — पूरी विधि, जहाँ है वहाँ शॉर्टकट, और बचने योग्य गलती।",
   },
 
+  // ── Task 10: English ──
+  /* The section segment in the URL is the manifest KEY (english, english_full,
+     english_basic), not topicSlug(key) — those underscored paths are the ones
+     already indexed by Google, and spec §4.2 is that no existing URL moves. */
+  "english.h1": {
+    en: "English grammar practice: {chapters} chapters, {questions} questions with answers",
+    hi: "अंग्रेज़ी व्याकरण अभ्यास: {chapters} अध्याय, {questions} प्रश्न उत्तर सहित",
+  },
+  "english.lede": {
+    en: "Synonyms, antonyms, idioms, error spotting, comprehension and more — every set solved, free, for SSC, Railway, Police and Bank exams.",
+    hi: "पर्यायवाची, विलोम, मुहावरे, त्रुटि खोज, पठन बोध और बहुत कुछ — SSC, रेलवे, पुलिस और बैंक परीक्षाओं के लिए हर सेट हल सहित, निःशुल्क।",
+  },
+  "english.sectionMeta": {
+    en: "{chapters} chapters · {questions} questions",
+    hi: "{chapters} अध्याय · {questions} प्रश्न",
+  },
+  /* Only english_basic carries Hindi today; the other two trees are
+     English-only at the source, so this note is what a Hindi reader sees on
+     their section card instead of a link that leads to English text. */
+  "english.englishOnly": { en: "English-only for now", hi: "अभी केवल अंग्रेज़ी में" },
+  "english.backToAll": { en: "All English sections", hi: "सभी अंग्रेज़ी अनुभाग" },
+
+  // ── Task 10: current affairs ──
+  "ca.h1": {
+    en: "Current affairs {month}: {questions} daily questions with answers",
+    hi: "करेंट अफेयर्स {month}: {questions} दैनिक प्रश्न उत्तर सहित",
+  },
+  "ca.lede": {
+    en: "One solved set every day, plus a month-by-month compilation you can revise in one sitting.",
+    hi: "हर दिन एक हल किया सेट, साथ ही महीनेवार संकलन जिसे एक ही बैठक में दोहराया जा सके।",
+  },
+  "ca.thisMonthHeading": { en: "This month, day by day", hi: "इस महीने, दिन-प्रतिदिन" },
+  "ca.recentHeading": { en: "The last 30 days", hi: "पिछले 30 दिन" },
+  "ca.monthlyHeading": { en: "Month-by-month compilations", hi: "महीनेवार संकलन" },
+  /* The per-day count line reuses pyqExam.paperMeta ("{questions} questions"),
+     which already says exactly this; the strings test rejects a duplicate. */
+  "ca.monthMeta": { en: "{days} days · {questions} questions", hi: "{days} दिन · {questions} प्रश्न" },
+  "ca.dayH1": { en: "Current affairs {date}: {questions} questions with answers", hi: "करेंट अफेयर्स {date}: {questions} प्रश्न उत्तर सहित" },
+  "ca.dayLede": {
+    en: "The day's {questions} current-affairs questions, each with the answer and why it is the answer.",
+    hi: "दिन के {questions} करेंट अफेयर्स प्रश्न, हर एक का उत्तर और उसका कारण सहित।",
+  },
+  "ca.monthH1": {
+    en: "Current affairs {month}: all {questions} questions from {days} days",
+    hi: "करेंट अफेयर्स {month}: {days} दिनों के सभी {questions} प्रश्न",
+  },
+  "ca.monthLede": {
+    en: "Every question published in {month}, on one page, in date order — revise the whole month without opening 30 pages.",
+    hi: "{month} में प्रकाशित हर प्रश्न, एक ही पृष्ठ पर, तिथि क्रम में — 30 पृष्ठ खोले बिना पूरा महीना दोहराएँ।",
+  },
+  "ca.jumpHeading": { en: "Jump to a day", hi: "किसी दिन पर जाएँ" },
+  "ca.backToIndex": { en: "All current affairs", hi: "सभी करेंट अफेयर्स" },
+  "ca.monthLink": { en: "Full month on one page", hi: "पूरा महीना एक पृष्ठ पर" },
+
+  // ── Task 10: articles ──
+  "articles.h1": { en: "{articles} study articles for competitive exams", hi: "प्रतियोगी परीक्षाओं के लिए {articles} अध्ययन लेख" },
+  "articles.lede": {
+    en: "Strategy, syllabus breakdowns, day-to-day tips and the stories of people who cleared — written for aspirants, free to read.",
+    hi: "रणनीति, पाठ्यक्रम विश्लेषण, रोज़मर्रा के सुझाव और चयनित अभ्यर्थियों की कहानियाँ — अभ्यर्थियों के लिए लिखे, पढ़ने में निःशुल्क।",
+  },
+  "articles.backToAll": { en: "All articles", hi: "सभी लेख" },
+  "articles.readTime": { en: "{minutes} min read", hi: "{minutes} मिनट का पठन" },
+  "articles.categoryMeta": { en: "{articles} articles", hi: "{articles} लेख" },
+  /* The five real categories in gk/articles/index.json. Derived grouping, but
+     a category needs a human label in both languages, the way pyqCat.* does. */
+  "artCat.strategy": { en: "Strategy", hi: "रणनीति" },
+  "artCat.motivation": { en: "Motivation", hi: "प्रेरणा" },
+  "artCat.syllabus": { en: "Syllabus guides", hi: "पाठ्यक्रम मार्गदर्शिका" },
+  "artCat.tips": { en: "Study tips", hi: "अध्ययन सुझाव" },
+  "artCat.success": { en: "Success stories", hi: "सफलता की कहानियाँ" },
+  /* Fallback label for a category the index grows later — better than an
+     untranslated raw key shown to a reader. */
+  "artCat.other": { en: "More articles", hi: "और लेख" },
+
   // … later tasks append their keys here
 } as const;
 
