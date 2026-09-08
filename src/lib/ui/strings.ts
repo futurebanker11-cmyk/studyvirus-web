@@ -405,6 +405,79 @@ export const STRINGS = {
     hi: "इस प्रश्नपत्र के सभी {total} प्रश्न — हर प्रश्न के नीचे उत्तर और व्याख्या।",
   },
 
+  // ── Aptitude (Task 9) ──
+  //
+  // Two families, "SSC & Railway" and "Bank", each with its own subjects,
+  // chapters, question types and sets. The section's own names ("family",
+  // "type") never reach a reader: the pages say what the thing is — an exam
+  // group, a kind of question — because "family" is our word for it, not the
+  // aspirant's.
+  "aptIndex.h1": {
+    en: "Aptitude practice with worked solutions",
+    hi: "एप्टीट्यूड अभ्यास, हल सहित",
+  },
+  "aptIndex.lede": {
+    en: "{sets} free practice sets and {questions} questions in quantitative aptitude, reasoning, data interpretation and English — every one solved step by step, with shortcuts.",
+    hi: "मात्रात्मक अभिक्षमता, रीज़निंग, डेटा इंटरप्रिटेशन और अंग्रेज़ी के {sets} निःशुल्क अभ्यास सेट और {questions} प्रश्न — हर प्रश्न चरण-दर-चरण हल, शॉर्टकट सहित।",
+  },
+  "aptIndex.familyMeta": {
+    en: "{subjects} subjects · {chapters} chapters · {sets} sets",
+    hi: "{subjects} विषय · {chapters} अध्याय · {sets} सेट",
+  },
+  "aptFamily.h1": { en: "{family} aptitude practice", hi: "{family} एप्टीट्यूड अभ्यास" },
+  "aptFamily.lede": {
+    en: "For {exams}. {chapters} chapters across {subjects} subjects, {sets} practice sets in all.",
+    hi: "{exams} के लिए। {subjects} विषयों में {chapters} अध्याय, कुल {sets} अभ्यास सेट।",
+  },
+  // Not plain "Subjects": home.subjectsHeading already owns that English
+  // string, and two keys sharing one value is what the strings test rejects.
+  "aptFamily.subjectsHeading": { en: "Aptitude subjects", hi: "एप्टीट्यूड विषय" },
+  "aptFamily.subjectMeta": {
+    en: "{chapters} chapters · {sets} sets · {questions} questions",
+    hi: "{chapters} अध्याय · {sets} सेट · {questions} प्रश्न",
+  },
+  "aptSubject.h1": {
+    en: "{subject} for {exams}",
+    hi: "{exams} के लिए {subject}",
+  },
+  "aptSubject.lede": {
+    en: "{chapters} chapters, {sets} practice sets and {questions} solved questions.",
+    hi: "{chapters} अध्याय, {sets} अभ्यास सेट और {questions} हल किए गए प्रश्न।",
+  },
+  // topic.chaptersHeading already says "Chapters in this subject"; the strings
+  // test rejects two keys sharing an English value.
+  "aptSubject.chaptersHeading": { en: "Every chapter, with its sets", hi: "हर अध्याय, उसके सेट सहित" },
+  // The two chapter H1s. The first is used only when a method note is actually
+  // authored for the chapter; the second is what every chapter renders today.
+  "aptChapter.h1Method": {
+    en: "{chapter}: formula, shortcuts & practice questions for {exams}",
+    hi: "{chapter}: {exams} के लिए सूत्र, शॉर्टकट और अभ्यास प्रश्न",
+  },
+  "aptChapter.h1Plain": {
+    en: "{chapter} practice questions for {exams}",
+    hi: "{exams} के लिए {chapter} अभ्यास प्रश्न",
+  },
+  "aptChapter.lede": {
+    en: "{sets} practice sets and {questions} questions on {chapter}, each with a full solution and the shortcut where one exists.",
+    hi: "{chapter} पर {sets} अभ्यास सेट और {questions} प्रश्न — हर एक का पूरा हल और जहाँ है वहाँ शॉर्टकट।",
+  },
+  "aptChapter.formulaHeading": { en: "The formula", hi: "सूत्र" },
+  "aptChapter.exampleHeading": { en: "Worked example", hi: "हल किया गया उदाहरण" },
+  "aptChapter.mistakesHeading": { en: "Mistakes that cost marks", hi: "अंक गँवाने वाली गलतियाँ" },
+  "aptChapter.typesHeading": { en: "Question types and sets", hi: "प्रश्न प्रकार और सेट" },
+  "aptChapter.typeMeta": { en: "{sets} sets in this type", hi: "इस प्रकार में {sets} सेट" },
+  "aptChapter.relatedHeading": { en: "More chapters in this subject", hi: "इस विषय के और अध्याय" },
+  "aptChapter.examsHeading": { en: "Exams that ask this", hi: "इसे पूछने वाली परीक्षाएँ" },
+  "aptChapter.hindiPartial": {
+    en: "Some sets in this chapter are English-only for now.",
+    hi: "इस अध्याय के कुछ सेट अभी केवल अंग्रेज़ी में हैं।",
+  },
+  "aptSet.h1": { en: "{chapter} — {type}, Set {n}", hi: "{chapter} — {type}, सेट {n}" },
+  "aptSet.lede": {
+    en: "{total} solved questions with the full method, the shortcut where one exists, and the trap to avoid.",
+    hi: "{total} हल किए गए प्रश्न — पूरी विधि, जहाँ है वहाँ शॉर्टकट, और बचने योग्य गलती।",
+  },
+
   // … later tasks append their keys here
 } as const;
 
