@@ -217,14 +217,28 @@ function assertQuestionsRendered(body: string, path: string): void {
   // (src/components/site/Question.tsx via SetPageShell). Counting those is a
   // structural check against the real renderer rather than a guess at prose:
   // an earlier draft of this test looked for "A)"/"B)" literals and failed on
-  // correct pages, because the markup marks options with an `option-mark`
-  // span, not with letter-and-paren text.
+  // correct pages, because options are letter-marked with a trailing period
+  // ("A." "B." …), not "A)" — the punctuation differed, not the presence of
+  // letters.
   const questions = (body.match(/<article\b/g) ?? []).length;
   expect(questions, `question <article> count on ${path}`).toBeGreaterThan(0);
 
-  // Options are rendered, one marker per question at minimum.
+  // Every option renders inside an <li>, correct or not (QuestionList.tsx:
+  // isCorrect only changes styling, never whether the <li> exists), so <li>
+  // count is a real lower bound on rendered options — real content questions
+  // in this bank carry four options each, so four per question is a safe,
+  // conservative floor rather than an exact match this test would need to
+  // keep in sync with the content.
+  const optionItems = (body.match(/<li\b/g) ?? []).length;
+  expect(optionItems, `option <li> count on ${path}`).toBeGreaterThanOrEqual(questions * 4);
+
+  // `option-mark` is the correct-answer tick specifically (rendered only
+  // when the source unambiguously identifies one, never a guess — see
+  // normaliseQuestion.ts) — a real but separate invariant from "options
+  // render": most real questions resolve a correct answer, but a source that
+  // doesn't must not fail this check the way asserting >= questions would.
   const optionMarks = (body.match(/option-mark/g) ?? []).length;
-  expect(optionMarks, `option markers on ${path}`).toBeGreaterThanOrEqual(questions);
+  expect(optionMarks, `answers identified on ${path}`).toBeGreaterThan(0);
 }
 
 test.describe("spec §10 smoke routes", () => {
