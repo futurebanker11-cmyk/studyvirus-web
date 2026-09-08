@@ -1,6 +1,11 @@
 import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 // Makes wrangler.jsonc bindings (CONTENT) available via getCloudflareContext()
-// during `next dev`. No effect on `next build` or production.
+// during `next dev` and DOES ALSO run during `next build` (confirmed: it
+// recreates .wrangler/state/ on every build, not just `next dev` -- the
+// previous version of this comment claimed no build-time effect, which is
+// false and briefly misled a race-condition investigation in Plan B Task 5's
+// review, 2026-09-08). Has no effect on the real deployed Worker in
+// production, where wrangler.jsonc's bindings are wired directly.
 initOpenNextCloudflareForDev();
 
 /** @type {import('next').NextConfig} */
