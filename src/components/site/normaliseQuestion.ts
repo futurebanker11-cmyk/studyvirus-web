@@ -1,4 +1,5 @@
 import type { Lang } from "@/lib/i18n/lang";
+import { stripVisualHints } from "@/lib/ui/format";
 
 /**
  * One question, in the single shape every content page renders.
@@ -123,16 +124,29 @@ export function normaliseQuestion(raw: Raw, lang: Lang): NormalisedQuestion {
   // renderer never emits an empty "Shortcut" heading over nothing.
   const shortcut = isApt ? pick(raw, "solution_shortcut", "solution_shortcut_hi", lang) : "";
   const trap = isApt ? pick(raw, "trap_warning", "trap_warning_hi", lang) : "";
+  const explanation = isApt
+    ? pick(raw, "solution_conventional", "solution_conventional_hi", lang)
+    : str(raw.explain);
 
+  // stripVisualHints here, not only at render time: QuestionList's
+  // explanationBlocks() already strips the app-only 📊 [VISUAL:...] / DATA:
+  // lines before painting the page, but ReportError is a client component
+  // that receives this whole object as a prop, and every client-component
+  // prop is serialised into the page's RSC flight payload verbatim — so the
+  // unstripped text was reaching that payload (inside a <script> tag, never
+  // visible markup or a crawler's indexed text) on every question with a
+  // hint, regardless of content type. Aptitude is simply the first bank with
+  // real hints in production; topics and PYQ share the same gap, silently,
+  // because their content happens not to contain any (Task 9 review,
+  // 2026-09-08). Stripping once here, at the single point both the render
+  // path and the report payload branch from, fixes all three at once.
   return {
     id: typeof raw.id === "string" ? raw.id : undefined,
     stem: isApt ? pick(raw, "question", "question_hi", lang) : str(raw.q),
     options,
     correctIndex,
-    explanation: isApt
-      ? pick(raw, "solution_conventional", "solution_conventional_hi", lang)
-      : str(raw.explain),
-    shortcut: shortcut || undefined,
-    trap: trap || undefined,
+    explanation: stripVisualHints(explanation),
+    shortcut: shortcut ? stripVisualHints(shortcut) || undefined : undefined,
+    trap: trap ? stripVisualHints(trap) || undefined : undefined,
   };
 }
