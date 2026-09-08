@@ -1,5 +1,3 @@
-export const runtime = "edge";
-
 /**
  * POST /api/report — a same-origin proxy for a question report.
  *
