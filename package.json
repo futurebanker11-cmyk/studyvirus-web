@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "node --import tsx --test \"test/**/*.test.ts\"",
+    "test:e2e": "playwright test",
     "typecheck": "tsc --noEmit",
     "validate:content": "node scripts/validate-content.mjs",
     "cf:build": "node scripts/validate-content.mjs && opennextjs-cloudflare build && node scripts/lint-html.mjs",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20260702.1",
     "@opennextjs/cloudflare": "^1.15.0",
+    "@playwright/test": "^1.63.0",
     "@types/katex": "^0.16.8",
     "@types/node": "^20",
     "@types/react": "^18",

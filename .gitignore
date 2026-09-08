@@ -47,3 +47,9 @@ public/mock-content/
 # 09f3f9f, reintroduced by the Jul 29 re-export). The player's copy is
 # player.html, which maps to no /bank/* url. See CLOUDFLARE_DEPLOY.md.
 public/bank/index.html
+
+# playwright (test:e2e) — run artifacts, never source
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
