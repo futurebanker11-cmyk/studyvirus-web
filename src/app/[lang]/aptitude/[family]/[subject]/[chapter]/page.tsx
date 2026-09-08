@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { isLang, href, LANGS, type Lang } from "@/lib/i18n/lang";
 import { buildAlternates, abs } from "@/lib/i18n/alternates";
 import { t, format } from "@/lib/ui/strings";
+import { stripVisualHints } from "@/lib/ui/format";
 import { formatCount } from "@/lib/content/stats";
 import {
   FAMILIES,
@@ -136,17 +137,29 @@ async function resolve(family: string, subject: string, chapter: string): Promis
  * hub links here is an exam this page links back to.
  *
  * A nice-to-have cross-link, not the page's job: it is capped so the section
- * stays a handful of chips rather than a second navigation tree.
+ * stays a handful of chips rather than a second navigation tree. The cap is
+ * taken per category, round-robin, before flattening — EXAMS lists every
+ * railway exam before any ssc exam (src/lib/exams.ts), so a plain filter+
+ * slice(0,4) on ssc-railway silently returned four railway exams and zero ssc
+ * ones, contradicting this family's own H1 ("...for SSC CGL, CHSL, MTS &
+ * RRB NTPC, Group D") on all 44 ssc-railway chapter pages (Task 9 review,
+ * 2026-09-08). Interleaving keeps both categories of a two-category family
+ * represented regardless of EXAMS' internal ordering.
  */
 function examLinks(family: AptitudeFamily, lang: Lang) {
   const cats = family === "bank" ? ["bank"] : ["ssc", "railway"];
-  return EXAMS.filter((e) => cats.includes(e.category))
-    .slice(0, 4)
-    .map((e) => ({
-      href: href(lang, `/exam/${e.slug}`),
-      name: lang === "hi" ? e.hi : e.en,
-      icon: e.icon,
-    }));
+  const byCategory = cats.map((cat) => EXAMS.filter((e) => e.category === cat));
+  const interleaved: typeof EXAMS = [];
+  for (let i = 0; interleaved.length < 4 && byCategory.some((list) => i < list.length); i++) {
+    for (const list of byCategory) {
+      if (list[i]) interleaved.push(list[i]);
+    }
+  }
+  return interleaved.slice(0, 4).map((e) => ({
+    href: href(lang, `/exam/${e.slug}`),
+    name: lang === "hi" ? e.hi : e.en,
+    icon: e.icon,
+  }));
 }
 
 /** The chapters either side of this one, in manifest (teaching) order. */
@@ -158,9 +171,19 @@ function nearbyChapters(subject: AptSubject, chapter: AptChapter): AptChapter[] 
   );
 }
 
-const methodFormula = (m: WebMethod, lang: Lang) => (lang === "hi" ? m.formula_hi : m.formula_en);
-const methodExample = (m: WebMethod, lang: Lang) => (lang === "hi" ? m.example_hi : m.example_en);
-const methodMistakes = (m: WebMethod, lang: Lang) => (lang === "hi" ? m.mistakes_hi : m.mistakes_en);
+// stripVisualHints: web-method files are hand-authored for this page alone,
+// but an author copying a passage from the app question bank could paste a
+// 📊 [VISUAL:...] / DATA: line meant for the Android renderer. QuestionList's
+// explanation text is stripped via explanationBlocks() before it ever reaches
+// <Math>; this is the one other place in the diff that renders free text
+// through <Math>, so it needs the same guard applied directly (Task 9 review,
+// 2026-09-08).
+const methodFormula = (m: WebMethod, lang: Lang) =>
+  stripVisualHints(lang === "hi" ? m.formula_hi : m.formula_en);
+const methodExample = (m: WebMethod, lang: Lang) =>
+  stripVisualHints(lang === "hi" ? m.example_hi : m.example_en);
+const methodMistakes = (m: WebMethod, lang: Lang) =>
+  (lang === "hi" ? m.mistakes_hi : m.mistakes_en).map(stripVisualHints);
 
 /** The H1, which is also the tab title — one string, computed once. */
 function heading(lang: Lang, chapterName: string, exams: string, method: WebMethod | null) {
