@@ -301,7 +301,7 @@ export default async function ChapterPage({
                 >
                   {lang === "hi" ? c.chapter.hi : c.chapter.en}
                   <span className="text-xs text-ink-faint">
-                    {formatCount(c.sets, lang)} {t(lang, "common.set")}
+                    {formatCount(c.sets, lang)} {t(lang, "common.sets")}
                   </span>
                 </Link>
               </li>

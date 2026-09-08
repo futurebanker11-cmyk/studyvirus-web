@@ -26,6 +26,7 @@ export const STRINGS = {
   // ── Common chrome ──
   "common.home": { en: "Home", hi: "होम" },
   "common.set": { en: "Set", hi: "सेट" },
+  "common.sets": { en: "sets", hi: "सेट" },
   "common.questions": { en: "questions", hi: "प्रश्न" },
   "common.chapters": { en: "chapters", hi: "अध्याय" },
   "common.papers": { en: "papers", hi: "प्रश्नपत्र" },
