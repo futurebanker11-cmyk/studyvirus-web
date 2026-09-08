@@ -51,6 +51,26 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      // ── Retired sub-pages of a chapter (spec §5.3) ──
+      // Notes and one-liners are Pro features inside the apps and are no
+      // longer published on the site. They had real URLs (and real inbound
+      // links), so they 301 to the chapter that replaced them rather than
+      // 404ing. These MUST stay above the WordPress rules below: /topics/:a/:b
+      // is not matched by any of them today, but the catch-alls there are
+      // broad and order in this array is what decides.
+      { source: "/topics/:subject/:chapter/notes", destination: "/topics/:subject/:chapter", permanent: true },
+      { source: "/topics/:subject/:chapter/oneliners", destination: "/topics/:subject/:chapter", permanent: true },
+      { source: "/hi/topics/:subject/:chapter/notes", destination: "/hi/topics/:subject/:chapter", permanent: true },
+      { source: "/hi/topics/:subject/:chapter/oneliners", destination: "/hi/topics/:subject/:chapter", permanent: true },
+
+      // ── The old mock-tests section is replaced by the exam hubs ──
+      // routing.ts's PASSTHROUGH still lists "mock-tests" so the middleware
+      // does not treat it as an old WordPress path; these rules run BEFORE the
+      // middleware (Next applies next.config redirects first), so the
+      // passthrough is now only a safety net.
+      { source: "/mock-tests", destination: "/exam", permanent: true },
+      { source: "/mock-tests/:slug", destination: "/exam/:slug", permanent: true },
+
       // ── Old WordPress category pages ──
       { source: "/category/indian-history", destination: "/topics/history", permanent: true },
       { source: "/category/indian-polity", destination: "/topics/polity", permanent: true },

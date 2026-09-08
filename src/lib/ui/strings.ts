@@ -276,6 +276,85 @@ export const STRINGS = {
     hi: "आज इस डिवाइस से बहुत सारी शिकायतें भेजी जा चुकी हैं। कृपया कल कोशिश करें।",
   },
 
+  // ── Topics index (/topics) ──
+  /* {subjects} and {questions} are counted from the manifest and the content
+     index at render time, never written in. The page the rebuild replaces
+     said "50+ Topics" above a grid of 62. */
+  "topics.h1": {
+    en: "{subjects} GK subjects, {questions} practice questions",
+    hi: "{subjects} GK विषय, {questions} अभ्यास प्रश्न",
+  },
+  "topics.lede": {
+    en: "Every subject is split into chapters, and every chapter into sets of ten questions with answers and explanations. All of it is free, in Hindi and English.",
+    hi: "हर विषय अध्यायों में और हर अध्याय दस-दस प्रश्नों के सेट में बँटा है — उत्तर और व्याख्या सहित। सब कुछ हिंदी और अंग्रेज़ी में निःशुल्क।",
+  },
+  /* The four column headings on /topics. They are editorial groupings made in
+     src/lib/content/topicGroups.ts, not fields in the manifest. */
+  "topics.groupGeneral": { en: "General knowledge", hi: "सामान्य ज्ञान" },
+  "topics.groupScience": { en: "Science", hi: "विज्ञान" },
+  "topics.groupState": { en: "State GK", hi: "राज्य सामान्य ज्ञान" },
+  "topics.groupSpecialist": { en: "Specialist subjects", hi: "विशेष विषय" },
+  "topics.groupGeneralSub": {
+    en: "The general-awareness section of nearly every exam on this site.",
+    hi: "इस साइट की लगभग हर परीक्षा के सामान्य ज्ञान खंड के विषय।",
+  },
+  "topics.groupScienceSub": {
+    en: "Physics, chemistry and the life sciences, at the level these exams set them.",
+    hi: "भौतिकी, रसायन और जीव विज्ञान — उसी स्तर पर जिस पर ये परीक्षाएँ पूछती हैं।",
+  },
+  "topics.groupStateSub": {
+    en: "State-specific papers, for the boards that recruit within one state.",
+    hi: "राज्य-विशेष प्रश्नपत्र — एक ही राज्य में भर्ती करने वाले बोर्डों के लिए।",
+  },
+  "topics.groupSpecialistSub": {
+    en: "Teaching, banking and administration papers set by one stream of exams.",
+    hi: "शिक्षक भर्ती, बैंकिंग और प्रशासन के प्रश्नपत्र, जो एक ही श्रेणी की परीक्षाओं में आते हैं।",
+  },
+
+  // ── Topic page (/topics/[slug]) ──
+  /* {subject} is the subject's name in the page's own language. */
+  "topic.h1": { en: "{subject} questions with answers", hi: "{subject} के प्रश्न, उत्तर सहित" },
+  "topic.lede": {
+    en: "{chapters} chapters, {questions} questions in {sets} sets — every one with a written explanation, in Hindi and English.",
+    hi: "{chapters} अध्याय, {sets} सेट में {questions} प्रश्न — हर प्रश्न की लिखित व्याख्या के साथ, हिंदी और अंग्रेज़ी में।",
+  },
+  "topic.chaptersHeading": { en: "Chapters in this subject", hi: "इस विषय के अध्याय" },
+  "topic.examsHeading": { en: "Exams that set this subject", hi: "इस विषय को पूछने वाली परीक्षाएँ" },
+  "topic.examsSub": {
+    en: "Each hub lists that exam's other subjects, previous-year papers and app.",
+    hi: "हर हब में उस परीक्षा के बाकी विषय, पिछले वर्षों के प्रश्नपत्र और ऐप मिलेंगे।",
+  },
+  /* Per-chapter line on the subject page: "8 sets · 78 questions". */
+  "topic.chapterMeta": { en: "{sets} sets · {questions} questions", hi: "{sets} सेट · {questions} प्रश्न" },
+  "topics.backToAll": { en: "All subjects", hi: "सभी विषय" },
+
+  // ── Chapter page (/topics/[slug]/[chapter]) ──
+  "chapter.h1": { en: "{chapter} questions and answers", hi: "{chapter}: प्रश्न और उत्तर" },
+  "chapter.lede": {
+    en: "{questions} {chapter} questions from {subject}, in {sets} sets of ten. Each answer is explained, and nothing here needs a sign-up.",
+    hi: "{subject} के अंतर्गत {chapter} के {questions} प्रश्न, दस-दस के {sets} सेट में। हर उत्तर की व्याख्या दी गई है, और किसी रजिस्ट्रेशन की ज़रूरत नहीं।",
+  },
+  "chapter.setsHeading": { en: "All sets in this chapter", hi: "इस अध्याय के सभी सेट" },
+  /* The label inside a set card: "Questions 11–20". */
+  "chapter.setRange": { en: "Questions {from}–{to}", hi: "प्रश्न {from}–{to}" },
+  "chapter.nearbyHeading": { en: "Nearby chapters", hi: "आस-पास के अध्याय" },
+  "chapter.pyqHeading": { en: "Previous-year papers that cover this", hi: "इसे कवर करने वाले पिछले प्रश्नपत्र" },
+  "chapter.pyqSub": {
+    en: "The same subject as it was actually asked, in the exams that ask it most.",
+    hi: "यही विषय जैसा वास्तव में पूछा गया — उन परीक्षाओं में जो इसे सबसे अधिक पूछती हैं।",
+  },
+  "chapter.hindiOnlyEnglish": {
+    en: "This chapter is published in English only.",
+    hi: "यह अध्याय केवल अंग्रेज़ी में उपलब्ध है।",
+  },
+
+  // ── Set page (/topics/[slug]/[chapter]/set-N) ──
+  "set.h1": { en: "{chapter} — Set {n}", hi: "{chapter} — सेट {n}" },
+  "set.lede": {
+    en: "Questions {from} to {to} of {total} in {chapter}, with the answer and an explanation under each one.",
+    hi: "{chapter} के कुल {total} में से प्रश्न {from} से {to} तक — हर प्रश्न के नीचे उत्तर और व्याख्या।",
+  },
+
   // … later tasks append their keys here
 } as const;
 
