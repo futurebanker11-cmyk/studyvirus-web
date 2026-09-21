@@ -12,6 +12,7 @@ import {
   findAptChapter,
   findType,
   setsOf,
+  questionsOf,
   type AptFamilyInfo,
   type AptSetInfo,
   type AptitudeFamily,
@@ -89,8 +90,27 @@ export const revalidate = 3600;
 const isFamily = (x: string): x is AptitudeFamily =>
   (FAMILIES as readonly string[]).includes(x);
 
+/**
+ * Two file shapes live under bank/, and this route must accept BOTH.
+ *
+ * `{ questions: [...] }` — each object carries both languages on itself
+ * (question/question_hi, options/options_hi, …). All of quant, di and puzzles,
+ * plus part of reasoning and previous_year_papers: 2,689 sets.
+ *
+ * `{ en: [...], hi: [...] }` — the file-level split the PYQ and topic routes
+ * already read. All 678 english sets, 222 reasoning and 827
+ * previous_year_papers: 1,727 sets.
+ *
+ * Reading only `questions` is what took those 1,727 sets off the web: the
+ * index counted them (so hubs advertised "678 practice sets" and the sitemap
+ * declared every URL), but this resolver saw no `questions` array and called
+ * notFound() on each one. normaliseQuestion() has always handled both shapes —
+ * see its header — so accepting the second shape here is all that was missing.
+ */
 interface SetFile {
   questions?: Record<string, unknown>[];
+  en?: Record<string, unknown>[];
+  hi?: Record<string, unknown>[];
   title?: { en?: string; hi?: string };
 }
 
@@ -143,7 +163,8 @@ async function resolve(
   const file = await getJson<SetFile>(set.key);
   if (!file) return { kind: "missing" };
 
-  const questions = Array.isArray(file.questions) ? file.questions : [];
+  // Both file shapes, resolved in one place (see questionsOf).
+  const questions = questionsOf(file, lang);
   if (questions.length === 0) return { kind: "missing" };
 
   return { kind: "ok", data: { info, set, siblings, questions } };

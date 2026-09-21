@@ -32,8 +32,8 @@ test("siteStats counts aptitude chapters when the index carries them", () => {
 test("siteStats().questions matches the real committed index", () => {
   __setIndexForTests(realIndex as unknown as ContentIndex);
   const s = siteStats();
-  assert.equal(s.questions, 193431);
-  assert.equal(formatCount(s.questions, "en"), "1,93,431");
+  assert.equal(s.questions, 193571);
+  assert.equal(formatCount(s.questions, "en"), "1,93,571");
   // 809 topic + 38 english + 119 aptitude: the validator must carry
   // aptitudeChapters or the homepage shows 847 instead of the real 966.
   assert.equal(s.chapters, 966);

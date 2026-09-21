@@ -69,6 +69,35 @@ const LOOKS_MATHY = /[=+\-*/^_\\{}]|\\[a-zA-Z]+/;
  */
 const NUMERIC_ONLY = /^[\d,.\s-]+$/;
 
+/**
+ * `**bold**` -> <strong>.
+ *
+ * The question bank is authored in a light Markdown by hand, but only the
+ * bullet markers were ever parsed, so every `**…**` reached the DOM as literal
+ * asterisks: 63% of live pages rendered runs like "**Part III**" to readers,
+ * on the exact phrases the author meant to emphasise. Stripping the asterisks
+ * would throw that emphasis away, so they are rendered instead.
+ *
+ * Applied AFTER KaTeX inside renderInlineMath, over the segments BETWEEN the
+ * KaTeX spans, so `a**b` inside a formula is never touched and the generated
+ * <span class="katex"> markup is never re-parsed.
+ */
+const BOLD = /\*\*(\S(?:[^*]*\S)?)\*\*/g;
+
+const ESCAPE: Record<string, string> = { "&": "&amp;", "<": "&lt;", ">": "&gt;" };
+const escapeHtml = (s: string): string => s.replace(/[&<>]/g, (c) => ESCAPE[c]);
+
+/**
+ * Splits on the KaTeX HTML that renderInlineMath has already produced and
+ * applies `fn` only to the plain-text runs between those spans.
+ */
+function outsideKatex(html: string, fn: (chunk: string) => string): string {
+  return html
+    .split(/(<span class="katex(?:-display)?"[\s\S]*?<\/span><\/span>)/g)
+    .map((chunk, i) => (i % 2 === 1 ? chunk : fn(chunk)))
+    .join("");
+}
+
 export function renderInlineMath(text: string): string {
   let out = text.replace(BLOCK, (_m, body: string) =>
     katex.renderToString(body.trim(), { displayMode: true, throwOnError: false }),
@@ -78,5 +107,9 @@ export function renderInlineMath(text: string): string {
       ? katex.renderToString(body.trim(), { displayMode: false, throwOnError: false })
       : m,
   );
-  return out;
+  // Escape first so question text containing < or & cannot inject markup, then
+  // re-introduce only the <strong> this function itself emits.
+  return outsideKatex(out, (chunk) =>
+    escapeHtml(chunk).replace(BOLD, (_m, body: string) => `<strong>${body}</strong>`),
+  );
 }

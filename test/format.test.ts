@@ -114,3 +114,56 @@ test("renderInlineMath does not throw on malformed LaTeX", () => {
 test("renderInlineMath leaves a single lone dollar sign untouched", () => {
   assert.equal(renderInlineMath("costs $5"), "costs $5");
 });
+
+// ── `**bold**` rendering ──
+//
+// The question bank is authored in a light Markdown, but only the bullet
+// markers were ever parsed, so `**…**` reached the DOM as literal asterisks on
+// 63% of live pages ("**Part III**" shown to readers). These guard the fix and,
+// just as importantly, the things it must NOT break: math, prices and escaping.
+
+test("renderInlineMath renders **bold** as <strong>", () => {
+  assert.equal(
+    renderInlineMath("**Part III** of the Constitution"),
+    "<strong>Part III</strong> of the Constitution",
+  );
+  assert.equal(
+    renderInlineMath("The **NSG** is a **federal force**"),
+    "The <strong>NSG</strong> is a <strong>federal force</strong>",
+  );
+});
+
+test("renderInlineMath renders **bold** in Hindi too", () => {
+  assert.equal(renderInlineMath("**बोल्ड** हिंदी में"), "<strong>बोल्ड</strong> हिंदी में");
+});
+
+test("no literal ** survives outside math", () => {
+  const out = renderInlineMath("a **b** c **d** e");
+  assert.doesNotMatch(out, /\*\*/);
+});
+
+test("asterisks inside a KaTeX span are left alone", () => {
+  // `a**b` is exponent-ish input for KaTeX, not author emphasis: bold runs
+  // only over the text BETWEEN rendered spans, so this must stay math.
+  const out = renderInlineMath("Compute $a**b$ here");
+  assert.match(out, /katex/);
+  assert.doesNotMatch(out, /<strong>/);
+});
+
+test("bold does not disturb the rupee-amount guard", () => {
+  assert.equal(
+    renderInlineMath("Price is $250-$300 and **cheap**"),
+    "Price is $250-$300 and <strong>cheap</strong>",
+  );
+});
+
+test("angle brackets in question text are escaped, not rendered as markup", () => {
+  assert.equal(
+    renderInlineMath("5 < 7 and x > 2 with **bold**"),
+    "5 &lt; 7 and x &gt; 2 with <strong>bold</strong>",
+  );
+});
+
+test("an unpaired ** is left as written rather than swallowing the line", () => {
+  assert.equal(renderInlineMath("2 ** 3 is eight"), "2 ** 3 is eight");
+});
