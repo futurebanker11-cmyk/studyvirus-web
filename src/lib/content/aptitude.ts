@@ -92,3 +92,35 @@ export function setsOf(family: AptitudeFamily, subject: AptSubject, chapter: Apt
 export function findAptSet(family: AptitudeFamily, subject: AptSubject, chapter: AptChapter, type: AptType, n: number): AptSetInfo | undefined {
   return setsOf(family, subject, chapter, type).find((s) => s.n === n);
 }
+
+/**
+ * The question array for one aptitude set file, whichever shape it is in.
+ *
+ * Two shapes live under bank/ and this is the one place that knows it:
+ *
+ *   `{ questions: [...] }`  each question carries both languages on itself
+ *                           (quant, di, puzzles + part of reasoning/PYQ)
+ *   `{ en: [...], hi: [...] }`  file-level split, as PYQ and topic files use
+ *                           (all english sets + part of reasoning/PYQ)
+ *
+ * Reading only `questions` is what took 1,727 live sets off the web: the index
+ * counted them, so hub pages advertised "678 practice sets" and the sitemap
+ * declared every URL, while the set route saw no `questions` array and 404'd
+ * each one. normaliseQuestion() already handles both shapes downstream.
+ *
+ * Hindi falls back to `en` rather than returning nothing: whether a set may be
+ * served in Hindi at all is decided earlier, by hasHindiCounts() against the
+ * index, so a set that reaches here has already passed that gate.
+ */
+export function questionsOf(
+  file: { questions?: unknown; en?: unknown; hi?: unknown } | null | undefined,
+  lang: "en" | "hi",
+): Record<string, unknown>[] {
+  if (!file) return [];
+  const both = file.questions;
+  if (Array.isArray(both) && both.length > 0) return both as Record<string, unknown>[];
+  const hi = file.hi;
+  if (lang === "hi" && Array.isArray(hi) && hi.length > 0) return hi as Record<string, unknown>[];
+  const en = file.en;
+  return Array.isArray(en) ? (en as Record<string, unknown>[]) : [];
+}

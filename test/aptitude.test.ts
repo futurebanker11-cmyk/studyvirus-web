@@ -4,7 +4,7 @@ import { readFileSync } from "node:fs";
 import { __setIndexForTests } from "../src/lib/content/index";
 import { __setBucketResolver } from "../src/lib/content/bucket";
 import { __clearMemo } from "../src/lib/content/loader";
-import { loadFamily, subjectSlug, chapterSlug, typeSlug, findSubject, findAptChapter, findType, setsOf, findAptSet } from "../src/lib/content/aptitude";
+import { loadFamily, subjectSlug, chapterSlug, typeSlug, findSubject, findAptChapter, findType, setsOf, findAptSet, questionsOf } from "../src/lib/content/aptitude";
 
 const bank = readFileSync(new URL("./fixtures/aptitude-bank.json", import.meta.url), "utf8");
 const gk = readFileSync(new URL("./fixtures/aptitude-gk.json", import.meta.url), "utf8");
@@ -121,4 +121,42 @@ test("a manifest folder of \".\" produces a normalised key that the index resolv
   assert.deepEqual(sets.map((x) => [x.n, x.key]), [[1, "bank/1-Quantitative Aptitude/table/prelims/set_084.json"]]);
   assert.ok(!sets[0].key.split("/").includes("."), "key must carry no \".\" segment");
   assert.equal(findAptSet("bank", s, c, t, 1)?.set.id, "set_084");
+});
+
+// ── questionsOf: both aptitude set-file shapes ──
+//
+// Reading only `questions` took 1,727 live sets off the web (all 678 bank
+// english sets, 222 reasoning, 827 previous-year). The index counted them, so
+// hubs advertised "678 practice sets" and the sitemap declared every URL,
+// while the set route saw no `questions` array and 404'd each one.
+
+test("questionsOf reads the single-array shape", () => {
+  const f = { questions: [{ question: "a" }, { question: "b" }] };
+  assert.equal(questionsOf(f, "en").length, 2);
+  assert.equal(questionsOf(f, "hi").length, 2);
+});
+
+test("questionsOf reads the file-level en/hi shape", () => {
+  const f = { en: [{ q: "a" }, { q: "b" }], hi: [{ q: "क" }, { q: "ख" }] };
+  assert.equal(questionsOf(f, "en").length, 2);
+  assert.deepEqual(questionsOf(f, "en")[0], { q: "a" });
+  assert.deepEqual(questionsOf(f, "hi")[0], { q: "क" });
+});
+
+test("questionsOf prefers `questions` when a file somehow carries both", () => {
+  const f = { questions: [{ q: "both" }], en: [{ q: "en" }] };
+  assert.deepEqual(questionsOf(f, "en"), [{ q: "both" }]);
+});
+
+test("questionsOf falls back to en when hi is absent or empty", () => {
+  assert.deepEqual(questionsOf({ en: [{ q: "a" }] }, "hi"), [{ q: "a" }]);
+  assert.deepEqual(questionsOf({ en: [{ q: "a" }], hi: [] }, "hi"), [{ q: "a" }]);
+});
+
+test("questionsOf returns [] for a null, empty or unrecognised file", () => {
+  assert.deepEqual(questionsOf(null, "en"), []);
+  assert.deepEqual(questionsOf(undefined, "en"), []);
+  assert.deepEqual(questionsOf({}, "en"), []);
+  assert.deepEqual(questionsOf({ questions: [] }, "en"), []);
+  assert.deepEqual(questionsOf({ questions: "nope" as unknown }, "en"), []);
 });

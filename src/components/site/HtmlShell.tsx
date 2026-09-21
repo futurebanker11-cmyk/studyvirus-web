@@ -65,7 +65,6 @@ export default function HtmlShell({
           fire while this markup lived in the root layout. */}
       {/* eslint-disable-next-line @next/next/no-head-element */}
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#14161a" media="(prefers-color-scheme: dark)" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -78,7 +77,7 @@ export default function HtmlShell({
       <body className={`${serif.variable} ${devaSerif.variable} ${plex.variable}`}>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization()) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organization(lang)) }}
         />
         {children}
       </body>

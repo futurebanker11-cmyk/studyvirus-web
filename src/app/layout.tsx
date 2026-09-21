@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { siteStats, formatCount } from "@/lib/content/stats";
 
@@ -25,6 +25,18 @@ import { siteStats, formatCount } from "@/lib/content/stats";
 
 const QUESTIONS = formatCount(siteStats().questions, "en");
 const BLURB = `${QUESTIONS} free practice questions with answers for SSC, Railway, UPSC, Police and State exams — previous-year papers, chapter-wise sets and daily current affairs, in Hindi and English.`;
+
+/**
+ * Declared here rather than as a literal <meta> in HtmlShell so that Next.js
+ * emits exactly ONE viewport tag. HtmlShell used to hand-write the tag while
+ * Next injected its own default, so every page shipped two conflicting
+ * viewport metas (invalid HTML; the last one won).
+ */
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   title: {
