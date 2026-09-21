@@ -113,28 +113,91 @@ test("memo expires after the TTL", async () => {
 // a failed load (throw or non-2xx) is memoised for at most 5 seconds, while a
 // successful load keeps the full TTL (see "memo expires after the TTL").
 test("memoises a failure for at most 5 seconds, not the full TTL", async () => {
+  // NOTE: fetchFromCdn now retries a throw/5xx up to twice before giving up,
+  // so one getJson() call consumes up to THREE responses. This test is about
+  // the memo window, not the retry budget, so each "round" below fails all
+  // three attempts and the counter moves in threes.
   let calls = 0;
+  let mode: "fail" | "ok" = "fail";
   globalThis.fetch = (async () => {
     calls++;
-    if (calls === 1) throw new Error("transient blip");
-    if (calls === 2) return new Response("nope", { status: 503 });
+    if (mode === "fail") throw new Error("transient blip");
     return new Response('{"ok":true}', { status: 200 });
   }) as typeof fetch;
   const realNow = Date.now;
   try {
     assert.equal(await getJson("gk/topics.json"), null);
+    assert.equal(calls, 3, "one attempt plus two retries");
     assert.equal(await getJson("gk/topics.json"), null, "inside the failure window the null is still served");
-    assert.equal(calls, 1);
+    assert.equal(calls, 3, "memoised — no new round trips");
+
+    // Past the 5s failure window the next caller tries again.
     Date.now = () => realNow() + 5_500;
-    assert.equal(await getJson("gk/topics.json"), null, "a 503 is a failure too");
-    assert.equal(calls, 2);
+    assert.equal(await getJson("gk/topics.json"), null);
+    assert.equal(calls, 6, "a second full round of attempts");
+
+    // Once the CDN recovers, a success is cached for the full TTL.
+    mode = "ok";
     Date.now = () => realNow() + 11_000;
     assert.deepEqual(await getJson("gk/topics.json"), { ok: true });
-    assert.equal(calls, 3);
+    assert.equal(calls, 7);
     Date.now = () => realNow() + 40_000;
     assert.deepEqual(await getJson("gk/topics.json"), { ok: true }, "a success keeps the full TTL");
-    assert.equal(calls, 3);
+    assert.equal(calls, 7, "still memoised inside the 60s success TTL");
   } finally {
     Date.now = realNow;
   }
+});
+
+test("retries a thrown fetch error and succeeds on a later attempt", async () => {
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    if (calls < 3) throw new Error("ECONNRESET");
+    return new Response('{"ok":true}');
+  }) as typeof fetch;
+  const res = await getJson<{ ok: boolean }>("gk/topics.json");
+  assert.deepEqual(res, { ok: true });
+  assert.equal(calls, 3, "should have retried twice before succeeding");
+});
+
+test("retries a 5xx and succeeds on a later attempt", async () => {
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    if (calls === 1) return new Response("boom", { status: 503 });
+    return new Response('{"ok":true}');
+  }) as typeof fetch;
+  assert.deepEqual(await getJson<{ ok: boolean }>("gk/topics.json"), { ok: true });
+  assert.equal(calls, 2);
+});
+
+test("does NOT retry a 404 — an absent key is an authoritative answer", async () => {
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    return new Response("nope", { status: 404 });
+  }) as typeof fetch;
+  assert.equal(await getText("gk/topics.json"), null);
+  assert.equal(calls, 1, "a 404 must not cost extra round trips");
+});
+
+test("does NOT retry a non-5xx client error", async () => {
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    return new Response("denied", { status: 403 });
+  }) as typeof fetch;
+  assert.equal(await getText("gk/topics.json"), null);
+  assert.equal(calls, 1);
+});
+
+test("gives up after the retry budget and degrades to null for callers", async () => {
+  let calls = 0;
+  globalThis.fetch = (async () => {
+    calls++;
+    throw new Error("ECONNRESET");
+  }) as typeof fetch;
+  assert.equal(await getText("gk/topics.json"), null);
+  assert.equal(calls, 3, "one initial attempt plus two retries");
 });
