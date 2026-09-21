@@ -74,6 +74,28 @@ import type { ReportContext } from "@/components/site/ReportError";
 export const dynamicParams = true;
 export const revalidate = 3600;
 
+/**
+ * Deliberately empty, and load-bearing.
+ *
+ * `revalidate` alone does NOT enable ISR on a dynamic segment: Next.js only
+ * registers a route for incremental static regeneration when it ALSO exports
+ * generateStaticParams. Without one, all four [set] routes compiled as pure
+ * SSR — absent from both `routes` and `dynamicRoutes` in the prerender
+ * manifest — so every request re-rendered at the origin and the response went
+ * out as `private, no-cache, no-store`. Measured on the live site: ~0.5-1.8s
+ * TTFB per set page, with no x-nextjs-cache header and no improvement on
+ * repeat requests, across the ~20,000 URLs that carry the site's content.
+ *
+ * Returning [] keeps the build cost exactly where the note above wants it —
+ * nothing is prerendered ahead of time, the build does not grow — while
+ * registering the route for ISR, so the first request renders and the next
+ * hour is served from the edge. That is what `revalidate = 3600` was always
+ * meant to do.
+ */
+export function generateStaticParams() {
+  return [];
+}
+
 interface ChapterFile {
   en?: Record<string, unknown>[];
   hi?: Record<string, unknown>[];
