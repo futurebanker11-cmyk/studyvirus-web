@@ -33,4 +33,5 @@ export const DELETE_ACCOUNT_APPS: DeleteAccountApp[] = [
   // Flagged separately by Play (later deadlines)
   { slug: "upsc-cds", title: "UPSC CDS 2026: GK PYQ Quiz", pkg: "com.examprep.cds" },
   { slug: "upsc-cse", title: "UPSC CSE 2026: GK PYQ Quiz", pkg: "com.examprep.upscias" },
+  { slug: "upsc-nda", title: "UPSC NDA 2026: GK PYQ Quiz", pkg: "com.examprep.nda" },
 ];
