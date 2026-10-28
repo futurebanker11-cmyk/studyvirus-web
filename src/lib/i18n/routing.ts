@@ -15,7 +15,7 @@ export const CONTENT_ROUTES = new Set([
 // `sitemap` is Next's generateSitemaps directory: child sitemaps are served at
 // /sitemap/<id>.xml, whose FIRST segment has no dot, so the "." check below
 // does not catch them and every declared child sitemap would 301 away.
-const PASSTHROUGH = new Set(["hi", "b", "privacy", "mock-tests", "sitemap"]);
+const PASSTHROUGH = new Set(["hi", "b", "privacy", "delete-account", "mock-tests", "sitemap"]);
 
 // Third-party pages that live under /apps but outside [lang].
 const STATIC_APPS = new Set(["stylescan"]);
