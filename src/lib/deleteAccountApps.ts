@@ -34,11 +34,10 @@ export const DELETE_ACCOUNT_APPS: DeleteAccountApp[] = [
   { slug: "upsc-cds", title: "UPSC CDS 2027: GK PYQ Quiz", pkg: "com.examprep.cds" },
   { slug: "upsc-cse", title: "UPSC CSE 2027: GK PYQ Quiz", pkg: "com.examprep.upscias" },
   { slug: "upsc-nda", title: "UPSC NDA 2027: GK PYQ Quiz", pkg: "com.examprep.nda" },
-  // Added 2026-11-13: every other live GK app (Play rejected the old gkquestionsguru.com/delete-account/ link)
   { slug: "agniveer-army", title: "Agniveer Army GK 2027: Quiz", pkg: "com.gkpk.agniveer" },
   { slug: "agniveer-navy-af", title: "Agniveer Navy GK 2027: Quiz", pkg: "com.gkpk.navyagniveer" },
-  { slug: "bihar-forest-guard", title: "Bihar Forest Guard 2026: GK", pkg: "com.gkpk.biharforest" },
-  { slug: "bihar-jail-warder", title: "Bihar Jail Warder Exam 2026 GK", pkg: "com.gkpk.biharjail" },
+  { slug: "bihar-forest-guard", title: "Bihar Forest Guard 2027: GK", pkg: "com.gkpk.biharforest" },
+  { slug: "bihar-jail-warder", title: "Bihar Jail Warder Exam 2027 GK", pkg: "com.gkpk.biharjail" },
   { slug: "bssc", title: "BSSC Mock Test 2027: GK Hindi", pkg: "com.gkpk.bssc" },
   { slug: "epfo-ssa-eo", title: "UPSC EPFO EO GK 2027: Quiz", pkg: "com.gkpk.epfo" },
   { slug: "fci-manager", title: "FCI GK 2027: Mock Test", pkg: "com.gkpk.fci" },
@@ -58,7 +57,7 @@ export const DELETE_ACCOUNT_APPS: DeleteAccountApp[] = [
   { slug: "mp-police", title: "MP Police Mock Test 2027: GK", pkg: "com.policegk.mp" },
   { slug: "mpesb-vyapam", title: "MP GK in Hindi 2027 MPESB", pkg: "com.gkpk.mpvyapam" },
   { slug: "mppsc", title: "MPPSC Mock Test 2027: GK PYQ", pkg: "com.gkpk.mppsc" },
-  { slug: "raj-forest-guard", title: "Rajasthan Vanpal Vanrakshak GK", pkg: "com.gkpk.rajforest" },
+  { slug: "raj-forest-guard", title: "Rajasthan Vanrakshak 2027: GK", pkg: "com.gkpk.rajforest" },
   { slug: "rajasthan-police", title: "Rajasthan Police Test 2027: GK", pkg: "com.policegk.rajasthan" },
   { slug: "reet", title: "REET Mock Test 2027: GK Hindi", pkg: "com.teachgk.reet" },
   { slug: "rpf-constable", title: "RPF Constable 2027: GK Quiz", pkg: "com.gkpk.rpf" },
@@ -69,7 +68,7 @@ export const DELETE_ACCOUNT_APPS: DeleteAccountApp[] = [
   { slug: "sahi-jawab", title: "Sahi Jawab: GK Current Affairs", pkg: "com.gkpkhindi.studyvirus" },
   { slug: "ssc-cgl", title: "SSC CGL 2027 GK & Daily CA", pkg: "com.sscexam.cglgk" },
   { slug: "ssc-cpo", title: "SSC CPO 2027: GK & CA Tests", pkg: "com.sscexam.cpogk" },
-  { slug: "stet-bihar", title: "Bihar STET Mock Test 2026: GK", pkg: "com.gkpk.biharstet" },
+  { slug: "stet-bihar", title: "Bihar STET Mock Test 2027: GK", pkg: "com.gkpk.biharstet" },
   { slug: "super-tet", title: "Super TET Mock Test 2027: GK", pkg: "com.gkpk.supertet" },
   { slug: "ugc-net", title: "UGC NET Mock Test 2027: GK", pkg: "com.gkpk.ugcnet" },
   { slug: "ukpsc", title: "UKPSC Mock Test 2027: GK PYQ", pkg: "com.gkpk.ukpsc" },
@@ -81,4 +80,5 @@ export const DELETE_ACCOUNT_APPS: DeleteAccountApp[] = [
   { slug: "upsc-capf", title: "UPSC CAPF 2027: GK PYQ Quiz", pkg: "com.examprep.capf" },
   { slug: "upsssc-pet", title: "UPSSSC PET Mock Test 2027: GK", pkg: "com.gkpk.upssscpet" },
   { slug: "uptet", title: "UPTET Mock Test 2027: GK Quiz", pkg: "com.teachgk.uptet" },
+  // Added 2026-11-13: every other live GK app (Play rejected the old gkquestionsguru.com/delete-account/ link)
 ];
