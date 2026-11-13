@@ -35,7 +35,7 @@ export default function DeleteAccountPage({ params }: Props) {
   return (
     <>
       <h1>{app.title} - Delete Your Account and Data</h1>
-      <p className="meta">Last updated: October 13, 2026</p>
+      <p className="meta">Last updated: November 13, 2026</p>
 
       <div className="box">
         <strong>App:</strong> {app.title}
